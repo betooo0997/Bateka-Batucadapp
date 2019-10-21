@@ -1,0 +1,31 @@
+<?php
+/*
+Template Name: Bateka API
+*/
+
+?>
+<?php
+/**
+ * The template for displaying all pages.
+ *
+ * @package Storefront
+ */
+    include "wp-content/bateka_batukadapp/apifunctions.php";
+
+    if(isset($_POST['API_USER']) && isset($_POST['API_PASSWORD']))
+    {
+        if($_POST['API_USER'] == 'USER' && $_POST['API_PASSWORD'] == '8420b25f4c1ad7ac906364ee943a7bef')
+        {
+            handleRequest();
+        }
+
+        else
+        {
+            echo'LOGIN NOT AUTHORIZED. THIS ACTION WILL BE REPORTED.';
+        }
+    }
+    else
+    {
+        echo'LOGIN NOT AUTHORIZED.';
+    }
+?>

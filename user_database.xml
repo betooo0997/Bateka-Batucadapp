@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<users>
+  <!--<user>
+    <username></username>
+    <psswd></psswd>
+    <role></role>
+    <data>
+      <name></name>
+      <surname></surname>
+      <email></email>
+      <tel></tel>
+    </data>
+  </user>-->
+  <user>
+    <username>beto</username>
+    <psswd>test123</psswd>
+    <role>admin</role>
+    <data>
+      <name>Alberto</name>
+      <surname>Lladó Viader</surname>
+      <email>alberto1llv@gmail.com</email>
+      <tel>629790077</tel>
+    </data>
+  </user>
+</users>
