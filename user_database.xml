@@ -15,11 +15,9 @@
     <username>beto</username>
     <psswd>test123</psswd>
     <role>admin</role>
-    <data>
-      <name>Alberto</name>
-      <surname>Lladó Viader</surname>
-      <email>alberto1llv@gmail.com</email>
-      <tel>629790077</tel>
-    </data>
+    <name>Alberto</name>
+    <surname>Lladó Viader</surname>
+    <email>alberto1llv@gmail.com</email>
+    <tel>629790077</tel>
   </user>
 </users>

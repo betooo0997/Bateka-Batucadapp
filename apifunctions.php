@@ -43,16 +43,28 @@ function handle_login($xpath)
 		return;
 	}
 
-	foreach($userNode->childNodes as $child)
-    {
-        if($child->nodeName == "psswd")
-            $psswdNode = $child;
-    }
+	$user_data = get_user_nodes($userNode);
 
-	if ($psswdNode->nodeValue == $_POST['psswd'])
+	if ($user_data["psswd"]->nodeValue == $_POST['psswd'])
+	{
 		echo "LOGIN_SUCCESS.";
+		echo "|";
+
+		foreach ($user_data as $key => $value)
+			echo $key . "$" . $user_data[$key]->nodeValue . "#";
+	}
 	else
 		echo "LOGIN_FAILED_WRONG_PSSWD.";
+}
+
+function get_user_nodes($userNode)
+{
+	$user_nodes = [];
+
+	foreach($userNode->childNodes as $child)
+        $user_nodes[$child->nodeName] = $child;
+
+	return $user_nodes;
 }
 
 

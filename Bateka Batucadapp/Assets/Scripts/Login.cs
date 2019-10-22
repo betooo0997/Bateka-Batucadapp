@@ -25,7 +25,11 @@ public class Login : MonoBehaviour
 
         if (response.Contains("LOGIN_SUCCESS."))
         {
-            Load_Scene.LoadScene("Main");
+            Load_Scene.Load_Scene_ST("Menu");
+        }
+        else
+        {
+            Message.ShowMessage("Error. Usuario o contraseña incorrectos.");
         }
     }
 }

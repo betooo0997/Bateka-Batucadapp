@@ -3,15 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class Load_Scene : MonoBehaviour
 {
-    public static Load_Scene Sinlgeton;
+    public static Load_Scene Singleton;
 
     void Awake()
     {
-        Sinlgeton = this;
+        Singleton = this;
     }
 
-    public static void LoadScene(string scene_name)
+    public static void Load_Scene_ST(string scene_name, bool additive = true)
     {
-        SceneManager.LoadScene(scene_name, LoadSceneMode.Additive);
+        if (additive) SceneManager.LoadScene(scene_name, LoadSceneMode.Additive);
+        else SceneManager.LoadScene(scene_name, LoadSceneMode.Single);
     }
 }
