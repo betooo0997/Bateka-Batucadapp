@@ -6,28 +6,29 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class HttpClient: MonoBehaviour
+public class Http_Client: MonoBehaviour
 {
     public const string API_URL = "https://kinderlandshop.es/bateka-api-8420b25f4c1ad7ac906364ee943a7bef";
+    static Http_Client Singleton;
 
-    void Start()
+    void Awake()
     {
-        StartCoroutine(SendPostCoroutine());
+        Singleton = this;
     }
 
-    /// <summary>
-    /// Send a HTTP Request to the client database server.
-    /// </summary>
+    public static void Send_Post(string[] field_name, string[] field_value, Action<string> concludingMethod)
+    {
+        Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod));
+    }
 
-    IEnumerator SendPostCoroutine()
+    IEnumerator Send_Post_Coroutine(string[] field_name, string[] field_value, Action<string> concludingMethod)
     {
         WWWForm form = new WWWForm();
         form.AddField("API_USER", "USER");
         form.AddField("API_PASSWORD", "8420b25f4c1ad7ac906364ee943a7bef");
 
-        form.AddField("REQUEST_TYPE", "login");
-        form.AddField("username", "beto");
-        form.AddField("psswd", "test123");
+        for (int x = 0; x < field_name.Length; x++)
+            form.AddField(field_name[x], field_value[x]);
 
         using (UnityWebRequest www = UnityWebRequest.Post(API_URL, form))
         {
@@ -35,22 +36,19 @@ public class HttpClient: MonoBehaviour
 
             if (www.isNetworkError)
             {
-                Debug.Log(www.error);
+                Debug.LogError(www.error);
             }
             else
             {
-                Debug.Log("POST successful!");
                 StringBuilder sb = new StringBuilder();
+
                 foreach (System.Collections.Generic.KeyValuePair<string, string> dict in www.GetResponseHeaders())
-                {
                     sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
-                }
 
-                // Print Headers
-                Debug.Log(sb.ToString());
+                string response_header = sb.ToString();
+                string response_content = www.downloadHandler.text;
 
-                // Print Body
-                Debug.Log(www.downloadHandler.text);
+                concludingMethod(response_content);
             }
         }
     }
