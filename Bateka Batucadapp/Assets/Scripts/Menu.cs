@@ -44,7 +44,7 @@ public class Menu : MonoBehaviour
     {
         alpha_unselected = home_Button.GetComponent<Image>().color.a;
         Load_Scene_Menu_Item(Menu_item.Home.ToString());
-        Message.ShowMessage("Bienvenid@");
+        Message.ShowMessage("¡Hola " + User.Username + "!");
     }
 
     public void Load_Scene_Menu_Item(string scene_name)
