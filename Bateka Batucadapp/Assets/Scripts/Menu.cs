@@ -7,14 +7,17 @@ using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
+    public static Menu Singleton;
+
     public enum Menu_item
     {
         None,
         Home = 2,
-        User,
+        Users,
         Events,
         Polls,
-        Config
+        Config,
+        Users_own
     }
 
     float alpha_selected;
@@ -40,9 +43,14 @@ public class Menu : MonoBehaviour
     [SerializeField]
     GameObject config_Button;
 
+    void Awake()
+    {
+        Singleton = this;
+        alpha_unselected = home_Button.GetComponent<Image>().color.a;
+    }
+
     void Start()
     {
-        alpha_unselected = home_Button.GetComponent<Image>().color.a;
         Load_Scene_Menu_Item(Menu_item.Home.ToString());
         Message.ShowMessage("¡Hola " + User.Username + "!");
     }
@@ -60,11 +68,11 @@ public class Menu : MonoBehaviour
             scenes[x] = SceneManager.GetSceneAt(x);
 
         // Check if scene_name is a Menu_item.
-        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Config; x++)
+        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Users_own; x++)
         {
             if (scene == (Menu.Menu_item)x)
             {
-                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Config; y++)
+                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Users_own; y++)
                 {
                     if (y == x) continue;
 
@@ -80,8 +88,10 @@ public class Menu : MonoBehaviour
         prev_menu_item = active_menu_item;
         active_menu_item = scene;
 
+        if (!active_menu_item.ToString().Contains(prev_menu_item.ToString()))
+            modify_Buttons(prev_menu_item, change_alpha, alpha_unselected);
+
         modify_Buttons(active_menu_item, change_alpha, alpha_selected);
-        modify_Buttons(prev_menu_item, change_alpha, alpha_unselected);
     }
 
     void modify_Buttons(Menu_item menu_item, Action<GameObject, float> method, float new_alpha)
@@ -92,7 +102,11 @@ public class Menu : MonoBehaviour
                 method(home_Button, new_alpha);
                 break;
 
-            case Menu_item.User:
+            case Menu_item.Users:
+                method(user_Button, new_alpha);
+                break;
+
+            case Menu_item.Users_own:
                 method(user_Button, new_alpha);
                 break;
 

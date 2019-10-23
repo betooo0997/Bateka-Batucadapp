@@ -23,48 +23,50 @@ function handleRequest()
     $xmlDoc->load($databasePath);
     $xpath = new DomXpath($xmlDoc);
 
-    switch($_POST['REQUEST_TYPE'])
-    {
-        case 'login':
-            handle_login($xpath);
-            return;
+	$user_data = get_user_nodes($xpath);
+
+	if ($user_data != false && $user_data["psswd"]->nodeValue == $_POST['psswd'])
+	{
+		switch($_POST['REQUEST_TYPE'])
+		{
+			case 'login':
+				handle_login($user_data);
+				break;
+			case 'get_users':
+				handle_get_users($xpath);
+				return;
+		}
 	}
+	else echo "WRONG_CREDENTIALS.";
 }
 
-function handle_login($xpath)
+function get_user_nodes($xpath)
 {
 	$userNode = $xpath->query("/users/user[username='" . $_POST['username'] . "']");
 
 	if ($userNode->length > 0)
 		$userNode = $userNode->item(0);
-	else
-	{
-		echo "LOGIN_FAILED_NO_USER.";
-		return;
-	}
+	else return false;
 
-	$user_data = get_user_nodes($userNode);
-
-	if ($user_data["psswd"]->nodeValue == $_POST['psswd'])
-	{
-		echo "LOGIN_SUCCESS.";
-		echo "|";
-
-		foreach ($user_data as $key => $value)
-			echo $key . "$" . $user_data[$key]->nodeValue . "#";
-	}
-	else
-		echo "LOGIN_FAILED_WRONG_PSSWD.";
-}
-
-function get_user_nodes($userNode)
-{
 	$user_nodes = [];
 
 	foreach($userNode->childNodes as $child)
         $user_nodes[$child->nodeName] = $child;
 
 	return $user_nodes;
+}
+
+function handle_login($user_data)
+{
+	echo "LOGIN_SUCCESS.";
+	echo "|";
+
+	foreach ($user_data as $key => $value)
+		echo $key . "$" . $user_data[$key]->nodeValue . "#";
+}
+
+function handle_get_users($xpath)
+{
 }
 
 
