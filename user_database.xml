@@ -13,11 +13,29 @@
   </user>-->
   <user>
     <username>beto</username>
-    <psswd>test123</psswd>
+    <psswd>a</psswd>
     <role>admin</role>
     <name>Alberto</name>
     <surname>Lladó Viader</surname>
     <email>alberto1llv@gmail.com</email>
     <tel>629790077</tel>
+  </user>
+  <user>
+    <username>izan</username>
+    <psswd>a</psswd>
+    <role>admin</role>
+    <name>Izan</name>
+    <surname>Sánchez</surname>
+    <email>email@deizan.com</email>
+    <tel>123456789</tel>
+  </user>
+  <user>
+    <username>ivan</username>
+    <psswd>a</psswd>
+    <role>default_</role>
+    <name>Iván</name>
+    <surname>Caridad</surname>
+    <email>email@deivan.com</email>
+    <tel>123456789</tel>
   </user>
 </users>

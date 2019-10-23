@@ -67,6 +67,15 @@ function handle_login($user_data)
 
 function handle_get_users($xpath)
 {
+	$userNodes = $xpath->query("/users/user");
+
+	foreach ($userNodes as $userNode)
+	{
+		foreach($userNode->childNodes as $child)
+			echo $child->nodeName . "$" . $child->nodeValue . "#";
+
+		echo "%";
+	}
 }
 
 
