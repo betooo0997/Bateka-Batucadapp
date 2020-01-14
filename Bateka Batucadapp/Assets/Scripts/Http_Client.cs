@@ -36,6 +36,7 @@ public class Http_Client: MonoBehaviour
 
             if (www.isNetworkError)
             {
+                Message.ShowMessage(www.error);
                 Debug.LogError(www.error);
             }
             else
@@ -48,6 +49,7 @@ public class Http_Client: MonoBehaviour
                 string response_header = sb.ToString();
                 string response_content = www.downloadHandler.text;
 
+                Debug.Log(response_content);
                 concludingMethod(response_content);
             }
         }

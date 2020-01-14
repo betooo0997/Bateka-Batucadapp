@@ -17,27 +17,32 @@ function sanitize_xml($databasePath)
 
 function handleRequest()
 {	
-    $databasePath = "wp-content/bateka_batukadapp/database/user_database.xml";
+    $databasePath = "wp-content/asambleapp/database/user_database.xml";
 
     $xmlDoc = new DOMDocument();
-    $xmlDoc->load($databasePath);
-    $xpath = new DomXpath($xmlDoc);
+    $success = $xmlDoc->load($databasePath);
 
-	$user_data = get_user_nodes($xpath);
-
-	if ($user_data != false && $user_data["psswd"]->nodeValue == $_POST['psswd'])
+	if ($success)
 	{
-		switch($_POST['REQUEST_TYPE'])
+		$xpath = new DomXpath($xmlDoc);
+
+		$user_data = get_user_nodes($xpath);
+
+		if ($user_data != false && $user_data["psswd"]->nodeValue == $_POST['psswd'])
 		{
-			case 'login':
-				handle_login($user_data);
-				break;
-			case 'get_users':
-				handle_get_users($xpath);
-				return;
+			echo "VERIFIED.|";
+
+			switch($_POST['REQUEST_TYPE'])
+			{
+				case 'get_data':
+					get_user_data($user_data, $xpath);
+					break;
+			}
 		}
+		else echo "WRONG_CREDENTIALS.";
+		return "NONE";
 	}
-	else echo "WRONG_CREDENTIALS.";
+	return "Couldn't load user_database.xml";	
 }
 
 function get_user_nodes($xpath)
@@ -56,17 +61,15 @@ function get_user_nodes($xpath)
 	return $user_nodes;
 }
 
-function handle_login($user_data)
+function get_user_data($user_data, $xpath)
 {
-	echo "LOGIN_SUCCESS.";
-	echo "|";
-
+	// Get own user data
 	foreach ($user_data as $key => $value)
 		echo $key . "$" . $user_data[$key]->nodeValue . "#";
-}
 
-function handle_get_users($xpath)
-{
+	echo "%";
+
+	// Get other user data
 	$userNodes = $xpath->query("/users/user");
 
 	foreach ($userNodes as $userNode)

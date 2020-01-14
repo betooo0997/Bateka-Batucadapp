@@ -13,9 +13,10 @@ public class Menu : MonoBehaviour
     {
         None,
         Home = 2,
-        Users,
-        Events,
         Polls,
+        Events,
+        Docs,
+        Users,
         Config,
         Users_own
     }
@@ -32,13 +33,16 @@ public class Menu : MonoBehaviour
     GameObject home_Button;
 
     [SerializeField]
-    GameObject user_Button;
+    GameObject polls_Button;
 
     [SerializeField]
     GameObject events_Button;
 
     [SerializeField]
-    GameObject polls_Button;
+    GameObject docs_Button;
+
+    [SerializeField]
+    GameObject user_Button;
 
     [SerializeField]
     GameObject config_Button;
@@ -52,7 +56,12 @@ public class Menu : MonoBehaviour
     void Start()
     {
         Load_Scene_Menu_Item(Menu_item.Home.ToString());
-        Message.ShowMessage("¡Hola " + User.Username + "!");
+        Message.ShowMessage("¡Hola " + User.User_Info.Username + "!");
+    }
+
+    public void Load_Scene_Menu_Item(Menu_item scene)
+    {
+        Load_Scene_Menu_Item(scene.ToString());
     }
 
     public void Load_Scene_Menu_Item(string scene_name)
@@ -102,20 +111,24 @@ public class Menu : MonoBehaviour
                 method(home_Button, new_alpha);
                 break;
 
-            case Menu_item.Users:
-                method(user_Button, new_alpha);
-                break;
-
-            case Menu_item.Users_own:
-                method(user_Button, new_alpha);
-                break;
-
             case Menu_item.Events:
                 method(events_Button, new_alpha);
                 break;
 
             case Menu_item.Polls:
                 method(polls_Button, new_alpha);
+                break;
+
+            case Menu_item.Docs:
+                method(docs_Button, new_alpha);
+                break;
+
+            case Menu_item.Users:
+                method(user_Button, new_alpha);
+                break;
+
+            case Menu_item.Users_own:
+                method(user_Button, new_alpha);
                 break;
 
             case Menu_item.Config:

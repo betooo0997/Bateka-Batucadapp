@@ -20,12 +20,14 @@ public class User_UI : MonoBehaviour
     [SerializeField]
     Text tel;
 
+    public static User.User_Information User_Shown;
+
     void Start()
     {
-        username.text = User.Username;
-        real_name.text = User.Name;
-        surname.text = User.Surname;
-        email.text = User.Email;
-        tel.text = User.Tel;
+        username.text = User_Shown.Username;
+        real_name.text = User_Shown.Name;
+        surname.text = User_Shown.Surname;
+        email.text = User_Shown.Email;
+        tel.text = User_Shown.Tel;
     }
 }

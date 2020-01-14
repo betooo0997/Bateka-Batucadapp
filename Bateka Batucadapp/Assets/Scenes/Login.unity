@@ -329,7 +329,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1942586822}
-        m_MethodName: Bateka_Login
+        m_MethodName: Send_Login_Request
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
