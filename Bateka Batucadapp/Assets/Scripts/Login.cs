@@ -11,6 +11,13 @@ public class Login : MonoBehaviour
     [SerializeField]
     InputField password;
 
+    public static Login Singleton;
+
+    void Awake()
+    {
+        Singleton = this;
+    }
+
     public void Send_Login_Request()
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
@@ -21,6 +28,11 @@ public class Login : MonoBehaviour
 
     void Handle_Login_Response(string response)
     {
+        Parse_Login_Data(response, true);
+    }
+
+    public void Parse_Login_Data(string response, bool save = false)
+    {
         string[] tokens = response.Split('|');
         string[] tokens_error = response.Split('*');
 
@@ -28,6 +40,12 @@ public class Login : MonoBehaviour
         {
             Load_Scene.Load_Scene_ST("Menu");
             User.Handle_User_Data(tokens[1]);
+
+            if (save)
+                DataSaver.Save_Database("user_database", response);
+
+            else if (PlayerPrefs.HasKey("user_database_timestamp"))
+                Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));
         }
 
         else if (tokens_error.Length > 1 && tokens_error[tokens_error.Length - 2] == "ERROR 500")

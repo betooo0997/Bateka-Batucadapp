@@ -7,6 +7,7 @@ public class Utils : MonoBehaviour
     public void Logout()
     {
         User.User_Info = new User.User_Information { Username = "" };
+        PlayerPrefs.DeleteAll();
         Load_Scene.Load_Scene_ST("Login", false);
     }
 

@@ -126,12 +126,15 @@ function get_poll_data()
 				$comments = $child->childNodes;
 
 				foreach ($comments as $comment)
+				{
 					foreach ($comment->childNodes as $data)
 						echo $data->nodeName . '^' . $data->nodeValue . '~';
-
-				echo '#';
+					echo '#';
+				}
 			}
 		}
+
+		echo '_PDBEND_';
 	}
 
 	echo '|';
