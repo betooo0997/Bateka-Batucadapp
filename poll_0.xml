@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<poll>
+  <id>0</id>
+  <title>Prueba</title>
+  <subtitle>Esto es una prueba chachi</subtitle>
+  <description>Esto es la información detallada de la primera encuesta de Batekapp. Es muy guay y blablabla.</description>
+  <creation_time></creation_time>
+  <author>beto</author>
+  <privacy>public</privacy>
+  <favour>0</favour>
+  <abstention>0</abstention>
+  <opposed>0</opposed>
+  <blank>0</blank>
+  <comments>
+    <comment>
+      <author>asdasd</author>
+      <data>123123</data>
+    </comment>
+  </comments>
+</poll>

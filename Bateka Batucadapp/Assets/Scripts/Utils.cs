@@ -14,4 +14,19 @@ public class Utils : MonoBehaviour
     {
         Menu.Singleton.Load_Scene_Menu_Item(scene);
     }
+
+    public static string[] Split(string to_split, string[] splitter)
+    {
+        return to_split.Split(splitter, System.StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public static string[] Split(string to_split, string splitter)
+    {
+        return to_split.Split(new string[] { splitter }, System.StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public static string[] Split(string to_split, char splitter)
+    {
+        return to_split.Split(new char[] { splitter }, System.StringSplitOptions.RemoveEmptyEntries);
+    }
 }

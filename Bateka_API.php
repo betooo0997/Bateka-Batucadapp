@@ -10,14 +10,13 @@ Template Name: Bateka API
  *
  * @package Storefront
  */
-    include "wp-content/asambleapp/apifunctions.php";
-
     if(isset($_POST['API_USER']) && isset($_POST['API_PASSWORD']))
     {
         if($_POST['API_USER'] == 'USER' && $_POST['API_PASSWORD'] == '8420b25f4c1ad7ac906364ee943a7bef')
         {
 			try 
 			{
+				require "wp-content/asambleapp/batekapp/apifunctions.php";
 				$internal_error = handleRequest();
 			} 
 			catch (Exception $e) 

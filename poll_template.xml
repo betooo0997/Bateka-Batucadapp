@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<poll>
+  <id></id>
+  <title></title>
+  <subtitle></subtitle>
+  <description></description>
+  <creation_time></creation_time>
+  <author></author><!--username-->
+  <privacy></privacy><!--public(every vote) | private(vote results without names) | anonymous(no information)-->
+  <favour>0</favour>
+  <abstention>0</abstention>
+  <opposed>0</opposed>
+  <blank>0</blank>
+  <comments>
+    <comment>
+      <author></author>
+      <data></data>
+    </comment>
+  </comments>
+</poll>

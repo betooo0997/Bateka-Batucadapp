@@ -1,5 +1,7 @@
 <?php
 
+include "wp-content/asambleapp/utils.php";
+
 function sanitize_xml($databasePath)
 {
     $xmlcontent = htmlentities(file_get_contents($databasePath));
@@ -17,15 +19,11 @@ function sanitize_xml($databasePath)
 
 function handleRequest()
 {	
-    $databasePath = "wp-content/asambleapp/database/user_database.xml";
+    $databasePath = "wp-content/asambleapp/batekapp/database/user_database.xml";
+	$xpath = utils_get_xpath($databasePath);
 
-    $xmlDoc = new DOMDocument();
-    $success = $xmlDoc->load($databasePath);
-
-	if ($success)
+	if ($xpath != false)
 	{
-		$xpath = new DomXpath($xmlDoc);
-
 		$user_data = get_user_nodes($xpath);
 
 		if ($user_data != false && $user_data["psswd"]->nodeValue == $_POST['psswd'])
@@ -35,7 +33,15 @@ function handleRequest()
 			switch($_POST['REQUEST_TYPE'])
 			{
 				case 'get_data':
-					get_user_data($user_data, $xpath);
+					return get_user_data($user_data, $xpath);
+					break;
+
+				case 'get_polls':
+					return get_poll_data();
+					break;
+
+				default:
+					echo 'REQUEST_TYPE' . $_POST['REQUEST_TYPE'] . 'not understood';
 					break;
 			}
 		}
@@ -79,6 +85,57 @@ function get_user_data($user_data, $xpath)
 
 		echo "%";
 	}
+
+	return "NONE";
+}
+
+function get_poll_data()
+{
+	$files = scandir("wp-content/asambleapp/batekapp/database/polls");
+	$files_output = [];
+
+	foreach ($files as $file)
+	{
+		if (strlen($file) >= 10 && strlen($file) <= 14)
+		{
+			$files_output[] = $file;
+
+			if (count($files_output) >= 5)
+				break;
+		}
+	}
+
+	foreach ($files_output as $file)
+	{
+		$pollDatabasePath = "wp-content/asambleapp/batekapp/database/polls/" . $file;
+		$xpath = utils_get_xpath($pollDatabasePath);
+
+		if ($xpath == false)
+			return "Couldn't load user_database.xml";
+
+		$rootNode = $xpath->query("/poll")[0];
+		$poll_nodes = [];
+
+		foreach ($rootNode->childNodes as $child)
+		{
+			if ($child->nodeName != 'comments')
+				echo $child->nodeName . '$' . $child->nodeValue . '#';
+			else
+			{
+				echo '\COMMENTS';
+				$comments = $child->childNodes;
+
+				foreach ($comments as $comment)
+					foreach ($comment->childNodes as $data)
+						echo $data->nodeName . '^' . $data->nodeValue . '~';
+
+				echo '#';
+			}
+		}
+	}
+
+	echo '|';
+	return "NONE";
 }
 
 
