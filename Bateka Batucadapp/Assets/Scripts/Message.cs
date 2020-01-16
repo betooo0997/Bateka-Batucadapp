@@ -52,7 +52,7 @@ public class Message : MonoBehaviour
     public static void ShowMessage(string message)
     {
         if (active)
-            Login.Singleton.StartCoroutine(ShowMessageDelayed(message));
+            Initializer.Singleton.StartCoroutine(ShowMessageDelayed(message));
         else
         {
             active = true;

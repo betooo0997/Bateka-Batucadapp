@@ -11,18 +11,10 @@ public class Login : MonoBehaviour
     [SerializeField]
     InputField password;
 
-    public static Login Singleton;
-
-    void Awake()
-    {
-        Singleton = this;
-    }
-
     public void Send_Login_Request()
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_data", user.text, password.text };
-
         Http_Client.Send_Post(field_names, field_values, Handle_Login_Response);
     }
 
@@ -31,7 +23,7 @@ public class Login : MonoBehaviour
         Parse_Login_Data(response, true);
     }
 
-    public void Parse_Login_Data(string response, bool save = false)
+    public static void Parse_Login_Data(string response, bool save = false)
     {
         string[] tokens = response.Split('|');
         string[] tokens_error = response.Split('*');

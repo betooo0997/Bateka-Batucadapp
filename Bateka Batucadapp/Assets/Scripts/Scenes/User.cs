@@ -23,6 +23,7 @@ public class User : MonoBehaviour
     [System.Serializable]
     public struct User_Information
     {
+        public uint Id;
         public string Username;
         public string Psswd;
         public User_Role Role;
@@ -67,6 +68,10 @@ public class User : MonoBehaviour
 
                 switch (elements[0])
                 {
+                    case "id":
+                        new_User.Id = uint.Parse(elements[1]);
+                        break;
+
                     case "username":
                         new_User.Username = elements[1];
                         break;
@@ -104,17 +109,29 @@ public class User : MonoBehaviour
 
     public void Show_Add_User_Info(string user_to_show)
     {
-        User_UI.User_Shown = Get_User_By_Name(user_to_show);
+        User_UI.User_Shown = Get_User(user_to_show);
         Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Users_own);
     }
 
-    User_Information Get_User_By_Name(string username)
+    public static User_Information Get_User(string username)
     {
         if (User_Info.Username == username)
             return User_Info;
 
         foreach(User_Information user_info in Users_Info)
             if (user_info.Username == username)
+                return user_info;
+
+        return new User_Information();
+    }
+
+    public static User_Information Get_User(uint id)
+    {
+        if (User_Info.Id == id)
+            return User_Info;
+
+        foreach (User_Information user_info in Users_Info)
+            if (user_info.Id == id)
                 return user_info;
 
         return new User_Information();

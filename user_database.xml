@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <users>
   <!--<user>
+    <id>0</id>
     <username></username>
     <psswd></psswd>
     <role>admin / default_</role>
@@ -12,6 +13,7 @@
     </data>
   </user>-->
   <user>
+    <id>1</id>
     <username>beto</username>
     <psswd>a</psswd>
     <role>admin</role>
@@ -21,6 +23,7 @@
     <tel>629790077</tel>
   </user>
   <user>
+    <id>2</id>
     <username>izan</username>
     <psswd>a</psswd>
     <role>admin</role>
@@ -30,6 +33,7 @@
     <tel>123456789</tel>
   </user>
   <user>
+    <id>3</id>
     <username>ivan</username>
     <psswd>a</psswd>
     <role>default_</role>
