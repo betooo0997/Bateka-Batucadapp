@@ -19,15 +19,15 @@ function handleRequest()
 			{
 				case 'get_data':
 					return get_user_data($user_data, $xpath);
-					break;
 
 				case 'get_polls':
 					return get_poll_data();
-					break;
 
 				case 'set_poll_vote':
 					return set_poll_vote($user_data);
-					break;
+
+				case 'set_poll':
+					return set_poll();
 
 				default:
 					echo 'REQUEST_TYPE' . $_POST['REQUEST_TYPE'] . 'not understood';
@@ -80,19 +80,25 @@ function get_user_data($user_data, $xpath)
 
 function get_poll_data()
 {
-	$files = scandir("wp-content/asambleapp/batekapp/database/polls");
 	$files_output = [];
 
-	foreach ($files as $file)
+	if (!isset($_POST['vote_poll_id']))
 	{
-		if (strlen($file) >= 10 && strlen($file) <= 14)
-		{
-			$files_output[] = $file;
+		$files = scandir("wp-content/asambleapp/batekapp/database/polls");
 
-			if (count($files_output) >= 5)
-				break;
+		foreach ($files as $file)
+		{
+			if (strlen($file) >= 10 && strlen($file) <= 14)
+			{
+				$files_output[] = $file;
+
+				if (count($files_output) >= 5)
+					break;
+			}
 		}
 	}
+	else
+		$files_output[] = "poll_" . $_POST['vote_poll_id'] . ".xml";
 
 	foreach ($files_output as $file)
 	{
@@ -107,19 +113,33 @@ function get_poll_data()
 
 		foreach ($rootNode->childNodes as $child)
 		{
-			if ($child->nodeName != 'comments')
-				echo $child->nodeName . '$' . $child->nodeValue . '#';
-			else
+			switch($child->nodeName)
 			{
-				echo '\COMMENTS';
-				$comments = $child->childNodes;
+				default:
+					echo $child->nodeName . '$' . $child->nodeValue . '#';
+					break;
 
-				foreach ($comments as $comment)
-				{
-					foreach ($comment->childNodes as $data)
-						echo $data->nodeName . '^' . $data->nodeValue . '~';
+				case 'options':
+					echo 'options$';
+					$options = $child->childNodes;
+
+					foreach ($options as $option)
+						echo $option->nodeName . '@' . $option->nodeValue . '+';
+
 					echo '#';
-				}
+					break;
+
+				case 'comments':
+					echo '\COMMENTS';
+					$comments = $child->childNodes;
+
+					foreach ($comments as $comment)
+					{
+						foreach ($comment->childNodes as $data)
+							echo $data->nodeName . '^' . $data->nodeValue . '~';
+						echo '#';
+					}
+					break;
 			}
 		}
 
@@ -130,6 +150,7 @@ function get_poll_data()
 	return 'NONE';
 }
 
+// Removes an user_id from a vote list. (E.g. "1,2,3,4" -> user_id = 2 -> "1,3,4")
 function remove_vote($votes, $vote_to_remove)
 {
 	$votes = str_replace($vote_to_remove, "", $votes);
@@ -147,7 +168,7 @@ function remove_vote($votes, $vote_to_remove)
 function set_poll_vote($user_data)
 {
 	$user_id = $user_data['id']->nodeValue;
-	$pollDatabasePath = "wp-content/asambleapp/batekapp/database/polls/poll_" . $_POST['vote_pollid'] . ".xml";
+	$pollDatabasePath = "wp-content/asambleapp/batekapp/database/polls/poll_" . $_POST['vote_poll_id'] . ".xml";
 
 	$xdata = utils_get_xpath($pollDatabasePath);
 
@@ -157,28 +178,23 @@ function set_poll_vote($user_data)
 	$xmlDoc = $xdata[0];
 	$xpath = $xdata[1];
 
-	if ($_POST['vote_type'] != 'favour' && $_POST['vote_type'] != 'abstention' 
-	&& $_POST['vote_type'] != 'opposed' && $_POST['vote_type'] != 'blank')
-		return "Vote type not recognized";
+	$user_vote_node = $xpath->query("/poll/options/" . $_POST['vote_type']);
+
+	if ($user_vote_node->length != 1)
+		return "Vote type '" . $_POST['vote_type'] . "' not recognized";
+
+	$user_vote_node = $user_vote_node[0];
 
 	// Removing previous vote if existent
-	$favour_node		= $xpath->query("/poll/favour")[0];
-	$abstention_node	= $xpath->query("/poll/abstention")[0];
-	$opposed_node		= $xpath->query("/poll/opposed")[0];
-	$blank_node			= $xpath->query("/poll/blank")[0];
+	$options_node = $xpath->query("/poll/options")[0];
 
-	$favour_content		= remove_vote($favour_node->nodeValue, $user_id);
-	$abstention_content	= remove_vote($abstention_node->nodeValue, $user_id);
-	$opposed_content	= remove_vote($opposed_node->nodeValue, $user_id);
-	$blank_content		= remove_vote($blank_node->nodeValue, $user_id);
-
-	$favour_node->nodeValue		= $favour_content;
-	$abstention_node->nodeValue = $abstention_content;
-	$opposed_node->nodeValue	= $opposed_content;
-	$blank_node->nodeValue		= $blank_content;
+	foreach ($options_node->childNodes as $option_node)
+	{
+		$option_node_content = remove_vote($option_node->nodeValue, $user_id);
+		$option_node->nodeValue = $option_node_content;
+	}
 
 	// Add new vote
-	$user_vote_node			= $xpath->query("/poll/" . $_POST['vote_type'])[0];
 	$user_vote_node_content = $user_vote_node->nodeValue;
 
 	if (strlen($user_vote_node_content) > 0) $user_vote_node_content .= ',';
@@ -186,6 +202,12 @@ function set_poll_vote($user_data)
 
 	$user_vote_node->nodeValue = $user_vote_node_content;
 	$xmlDoc->save($pollDatabasePath);
+	return get_poll_data();
+}
+
+function set_poll()
+{
+	echo $_POST['poll_id'] . $_POST['poll_data'];
 	return 'NONE';
 }
 

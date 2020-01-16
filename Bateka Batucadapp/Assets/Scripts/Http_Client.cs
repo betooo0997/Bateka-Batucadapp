@@ -37,7 +37,7 @@ public class Http_Client: MonoBehaviour
             if (www.isNetworkError)
             {
                 Message.ShowMessage(www.error);
-                Debug.LogError(www.error);
+                Debug.LogWarning(www.error);
             }
             else
             {
