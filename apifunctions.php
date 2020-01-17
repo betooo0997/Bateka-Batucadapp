@@ -124,7 +124,7 @@ function get_poll_data()
 					$options = $child->childNodes;
 
 					foreach ($options as $option)
-						echo $option->nodeName . '@' . $option->nodeValue . '+';
+						echo $option->nodeName . '@,' . $option->nodeValue . '+';
 
 					echo '#';
 					break;

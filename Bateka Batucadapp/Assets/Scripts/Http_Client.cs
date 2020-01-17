@@ -16,16 +16,22 @@ public class Http_Client: MonoBehaviour
         Singleton = this;
     }
 
-    public static void Send_Post(string[] field_name, string[] field_value, Action<string> concludingMethod)
+    public static void Send_Post(string[] field_name, string[] field_value, Action<string> concludingMethod, bool add_user_credentials = true)
     {
-        Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod));
+        Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod, add_user_credentials));
     }
 
-    IEnumerator Send_Post_Coroutine(string[] field_name, string[] field_value, Action<string> concludingMethod)
+    IEnumerator Send_Post_Coroutine(string[] field_name, string[] field_value, Action<string> concludingMethod, bool add_user_credentials)
     {
         WWWForm form = new WWWForm();
         form.AddField("API_USER", "USER");
         form.AddField("API_PASSWORD", "8420b25f4c1ad7ac906364ee943a7bef");
+
+        if (add_user_credentials)
+        {
+            form.AddField("username", User.User_Info.Username);
+            form.AddField("psswd", User.User_Info.Psswd);
+        }
 
         for (int x = 0; x < field_name.Length; x++)
             form.AddField(field_name[x], field_value[x]);

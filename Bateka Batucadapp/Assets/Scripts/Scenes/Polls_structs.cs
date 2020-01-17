@@ -1,15 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class Poll
 {
+    public Poll_Type Type;
     public uint Id;
     public string Title;
     public string Subtitle;
     public string Description;
     public string Creation_time;
+    public string Expiration_time;
     public string Author;
     public string Privacy;
     public List<List<User.User_Information>> Vote_Voters;
@@ -25,6 +28,7 @@ public class Poll
         result += "<subtitle>" + Subtitle + @"</subtitle>";
         result += "<description>" + Description + @"</description>";
         result += "<creation_time>" + Creation_time + @"</creation_time>";
+        result += "<expiration_time>" + Expiration_time + @"</expiration_time>";
         result += "<author>" + Author + @"</author>";
         result += "<privacy>" + Privacy + @"</privacy>";
 
@@ -48,6 +52,25 @@ public class Poll
 
         return result + "</" + nodeName + ">";
     }
+
+    public Poll()
+    {
+        Creation_time = DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm") + "h";
+    }
+}
+
+public enum Poll_Type
+{
+    Yes_No,
+    Other
+}
+
+public enum Poll_Status
+{
+    Not_answered,
+    Affirmed,
+    Rejected,
+    Other
 }
 
 [System.Serializable]

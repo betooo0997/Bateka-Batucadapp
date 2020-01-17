@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <poll>
-  <id>1</id>
-  <title>Prueba2</title>
-  <subtitle>Esto es una prueba chachi2</subtitle>
-  <description>Esto es la información detallada de la primera encuesta de Batekapp. Es muy guay y blablabla2.</description>
-  <creation_time></creation_time>
-  <author>ivan</author>
-  <privacy>private</privacy>
-  <favour>0</favour>
-  <abstention>1</abstention>
-  <opposed>0</opposed>
-  <blank>0</blank>
+  <id>0</id>
+  <title>Prueba</title>
+  <subtitle>Esto es una prueba chachi</subtitle>
+  <description>Esto es la información detallada de la primera encuesta de Batekapp. Es muy guay y blablabla.</description>
+  <creation_time/>
+  <author>beto</author>
+  <privacy>public</privacy>
+  <options>
+    <affirmations>3</affirmations>
+    <rejections></rejections>
+  </options>
   <comments>
     <comment>
-      <author>izan</author>
-      <content>uala q xaxi</content>
-    </comment>
-    <comment>
-      <author>aitor</author>
-      <content>mah</content>
+      <author>ivan</author>
+      <content>diosssss</content>
     </comment>
     <comment>
       <author>yael</author>
-      <content>nut bad</content>
+      <content>OMG</content>
+    </comment>
+    <comment>
+      <author>aitor</author>
+      <content>pffff</content>
     </comment>
   </comments>
 </poll>

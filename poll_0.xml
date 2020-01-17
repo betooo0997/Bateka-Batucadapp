@@ -8,8 +8,9 @@
   <author>beto</author>
   <privacy>public</privacy>
   <options>
-    <a>1</a>
+    <a>2</a>
     <b>3</b>
+    <c></c>
   </options>
   <comments>
     <comment>

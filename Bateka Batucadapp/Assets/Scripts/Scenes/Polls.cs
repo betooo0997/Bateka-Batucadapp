@@ -11,16 +11,49 @@ public class Polls : MonoBehaviour
     public static List<Poll> Poll_List;
     public List<Poll> Ppoll_List;
 
+    [SerializeField]
+    GameObject poll_UI_prefab;
+
+    [SerializeField]
+    Transform poll_UI_parent;
+
+
+
+    // ______________________________________
+    //
+    // 1. MONOBEHAVIOUR LIFE CYCLE.
+    // ______________________________________
+    //
+
+
     void Start()
     {
         if (!PlayerPrefs.HasKey("poll_database"))
         {
-            string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
-            string[] field_values = { "get_polls", User.User_Info.Username, User.User_Info.Psswd };
+            string[] field_names = { "REQUEST_TYPE" };
+            string[] field_values = { "get_polls" };
             Http_Client.Send_Post(field_names, field_values, Handle_Poll_Response);
         }
         Ppoll_List = Poll_List;
     }
+
+    private void Update()
+    {
+        if (Poll_List.Count > 0)
+        {
+            Spawn_Poll_UIs();
+            enabled = false;
+        }
+    }
+
+
+
+    // ______________________________________
+    //
+    // 2. PARSE POLL DATABASE(S).
+    // ______________________________________
+    //
+
 
     /// <summary>
     /// Called on server response.
@@ -29,24 +62,6 @@ public class Polls : MonoBehaviour
     {
         Parse_Poll_Data(response, true);
         Ppoll_List = Poll_List;
-    }
-
-    /// <summary>
-    /// Get list of users from a data string.
-    /// </summary>
-    static List<User.User_Information> Get_Voters(string data)
-    {
-        string[] user_ids = Utils.Split(data, ',');
-        List<User.User_Information> vote_list = new List<User.User_Information>();
-
-        foreach (string user_id in user_ids)
-        {
-            User.User_Information voter = User.Get_User(uint.Parse(user_id));
-            if (voter.Id != 0)
-                vote_list.Add(voter);
-        }
-
-        return vote_list;
     }
 
     /// <summary>
@@ -69,11 +84,12 @@ public class Polls : MonoBehaviour
 
         // Separate each database to parse it individually. (E.g. "*database_1*_PDBEND_*database_2*")
         foreach (string poll in Utils.Split(data, "_PDBEND_"))
-        {
             Poll_List.Add(Parse_Single_Poll_Data(poll));
-        }
     }
 
+    /// <summary>
+    /// Parses a single poll database.
+    /// </summary>
     static Poll Parse_Single_Poll_Data(string poll_data)
     {
         poll_data = poll_data.Replace("_PDBEND_", "");
@@ -167,13 +183,40 @@ public class Polls : MonoBehaviour
     }
 
     /// <summary>
+    /// Get list of users from a data string.
+    /// </summary>
+    static List<User.User_Information> Get_Voters(string data)
+    {
+        string[] user_ids = Utils.Split(data, ',');
+        List<User.User_Information> vote_list = new List<User.User_Information>();
+
+        foreach (string user_id in user_ids)
+        {
+            User.User_Information voter = User.Get_User(uint.Parse(user_id));
+            if (voter.Id != 0)
+                vote_list.Add(voter);
+        }
+
+        return vote_list;
+    }
+
+
+
+    // ______________________________________
+    //
+    // 3. VOTE ON POLLS.
+    // ______________________________________
+    //
+
+
+    /// <summary>
     /// Updates user's choice of vote locally on the device and remotely on the server.
     /// </summary>
     public void Vote(uint poll_id, string vote_type)
     {
         Debug.Log("Voting");
-        string[] field_names = { "REQUEST_TYPE", "username", "psswd", "vote_poll_id", "vote_type" };
-        string[] field_values = { "set_poll_vote", User.User_Info.Username, User.User_Info.Psswd, poll_id.ToString(), vote_type };
+        string[] field_names = { "REQUEST_TYPE", "vote_poll_id", "vote_type" };
+        string[] field_values = { "set_poll_vote", poll_id.ToString(), vote_type };
         Http_Client.Send_Post(field_names, field_values, Handle_Vote_Response);
     }
 
@@ -197,34 +240,72 @@ public class Polls : MonoBehaviour
         Message.ShowMessage("Base de datos actualizada con éxito.");
     }
 
+
+
+    // ______________________________________
+    //
+    // 4. UPDATE (OR CREATE) POLLS BY ADMIN.
+    // ______________________________________
+    //
+
+
     public void Update_Poll(Poll poll)
     {
         Debug.Log("Updating Poll");
-        string[] field_names = { "REQUEST_TYPE", "username", "psswd", "poll_id", "poll_data" };
-        string[] field_values = { "set_poll", User.User_Info.Username, User.User_Info.Psswd, poll.Id.ToString(), poll.Convert_To_String() };
+        string[] field_names = { "REQUEST_TYPE", "poll_id", "poll_data" };
+        string[] field_values = { "set_poll", poll.Id.ToString(), poll.Convert_To_String() };
         Http_Client.Send_Post(field_names, field_values, Handle_Poll_Update_Response);
     }
 
     void Handle_Poll_Update_Response(string response)
     {
-
     }
 
-    private void Update()
+
+
+    // ______________________________________
+    //
+    // 5. HANDLE UI.
+    // ______________________________________
+    //
+
+
+    /// <summary>
+    /// Spawns all Poll_UI elements.
+    /// </summary>
+    void Spawn_Poll_UIs()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            Vote(0, "a");
+        foreach (Poll poll in Poll_List)
+        {
+            GameObject new_Poll = Instantiate(poll_UI_prefab, poll_UI_parent);
+            new_Poll.name = "Poll_" + poll.Id;
 
-        if (Input.GetKeyDown(KeyCode.B))
-            Vote(0, "b");
+            Poll_Type type = Poll_Type.Yes_No;
+            Poll_Status status = Poll_Status.Not_answered;
 
-        if (Input.GetKeyDown(KeyCode.C))
-            Vote(0, "c");
+            if (poll.Vote_Voters.Count > 2)
+            {
+                type = Poll_Type.Other;
 
-        if (Input.GetKeyDown(KeyCode.D))
-            Vote(0, "dddddddddd");
+                foreach (List<User.User_Information> voters_in_specific_option in poll.Vote_Voters)
+                    foreach (User.User_Information voter in voters_in_specific_option)
+                        if (voter.Id == User.User_Info.Id)
+                            status = Poll_Status.Other;
+            }
+            else if (poll.Vote_Voters.Count == 2)
+            {
+                foreach (User.User_Information voter in poll.Vote_Voters[0])
+                    if (voter.Id == User.User_Info.Id)
+                        status = Poll_Status.Affirmed;
 
-        if (Input.GetKeyDown(KeyCode.P))
-            Update_Poll(Poll_List[0]);
+                foreach (User.User_Information voter in poll.Vote_Voters[1])
+                    if (voter.Id == User.User_Info.Id)
+                        status = Poll_Status.Rejected;
+            }
+            else
+                Debug.LogError("No options detected.");
+
+            new_Poll.GetComponent<Poll_UI>().Set_Values(poll.Id, poll.Title, poll.Expiration_time, status, type);
+        }
     }
 }
