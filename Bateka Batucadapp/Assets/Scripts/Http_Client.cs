@@ -18,6 +18,12 @@ public class Http_Client: MonoBehaviour
 
     public static void Send_Post(string[] field_name, string[] field_value, Action<string> concludingMethod, bool add_user_credentials = true)
     {
+        string data = "";
+
+        for (int x = 0; x < field_name.Length; x++)
+            data += field_name[x] + ": " + field_value[x] + "\n";
+
+        Debug.Log("Sending HTTP Request:\n" + data);
         Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod, add_user_credentials));
     }
 

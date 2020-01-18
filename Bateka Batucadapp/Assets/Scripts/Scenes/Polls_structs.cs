@@ -7,6 +7,7 @@ using UnityEngine;
 public class Poll
 {
     public Poll_Type Type;
+    public Poll_Status Status;
     public uint Id;
     public string Title;
     public string Subtitle;

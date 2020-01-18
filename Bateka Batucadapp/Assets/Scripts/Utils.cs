@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Utils : MonoBehaviour
 {
+    public static Utils Singleton;
+
+    private void Awake()
+    {
+        Singleton = this;
+    }
+
     public void Logout()
     {
         User.User_Info = new User.User_Information { Username = "" };

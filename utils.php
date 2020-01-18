@@ -12,6 +12,21 @@ function utils_get_xpath($xml_filepath)
 	else return [false, false];
 }
 
+function set_lock($status)
+{
+	$file_w = fopen('wp-content/asambleapp/batekapp/database/lock', 'w');
+	fwrite ($file_w, $status);
+	fclose($file_w);
+}
+
+function return_error($message, $unlock = true)
+{
+	if($unlock)
+		set_lock('0');
+
+	return $message;
+}
+
 function sanitize_xml($databasePath)
 {
     $xmlcontent = htmlentities(file_get_contents($databasePath));

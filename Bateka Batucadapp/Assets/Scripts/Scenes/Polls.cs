@@ -11,6 +11,8 @@ public class Polls : MonoBehaviour
     public static List<Poll> Poll_List;
     public List<Poll> Ppoll_List;
 
+    public static Poll Selected_Poll;
+
     [SerializeField]
     GameObject poll_UI_prefab;
 
@@ -90,8 +92,11 @@ public class Polls : MonoBehaviour
     /// <summary>
     /// Parses a single poll database.
     /// </summary>
-    static Poll Parse_Single_Poll_Data(string poll_data)
+    public static Poll Parse_Single_Poll_Data(string poll_data)
     {
+        if (poll_data.Contains("|"))
+            poll_data = Utils.Split(poll_data, '|')[1];
+
         poll_data = poll_data.Replace("_PDBEND_", "");
 
         // Separate information and comment section from database.
@@ -179,6 +184,35 @@ public class Polls : MonoBehaviour
             newPoll.Comments.Add(newComment);
         }
 
+        // Set Poll Type and Poll Status.
+        Poll_Type type = Poll_Type.Yes_No;
+        Poll_Status status = Poll_Status.Not_answered;
+
+        if (newPoll.Vote_Voters.Count > 2)
+        {
+            type = Poll_Type.Other;
+
+            foreach (List<User.User_Information> voters_in_specific_option in newPoll.Vote_Voters)
+                foreach (User.User_Information voter in voters_in_specific_option)
+                    if (voter.Id == User.User_Info.Id)
+                        status = Poll_Status.Other;
+        }
+        else if (newPoll.Vote_Voters.Count == 2)
+        {
+            foreach (User.User_Information voter in newPoll.Vote_Voters[0])
+                if (voter.Id == User.User_Info.Id)
+                    status = Poll_Status.Affirmed;
+
+            foreach (User.User_Information voter in newPoll.Vote_Voters[1])
+                if (voter.Id == User.User_Info.Id)
+                    status = Poll_Status.Rejected;
+        }
+        else
+            Debug.LogError("No options detected.");
+
+        newPoll.Status = status;
+        newPoll.Type = type;
+
         return newPoll;
     }
 
@@ -204,47 +238,7 @@ public class Polls : MonoBehaviour
 
     // ______________________________________
     //
-    // 3. VOTE ON POLLS.
-    // ______________________________________
-    //
-
-
-    /// <summary>
-    /// Updates user's choice of vote locally on the device and remotely on the server.
-    /// </summary>
-    public void Vote(uint poll_id, string vote_type)
-    {
-        Debug.Log("Voting");
-        string[] field_names = { "REQUEST_TYPE", "vote_poll_id", "vote_type" };
-        string[] field_values = { "set_poll_vote", poll_id.ToString(), vote_type };
-        Http_Client.Send_Post(field_names, field_values, Handle_Vote_Response);
-    }
-
-    /// <summary>
-    /// Called on server response.
-    /// </summary>
-    void Handle_Vote_Response(string response)
-    {
-        Poll updated_poll = Parse_Single_Poll_Data(response);
-
-        for (int x = 0; x < Poll_List.Count; x++)
-        {
-            if (Poll_List[x].Id == updated_poll.Id)
-            {
-                Poll_List[x] = updated_poll;
-                break;
-            }
-        }
-
-        Ppoll_List = Poll_List;
-        Message.ShowMessage("Base de datos actualizada con éxito.");
-    }
-
-
-
-    // ______________________________________
-    //
-    // 4. UPDATE (OR CREATE) POLLS BY ADMIN.
+    // 3. UPDATE (OR CREATE) POLLS BY ADMIN.
     // ______________________________________
     //
 
@@ -265,7 +259,7 @@ public class Polls : MonoBehaviour
 
     // ______________________________________
     //
-    // 5. HANDLE UI.
+    // 4. HANDLE UI.
     // ______________________________________
     //
 
@@ -279,33 +273,7 @@ public class Polls : MonoBehaviour
         {
             GameObject new_Poll = Instantiate(poll_UI_prefab, poll_UI_parent);
             new_Poll.name = "Poll_" + poll.Id;
-
-            Poll_Type type = Poll_Type.Yes_No;
-            Poll_Status status = Poll_Status.Not_answered;
-
-            if (poll.Vote_Voters.Count > 2)
-            {
-                type = Poll_Type.Other;
-
-                foreach (List<User.User_Information> voters_in_specific_option in poll.Vote_Voters)
-                    foreach (User.User_Information voter in voters_in_specific_option)
-                        if (voter.Id == User.User_Info.Id)
-                            status = Poll_Status.Other;
-            }
-            else if (poll.Vote_Voters.Count == 2)
-            {
-                foreach (User.User_Information voter in poll.Vote_Voters[0])
-                    if (voter.Id == User.User_Info.Id)
-                        status = Poll_Status.Affirmed;
-
-                foreach (User.User_Information voter in poll.Vote_Voters[1])
-                    if (voter.Id == User.User_Info.Id)
-                        status = Poll_Status.Rejected;
-            }
-            else
-                Debug.LogError("No options detected.");
-
-            new_Poll.GetComponent<Poll_UI>().Set_Values(poll.Id, poll.Title, poll.Expiration_time, status, type);
+            new_Poll.GetComponent<Poll_UI>().Set_Values(poll);
         }
     }
 }

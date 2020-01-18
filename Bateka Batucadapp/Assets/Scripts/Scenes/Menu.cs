@@ -18,7 +18,8 @@ public class Menu : MonoBehaviour
         Docs,
         Users,
         Config,
-        Users_own
+        Users_own,
+        Poll_details_yes_no
     }
 
     float alpha_selected;
@@ -77,11 +78,11 @@ public class Menu : MonoBehaviour
             scenes[x] = SceneManager.GetSceneAt(x);
 
         // Check if scene_name is a Menu_item.
-        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Users_own; x++)
+        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Poll_details_yes_no; x++)
         {
             if (scene == (Menu.Menu_item)x)
             {
-                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Users_own; y++)
+                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Poll_details_yes_no; y++)
                 {
                     if (y == x) continue;
 
@@ -116,6 +117,10 @@ public class Menu : MonoBehaviour
                 break;
 
             case Menu_item.Polls:
+                method(polls_Button, new_alpha);
+                break;
+
+            case Menu_item.Poll_details_yes_no:
                 method(polls_Button, new_alpha);
                 break;
 

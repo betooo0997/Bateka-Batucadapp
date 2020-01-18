@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <poll>
-  <id>0</id>
-  <title>Prueba</title>
+  <id>1</id>
+  <title>Prueba2</title>
   <subtitle>Esto es una prueba chachi</subtitle>
-  <description>Esto es la información detallada de la primera encuesta de Batekapp. Es muy guay y blablabla.</description>
+  <description>Esto es la información detallada de la segunda encuesta de Batekapp. Es muy guay y blablabla.</description>
   <creation_time/>
   <author>beto</author>
   <privacy>public</privacy>
   <options>
-    <affirmations>3</affirmations>
-    <rejections></rejections>
+    <affirmation>3</affirmation>
+    <rejection>1</rejection>
   </options>
   <comments>
     <comment>
