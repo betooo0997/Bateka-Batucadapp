@@ -167,11 +167,13 @@ function remove_vote($votes, $vote_to_remove)
 
 function set_poll_vote($user_data)
 {
+	$lock_path = 'wp-content/asambleapp/batekapp/database/polls/polls_lock';
+
 	// Check if database is locked
-	if (!file_exists('wp-content/asambleapp/batekapp/database/lock'))
+	if (!file_exists($lock_path))
 		echo 'FILENOTEXIST#';
 
-	$file_r = fopen('wp-content/asambleapp/batekapp/database/lock', 'r');
+	$file_r = fopen($lock_path, 'r');
 	$content = fread($file_r, 1);
 	fclose($file_r);
 
@@ -183,14 +185,14 @@ function set_poll_vote($user_data)
 
 		sleep(1);
 
-		$file_r = fopen('wp-content/asambleapp/batekapp/database/lock', 'r');
+		$file_r = fopen($lock_path, 'r');
 		$content = fread($file_r, 1);
 		fclose($file_r);
 		$attempts += 1;
 	}
 
 	// Lock database
-	set_lock('1');
+	set_lock($lock_path, '1');
 
 	// Load database
 	$user_id = $user_data['id']->nodeValue;
@@ -199,7 +201,7 @@ function set_poll_vote($user_data)
 	$xdata = utils_get_xpath($pollDatabasePath);
 
 	if ($xdata == false)
-		return return_error("Couldn't load poll database");
+		return return_error($lock_path, "Couldn't load poll database");
 
 	$xmlDoc = $xdata[0];
 	$xpath = $xdata[1];
@@ -207,7 +209,7 @@ function set_poll_vote($user_data)
 	$user_vote_node = $xpath->query("/poll/options/" . $_POST['vote_type']);
 
 	if ($user_vote_node->length != 1)
-		return return_error("Vote type '" . $_POST['vote_type'] . "' not recognized [" . $user_vote_node->length . "]");
+		return return_error($lock_path, "Vote type '" . $_POST['vote_type'] . "' not recognized [" . $user_vote_node->length . "]");
 
 	$user_vote_node = $user_vote_node[0];
 
@@ -230,7 +232,7 @@ function set_poll_vote($user_data)
 	$xmlDoc->save($pollDatabasePath);
 
 	// Remove Lock
-	set_lock('0');
+	set_lock($lock_path, '0');
 
 	return get_poll_data();
 }

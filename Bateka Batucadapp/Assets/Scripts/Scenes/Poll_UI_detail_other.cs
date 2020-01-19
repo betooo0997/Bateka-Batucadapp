@@ -3,23 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Poll_UI_detail_yes_no : Poll_UI
+public class Poll_UI_detail_other : Poll_UI
 {
-    [SerializeField]
-    Image affirme;
-
-    [SerializeField]
-    Image reject;
-
     [SerializeField]
     Text description;
 
-    Button[] buttons;
+    Dropdown dropdown;
 
     private new void Awake()
     {
         base.Awake();
-        buttons = GetComponentsInChildren<Button>();
+        dropdown = GetComponentInChildren<Dropdown>();
     }
 
     private void Start()
@@ -31,22 +25,18 @@ public class Poll_UI_detail_yes_no : Poll_UI
 
     new void Set_Values(Poll poll)
     {
-        base.Set_Values(poll);
+        this.poll = poll;
+        title.text = poll.Title;
+        expiration_date.text = poll.Expiration_time;
         description.text = poll.Description;
 
-        switch(poll.Status)
-        {
-            case "affirmation":
-                affirme.color = new Color(color_affirmed().r, color_affirmed().g, color_affirmed().b, 1);
-                break;
-
-            case "rejection":
-                reject.color = new Color(color_rejected().r, color_rejected().g, color_rejected().b, 1);
-                break;
-        }
+        dropdown.ClearOptions();
+        dropdown.AddOptions(poll.Vote_Types);
+        dropdown.value = poll.Selected_Option_Idx;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
+        initialized = true;
     }
 
 
@@ -61,14 +51,15 @@ public class Poll_UI_detail_yes_no : Poll_UI
     /// <summary>
     /// Updates user's choice of vote locally on the device and remotely on the server.
     /// </summary>
-    public void Vote(string vote_type)
+    public void Vote(int vote_type)
     {
+        if (!initialized) return;
+
         string[] field_names = { "REQUEST_TYPE", "vote_poll_id", "vote_type" };
-        string[] field_values = { "set_poll_vote", poll.Id.ToString(), vote_type };
+        string[] field_values = { "set_poll_vote", poll.Id.ToString(), poll.Vote_Types[vote_type] };
         Http_Client.Send_Post(field_names, field_values, Handle_Vote_Response);
 
-        foreach (Button button in buttons)
-            button.interactable = false;
+        dropdown.interactable = false;
     }
 
     /// <summary>
@@ -76,8 +67,7 @@ public class Poll_UI_detail_yes_no : Poll_UI
     /// </summary>
     protected void Handle_Vote_Response(string response)
     {
-        foreach (Button button in buttons)
-            button.interactable = true;
+        dropdown.interactable = true;
 
         if (response.Contains("500"))
         {

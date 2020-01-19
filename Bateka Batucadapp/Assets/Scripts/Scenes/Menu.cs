@@ -19,6 +19,7 @@ public class Menu : MonoBehaviour
         Users,
         Config,
         Users_own,
+        Poll_details_other,
         Poll_details_yes_no
     }
 
@@ -72,7 +73,7 @@ public class Menu : MonoBehaviour
 
         Enum.TryParse(scene_name, out Menu_item scene);
 
-        if (scene == active_menu_item) return;
+        if (scene == active_menu_item && active_menu_item != Menu_item.Poll_details_yes_no && active_menu_item != Menu_item.Poll_details_other) return;
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
             scenes[x] = SceneManager.GetSceneAt(x);

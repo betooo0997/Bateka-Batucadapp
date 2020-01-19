@@ -41,7 +41,7 @@ public class Polls : MonoBehaviour
 
     private void Update()
     {
-        if (Poll_List.Count > 0)
+        if (Poll_List != null && Poll_List.Count > 0)
         {
             Spawn_Poll_UIs();
             enabled = false;
@@ -185,29 +185,26 @@ public class Polls : MonoBehaviour
         }
 
         // Set Poll Type and Poll Status.
-        Poll_Type type = Poll_Type.Yes_No;
-        Poll_Status status = Poll_Status.Not_answered;
+        Poll_Type type = Poll_Type.Other;
+        string status = "";
 
-        if (newPoll.Vote_Voters.Count > 2)
+        for (int y = 0; y < newPoll.Vote_Voters.Count; y++)
         {
-            type = Poll_Type.Other;
-
-            foreach (List<User.User_Information> voters_in_specific_option in newPoll.Vote_Voters)
-                foreach (User.User_Information voter in voters_in_specific_option)
-                    if (voter.Id == User.User_Info.Id)
-                        status = Poll_Status.Other;
+            for (int x = 0; x < newPoll.Vote_Voters[y].Count; x++)
+            {
+                if (newPoll.Vote_Voters[y][x].Id == User.User_Info.Id)
+                {
+                    status = newPoll.Vote_Types[y];
+                    newPoll.Selected_Option_Idx = y;
+                    break;
+                }
+            }
         }
-        else if (newPoll.Vote_Voters.Count == 2)
-        {
-            foreach (User.User_Information voter in newPoll.Vote_Voters[0])
-                if (voter.Id == User.User_Info.Id)
-                    status = Poll_Status.Affirmed;
 
-            foreach (User.User_Information voter in newPoll.Vote_Voters[1])
-                if (voter.Id == User.User_Info.Id)
-                    status = Poll_Status.Rejected;
-        }
-        else
+        if (newPoll.Vote_Voters.Count == 2 && newPoll.Vote_Types[0] == "affirmation" && newPoll.Vote_Types[1] == "rejection")
+            type = Poll_Type.Yes_No;
+
+        if (newPoll.Vote_Voters.Count < 2)
             Debug.LogError("No options detected.");
 
         newPoll.Status = status;
