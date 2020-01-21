@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 9b5e8670c0dbc0c4480e65149cfc039e
   - enabled: 1
-    path: Assets/Scenes/Menu_Elements/Home.unity
+    path: Assets/Scenes/Menu_Elements/News.unity
     guid: 32369a3197f3a3547ae8258336a12d1f
   - enabled: 1
     path: Assets/Scenes/Menu_Elements/Polls.unity
@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu_Elements/Poll_details_yes_no.unity
     guid: aa32ed04018bedb479f0f3734093397c
+  - enabled: 1
+    path: Assets/Scenes/Menu_Elements/News_detail.unity
+    guid: 8ad87ca1a0bfa054aac48522dd0f27f3
   - enabled: 1
     path: Assets/Scenes/Message.unity
     guid: 37b9132af90c09e47a1669b38c699699

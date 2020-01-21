@@ -1,43 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Poll_UI_detail_other : Poll_UI
+public abstract class Poll_UI_detail : Poll_UI
 {
     [SerializeField]
     Text description;
 
-    Dropdown dropdown;
+    protected bool initialized;
 
-    private new void Awake()
-    {
-        base.Awake();
-        dropdown = GetComponentInChildren<Dropdown>();
-    }
-
-    private void Start()
+    protected void Start()
     {
         poll = Polls.Selected_Poll;
-        colour_transparency = 0.5f;
-        Set_Values(Polls.Selected_Poll);
+        Initialize();
     }
 
-    new void Set_Values(Poll poll)
+    protected virtual void Initialize()
     {
-        this.poll = poll;
         title.text = poll.Title;
         expiration_date.text = poll.Expiration_time;
         description.text = poll.Description;
-
-        dropdown.ClearOptions();
-        dropdown.AddOptions(poll.Vote_Types);
-        dropdown.value = poll.Selected_Option_Idx;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
         initialized = true;
     }
+
+    protected abstract void Set_Interactable(bool interactable);
 
 
 
@@ -59,7 +47,7 @@ public class Poll_UI_detail_other : Poll_UI
         string[] field_values = { "set_poll_vote", poll.Id.ToString(), poll.Vote_Types[vote_type] };
         Http_Client.Send_Post(field_names, field_values, Handle_Vote_Response);
 
-        dropdown.interactable = false;
+        Set_Interactable(false);
     }
 
     /// <summary>
@@ -67,7 +55,7 @@ public class Poll_UI_detail_other : Poll_UI
     /// </summary>
     protected void Handle_Vote_Response(string response)
     {
-        dropdown.interactable = true;
+        Set_Interactable(true);
 
         if (response.Contains("500"))
         {
@@ -86,7 +74,7 @@ public class Poll_UI_detail_other : Poll_UI
             }
         }
 
-        Show_Details();
+        Show_Poll_Details();
         Message.ShowMessage("Base de datos actualizada con éxito.");
     }
 }

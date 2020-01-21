@@ -79,7 +79,7 @@ public class Polls : MonoBehaviour
             DataSaver.Save_Database("poll_database", response);
 
         else if (PlayerPrefs.HasKey("poll_database_timestamp"))
-            Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));
+            Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("polls_database_timestamp"));
 
         // Separate poll database from initial server information. (E.g. "VERIFIED.|*poll databases*|")
         string data = Utils.Split(response, '|')[1];
@@ -185,8 +185,8 @@ public class Polls : MonoBehaviour
         }
 
         // Set Poll Type and Poll Status.
-        Poll_Type type = Poll_Type.Other;
-        string status = "";
+        newPoll.Type = Poll_Type.Other;
+        newPoll.Status = "";
 
         for (int y = 0; y < newPoll.Vote_Voters.Count; y++)
         {
@@ -194,21 +194,20 @@ public class Polls : MonoBehaviour
             {
                 if (newPoll.Vote_Voters[y][x].Id == User.User_Info.Id)
                 {
-                    status = newPoll.Vote_Types[y];
+                    newPoll.Status = newPoll.Vote_Types[y];
                     newPoll.Selected_Option_Idx = y;
                     break;
                 }
             }
         }
 
-        if (newPoll.Vote_Voters.Count == 2 && newPoll.Vote_Types[0] == "affirmation" && newPoll.Vote_Types[1] == "rejection")
-            type = Poll_Type.Yes_No;
+        if (newPoll.Vote_Voters.Count == 2 && 
+           (newPoll.Vote_Types[0] == "rejection" ^ newPoll.Vote_Types[1] == "rejection") && 
+           (newPoll.Vote_Types[0] == "affirmation" ^ newPoll.Vote_Types[1] == "affirmation"))
+            newPoll.Type = Poll_Type.Yes_No;
 
         if (newPoll.Vote_Voters.Count < 2)
             Debug.LogError("No options detected.");
-
-        newPoll.Status = status;
-        newPoll.Type = type;
 
         return newPoll;
     }
@@ -270,7 +269,7 @@ public class Polls : MonoBehaviour
         {
             GameObject new_Poll = Instantiate(poll_UI_prefab, poll_UI_parent);
             new_Poll.name = "Poll_" + poll.Id;
-            new_Poll.GetComponent<Poll_UI>().Set_Values(poll);
+            new_Poll.GetComponent<Poll_UI_summarized>().Set_Values(poll);
         }
     }
 }

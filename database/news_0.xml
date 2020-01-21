@@ -2,12 +2,12 @@
 <news>
   <id>0</id>
   <title>Noticia de Prueba</title>
-  <detail>
+  <details>
     Detalle de la primera noticia de Bateka. Para más información visita <url>www.google.com</url>. Es muy xaxi.
-  </detail>
+  </details>
   <creation_time></creation_time>
   <imgs>
-    <img>0</img>
+    <img>https://www.elpuntavui.cat/imatges/59/07/alta/780_0008_5907361_8c3fcf7fcd1ee7f39532b8bba973798e.jpg</img>
     <img>https://www.elpuntavui.cat/imatges/59/07/alta/780_0008_5907361_8c3fcf7fcd1ee7f39532b8bba973798e.jpg</img>
   </imgs>
 </news>

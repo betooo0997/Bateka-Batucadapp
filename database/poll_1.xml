@@ -8,8 +8,8 @@
   <author>beto</author>
   <privacy>public</privacy>
   <options>
-    <affirmation>3</affirmation>
     <rejection>1</rejection>
+    <affirmation>3</affirmation>
   </options>
   <comments>
     <comment>

@@ -563,11 +563,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1000028932}
         m_MethodName: Vote
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: affirmation
           m_BoolArgument: 0
@@ -923,6 +923,7 @@ MonoBehaviour:
   poll:
     Type: 0
     Status: 0
+    Selected_Option_Idx: 0
     Id: 0
     Title: 
     Subtitle: 
@@ -933,9 +934,9 @@ MonoBehaviour:
     Privacy: 
     Vote_Types: []
     Comments: []
+  description: {fileID: 1276292052}
   affirme: {fileID: 572397608}
   reject: {fileID: 2096580024}
-  description: {fileID: 1276292052}
 --- !u!114 &1000028933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1827,7 +1828,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1000028932}
         m_MethodName: Vote
-        m_Mode: 5
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

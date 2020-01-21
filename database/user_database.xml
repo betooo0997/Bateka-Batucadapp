@@ -5,12 +5,10 @@
     <username></username>
     <psswd></psswd>
     <role>admin / default_</role>
-    <data>
-      <name></name>
-      <surname></surname>
-      <email></email>
-      <tel></tel>
-    </data>
+    <name></name>
+    <surname></surname>
+    <email></email>
+    <tel></tel>
   </user>-->
   <user>
     <id>1</id>

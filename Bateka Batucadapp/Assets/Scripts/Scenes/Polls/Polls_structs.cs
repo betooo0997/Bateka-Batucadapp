@@ -63,8 +63,8 @@ public class Poll
 
 public enum Poll_Type
 {
-    Yes_No,
-    Other
+    Yes_No = Menu.Menu_item.Poll_details_yes_no,
+    Other = Menu.Menu_item.Poll_details_other
 }
 
 [System.Serializable]

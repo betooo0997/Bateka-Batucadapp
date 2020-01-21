@@ -14,7 +14,7 @@ public class Login : MonoBehaviour
     public void Send_Login_Request()
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
-        string[] field_values = { "get_data", user.text, password.text };
+        string[] field_values = { "get_user_data", user.text, password.text };
         Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, false);
     }
 
