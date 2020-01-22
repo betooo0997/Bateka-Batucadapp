@@ -95,6 +95,8 @@ public class News : MonoBehaviour
 
         if (Singleton != null)
             Singleton.enabled = true;
+
+        Scroll_Updater.Disable();
     }
 
     static News_Entry Parse_Single_News_Entry_Data(string news_entry_data)
@@ -140,12 +142,12 @@ public class News : MonoBehaviour
     }
 
 
+
     // ______________________________________
     //
     // 3. UPDATE UI.
     // ______________________________________
     //
-
 
 
     void Spawn_News_Entries_UI()

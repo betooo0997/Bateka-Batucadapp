@@ -29,7 +29,7 @@ public class Menu : MonoBehaviour
     [SerializeField]
     float alpha_unselected;
 
-    Menu_item active_menu_item;
+    public Menu_item active_menu_item { get; private set; }
     Menu_item prev_menu_item;
 
     [SerializeField]

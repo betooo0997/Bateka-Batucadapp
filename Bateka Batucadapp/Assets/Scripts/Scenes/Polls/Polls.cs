@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Polls : MonoBehaviour
 {
+    public static Polls Singleton;
+
     /// <summary>
     /// List of all downloaded Polls.
     /// </summary>
@@ -27,43 +29,53 @@ public class Polls : MonoBehaviour
     // ______________________________________
     //
 
+    private void Awake()
+    {
+        Singleton = this;
+    }
 
     void Start()
     {
-        if (!PlayerPrefs.HasKey("poll_database"))
-        {
-            string[] field_names = { "REQUEST_TYPE" };
-            string[] field_values = { "get_polls" };
-            Http_Client.Send_Post(field_names, field_values, Handle_Poll_Response);
-        }
+        Load_Data_Server();
         Ppoll_List = Poll_List;
     }
 
     private void Update()
     {
         if (Poll_List != null && Poll_List.Count > 0)
-        {
             Spawn_Poll_UIs();
-            enabled = false;
-        }
     }
 
 
 
     // ______________________________________
     //
-    // 2. PARSE POLL DATABASE(S).
+    // 2. LOAD DATA.
     // ______________________________________
     //
 
+    public static void Load_Data_Server()
+    {
+        string[] field_names = { "REQUEST_TYPE" };
+        string[] field_values = { "get_polls" };
+        Http_Client.Send_Post(field_names, field_values, Handle_Poll_Response);
+    }
+
+    public static void Load_Data_Cache()
+    {
+        if (PlayerPrefs.HasKey("poll_database"))
+            Parse_Poll_Data(PlayerPrefs.GetString("poll_database"));
+    }
 
     /// <summary>
     /// Called on server response.
     /// </summary>
-    void Handle_Poll_Response(string response)
+    static void Handle_Poll_Response(string response)
     {
         Parse_Poll_Data(response, true);
-        Ppoll_List = Poll_List;
+
+        if (Singleton != null)
+            Singleton.Ppoll_List = Poll_List;
     }
 
     /// <summary>
@@ -87,6 +99,8 @@ public class Polls : MonoBehaviour
         // Separate each database to parse it individually. (E.g. "*database_1*_PDBEND_*database_2*")
         foreach (string poll in Utils.Split(data, "_PDBEND_"))
             Poll_List.Add(Parse_Single_Poll_Data(poll));
+
+        Scroll_Updater.Disable();
     }
 
     /// <summary>
@@ -275,5 +289,7 @@ public class Polls : MonoBehaviour
             new_Poll.name = "Poll";
             new_Poll.GetComponent<Poll_UI_summarized>().Set_Values(poll);
         }
+
+        enabled = false;
     }
 }

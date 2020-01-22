@@ -21,9 +21,7 @@ public class Initializer : MonoBehaviour
         if (PlayerPrefs.HasKey("user_database"))
             Login.Parse_Login_Data(PlayerPrefs.GetString("user_database"));
 
-        if (PlayerPrefs.HasKey("poll_database"))
-            Polls.Parse_Poll_Data(PlayerPrefs.GetString("poll_database"));
-
+        Polls.Load_Data_Cache();
         News.Load_Data_Cache();
     }
 }
