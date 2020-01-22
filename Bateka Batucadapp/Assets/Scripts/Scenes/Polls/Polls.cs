@@ -36,7 +36,6 @@ public class Polls : MonoBehaviour
 
     void Start()
     {
-        Load_Data_Server();
         Ppoll_List = Poll_List;
     }
 

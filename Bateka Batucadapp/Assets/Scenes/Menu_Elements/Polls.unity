@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 69977665}
+  Spacer: {fileID: 1795012888}
   icon: {fileID: 753576900}
 --- !u!114 &144066217
 MonoBehaviour:

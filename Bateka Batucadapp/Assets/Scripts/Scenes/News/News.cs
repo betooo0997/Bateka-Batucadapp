@@ -33,7 +33,6 @@ public class News : MonoBehaviour
 
     void Start()
     {
-        Load_Data_Server();
         Nnews_List = News_List;
     }
 

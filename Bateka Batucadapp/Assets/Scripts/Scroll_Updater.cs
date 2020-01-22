@@ -11,11 +11,15 @@ public class Scroll_Updater : MonoBehaviour
     RectTransform rectTransform;
 
     [SerializeField]
+    RectTransform Spacer;
+
+    [SerializeField]
     Image icon;
 
     Image image;
 
     bool updating;
+    bool initialized;
 
     private void Awake()
     {
@@ -25,7 +29,7 @@ public class Scroll_Updater : MonoBehaviour
 
     void Update()
     {
-        if (!updating && rectTransform.localPosition.y < -50 && Input.GetMouseButtonUp(0)) // TODO: Add touch!!
+        if (!initialized || (!updating && rectTransform.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
         {
             switch (Menu.Singleton.active_menu_item)
             {
@@ -41,6 +45,10 @@ public class Scroll_Updater : MonoBehaviour
             updating = true;
             image.enabled = true;
             icon.enabled = true;
+            initialized = true;
+            Spacer.sizeDelta = new Vector3(Spacer.sizeDelta.x, 34);
+            Canvas.ForceUpdateCanvases();
+            GameObject.FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
         else if(updating)
         {
@@ -55,6 +63,9 @@ public class Scroll_Updater : MonoBehaviour
             Singleton.updating = false;
             Singleton.image.enabled = false;
             Singleton.icon.enabled = false;
+            Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
+            Canvas.ForceUpdateCanvases();
+            GameObject.FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
     }
 }

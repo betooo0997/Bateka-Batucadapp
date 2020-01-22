@@ -56,7 +56,7 @@ public class Http_Client: MonoBehaviour
             {
                 StringBuilder sb = new StringBuilder();
 
-                foreach (System.Collections.Generic.KeyValuePair<string, string> dict in www.GetResponseHeaders())
+                foreach (KeyValuePair<string, string> dict in www.GetResponseHeaders())
                     sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
 
                 string response_header = sb.ToString();
@@ -79,7 +79,10 @@ public class Http_Client: MonoBehaviour
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
         if (request.isNetworkError || request.isHttpError)
-            Debug.Log(request.error);
+        {
+            Message.ShowMessage(request.error);
+            Debug.LogWarning(request.error);
+        }
         else
             concludingMethod(transform, ((DownloadHandlerTexture)request.downloadHandler).texture);
     }
