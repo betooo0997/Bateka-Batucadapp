@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class News_UI : MonoBehaviour
@@ -8,11 +9,20 @@ public class News_UI : MonoBehaviour
     public Text Title;
     public Text Creation_time;
 
-    News_Entry news_entry;
+    protected News_Entry news_entry;
 
-    private void Start()
+    public void Show_News_Details()
     {
-        Title.text = news_entry.Title;
-        Creation_time.text = news_entry.Creation_time;
+        News.Selected_News_Entry = news_entry;
+        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.News_details);
+
+        for (int x = 0; x < SceneManager.sceneCount; x++)
+        {
+            if (SceneManager.GetSceneAt(x).name.ToLower().Contains("news"))
+            {
+                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(x));
+                break;
+            }
+        }
     }
 }

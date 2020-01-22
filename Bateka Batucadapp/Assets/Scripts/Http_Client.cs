@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Http_Client: MonoBehaviour
 {
@@ -65,5 +66,21 @@ public class Http_Client: MonoBehaviour
                 concludingMethod(response_content);
             }
         }
+    }
+
+    public static void Download_Image(string url, Transform transform, Action<Transform, Texture2D> concludingMethod)
+    {
+        Debug.Log("Sending Image Request:\n" + url);
+        Singleton.StartCoroutine(Singleton.Download_Image_Coroutine(url, transform, concludingMethod));
+    }
+
+    IEnumerator Download_Image_Coroutine(string url, Transform transform, Action<Transform, Texture2D> concludingMethod)
+    {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+        if (request.isNetworkError || request.isHttpError)
+            Debug.Log(request.error);
+        else
+            concludingMethod(transform, ((DownloadHandlerTexture)request.downloadHandler).texture);
     }
 }

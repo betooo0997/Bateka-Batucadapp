@@ -19,8 +19,9 @@ public class Menu : MonoBehaviour
         Users,
         Config,
         Users_own,
+        News_details,
         Poll_details_other,
-        Poll_details_yes_no
+        Poll_details_yes_no,
     }
 
     float alpha_selected;

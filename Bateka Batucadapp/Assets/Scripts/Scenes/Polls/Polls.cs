@@ -265,10 +265,14 @@ public class Polls : MonoBehaviour
     /// </summary>
     void Spawn_Poll_UIs()
     {
+        foreach (Transform transform in poll_UI_parent.GetComponentsInChildren<Transform>())
+            if (transform.name == "Poll")
+                Destroy(transform.gameObject);
+
         foreach (Poll poll in Poll_List)
         {
             GameObject new_Poll = Instantiate(poll_UI_prefab, poll_UI_parent);
-            new_Poll.name = "Poll_" + poll.Id;
+            new_Poll.name = "Poll";
             new_Poll.GetComponent<Poll_UI_summarized>().Set_Values(poll);
         }
     }

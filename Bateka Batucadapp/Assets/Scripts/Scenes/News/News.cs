@@ -9,6 +9,15 @@ public class News : MonoBehaviour
 
     public static News_Entry Selected_News_Entry;
 
+    [SerializeField]
+    GameObject news_entry_prefab;
+
+    [SerializeField]
+    Transform news_entry_parent;
+
+    public static News Singleton;
+
+
 
     // ______________________________________
     //
@@ -17,34 +26,54 @@ public class News : MonoBehaviour
     //
 
 
+    private void Awake()
+    {
+        Singleton = this;
+    }
+
     void Start()
     {
-        if (!PlayerPrefs.HasKey("news_database"))
-        {
-            string[] field_names = { "REQUEST_TYPE" };
-            string[] field_values = { "get_news" };
-            Http_Client.Send_Post(field_names, field_values, Handle_News_Response);
-        }
+        Load_Data_Server();
         Nnews_List = News_List;
     }
 
     private void Update()
     {
         if (News_List != null && News_List.Count > 0)
-        {
             Spawn_News_Entries_UI();
-            enabled = false;
-        }
     }
 
+
+
+    // ______________________________________
+    //
+    // 2. LOAD DATA.
+    // ______________________________________
+    //
+
+
+    public static void Load_Data_Server()
+    {
+        string[] field_names = { "REQUEST_TYPE" };
+        string[] field_values = { "get_news" };
+        Http_Client.Send_Post(field_names, field_values, Handle_News_Response);
+    }
+
+    public static void Load_Data_Cache()
+    {
+        if (PlayerPrefs.HasKey("news_database"))
+            Parse_News_Data(PlayerPrefs.GetString("news_database"));
+    }
 
     /// <summary>
     /// Called on server response.
     /// </summary>
-    void Handle_News_Response(string response)
+    static void Handle_News_Response(string response)
     {
         Parse_News_Data(response, true);
-        Nnews_List = News_List;
+
+        if (Singleton != null)
+            Singleton.Nnews_List = News_List;
     }
 
     public static void Parse_News_Data(string response, bool save = false)
@@ -57,15 +86,18 @@ public class News : MonoBehaviour
         else if (PlayerPrefs.HasKey("news_database_timestamp"))
             Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("news_database_timestamp"));
 
-        // Separate poll database from initial server information. (E.g. "VERIFIED.|*poll databases*|")
+        // Separate news database from initial server information. (E.g. "VERIFIED.|*news databases*|")
         string data = Utils.Split(response, '|')[1];
 
-        // Separate each database to parse it individually. (E.g. "*database_1*_PDBEND_*database_2*")
+        // Separate each database to parse it individually. (E.g. "*database_1*_NDBEND_*database_2*")
         foreach (string news_entry in Utils.Split(data, "_NDBEND_"))
             News_List.Add(Parse_Single_News_Entry_Data(news_entry));
+
+        if (Singleton != null)
+            Singleton.enabled = true;
     }
 
-    public static News_Entry Parse_Single_News_Entry_Data(string news_entry_data)
+    static News_Entry Parse_Single_News_Entry_Data(string news_entry_data)
     {
         if (news_entry_data.Contains("|"))
             news_entry_data = Utils.Split(news_entry_data, '|')[1];
@@ -107,7 +139,28 @@ public class News : MonoBehaviour
         return news_entry;
     }
 
+
+    // ______________________________________
+    //
+    // 3. UPDATE UI.
+    // ______________________________________
+    //
+
+
+
     void Spawn_News_Entries_UI()
     {
+        foreach (Transform transform in news_entry_parent.GetComponentsInChildren<Transform>())
+            if(transform.name == "News_Entry")
+                Destroy(transform.gameObject);
+
+        foreach (News_Entry news_entry in News_List)
+        {
+            GameObject new_news_entry = Instantiate(news_entry_prefab, news_entry_parent);
+            new_news_entry.name = "News_Entry";
+            new_news_entry.GetComponent<News_summarized>().Set_Values(news_entry);
+        }
+
+        enabled = false;
     }
 }

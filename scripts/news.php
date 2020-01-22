@@ -34,7 +34,7 @@ function get_news_data()
 		{
 			if($child->nodeName == 'imgs')
 			{
-				echo '\IMGS';
+				echo 'imgs$';
 				foreach ($child->childNodes as $grandchild)
 					echo $grandchild->nodeValue . '~';
 				echo '#';
