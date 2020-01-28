@@ -9,6 +9,7 @@ public class Initializer : MonoBehaviour
     void Awake()
     {
         Singleton = this;
+        Database_Handlers.Initialize_Dictionaries();
     }
 
     void Start()
@@ -23,5 +24,6 @@ public class Initializer : MonoBehaviour
 
         Polls.Load_Data_Cache();
         News.Load_Data_Cache();
+        Calendar_Events.Load_Data_Cache();
     }
 }

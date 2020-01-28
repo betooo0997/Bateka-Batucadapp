@@ -18,7 +18,7 @@ public abstract class Poll_UI_detail : Poll_UI
     {
         title.text = poll.Title;
         expiration_date.text = poll.Expiration_time;
-        description.text = poll.Description;
+        description.text = poll.Details;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();

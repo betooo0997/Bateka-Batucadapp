@@ -20,6 +20,7 @@ public class Menu : MonoBehaviour
         Config,
         Users_own,
         News_details,
+        Events_details,
         Poll_details_other,
         Poll_details_yes_no,
     }

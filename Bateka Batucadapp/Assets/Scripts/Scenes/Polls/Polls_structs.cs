@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Poll
+public class Poll : Data_structs
 {
     public Poll_Type Type;
     public string Status;
     public int Selected_Option_Idx;
-    public uint Id;
-    public string Title;
     public string Subtitle;
-    public string Description;
     public string Creation_time;
     public string Expiration_time;
     public string Author;
@@ -28,7 +25,7 @@ public class Poll
         result += "<id>" + Id.ToString() + @"</id>";
         result += "<title>" + Title + @"</title>";
         result += "<subtitle>" + Subtitle + @"</subtitle>";
-        result += "<description>" + Description + @"</description>";
+        result += "<description>" + Details + @"</description>";
         result += "<creation_time>" + Creation_time + @"</creation_time>";
         result += "<expiration_time>" + Expiration_time + @"</expiration_time>";
         result += "<author>" + Author + @"</author>";

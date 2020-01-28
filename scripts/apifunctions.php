@@ -4,6 +4,7 @@ include "wp-content/asambleapp/utils.php";
 include "wp-content/asambleapp/batekapp/users.php";
 include "wp-content/asambleapp/batekapp/polls.php";
 include "wp-content/asambleapp/batekapp/news.php";
+include "wp-content/asambleapp/batekapp/events.php";
 
 function handleRequest()
 {	
@@ -34,6 +35,9 @@ function handleRequest()
 
 				case 'get_news':
 					return get_news_data();
+
+				case 'get_events':
+					return get_events_data();
 
 				default:
 					return 'REQUEST_TYPE "' . $_POST['REQUEST_TYPE'] . '" not understood.';

@@ -2,21 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class News : MonoBehaviour
+public class News : Database_Handlers
 {
     public static List<News_Entry> News_List;
-    public List<News_Entry> Nnews_List;
-
-    public static News_Entry Selected_News_Entry;
 
     [SerializeField]
     GameObject news_entry_prefab;
 
     [SerializeField]
     Transform news_entry_parent;
-
-    public static News Singleton;
-
 
 
     // ______________________________________
@@ -25,16 +19,6 @@ public class News : MonoBehaviour
     // ______________________________________
     //
 
-
-    private void Awake()
-    {
-        Singleton = this;
-    }
-
-    void Start()
-    {
-        Nnews_List = News_List;
-    }
 
     private void Update()
     {
@@ -70,9 +54,6 @@ public class News : MonoBehaviour
     static void Handle_News_Response(string response)
     {
         Parse_News_Data(response, true);
-
-        if (Singleton != null)
-            Singleton.Nnews_List = News_List;
     }
 
     public static void Parse_News_Data(string response, bool save = false)
@@ -92,8 +73,8 @@ public class News : MonoBehaviour
         foreach (string news_entry in Utils.Split(data, "_NDBEND_"))
             News_List.Add(Parse_Single_News_Entry_Data(news_entry));
 
-        if (Singleton != null)
-            Singleton.enabled = true;
+        if (Singleton_Exists(typeof(News)))
+            Get_Singleton(typeof(News)).enabled = true;
 
         Scroll_Updater.Disable();
     }
@@ -115,7 +96,7 @@ public class News : MonoBehaviour
             switch (tokens[0])
             {
                 case "id":
-                    news_entry.Id = int.Parse(tokens[1]);
+                    news_entry.Id = uint.Parse(tokens[1]);
                     break;
 
                 case "title":

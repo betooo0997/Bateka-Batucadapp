@@ -142,7 +142,7 @@ public class Polls : MonoBehaviour
                     break;
 
                 case "description":
-                    newPoll.Description = tokens[1];
+                    newPoll.Details = tokens[1];
                     break;
 
                 case "creation_time":

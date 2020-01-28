@@ -4,21 +4,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class News_UI : MonoBehaviour
+public class Calendar_Events_UI : MonoBehaviour
 {
     public Text Title;
-    public Text Creation_time;
+    public Text Date;
 
-    protected News_Entry news_entry;
+    protected Calendar_Event calendar_event;
 
-    public void Show_News_Details()
+    public void Show_Details()
     {
-        News.Set_Selected_data(news_entry);
-        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.News_details);
+        Calendar_Events.Selected_Event = calendar_event;
+        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Events_details);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
         {
-            if (SceneManager.GetSceneAt(x).name.ToLower().Contains("news"))
+            if (SceneManager.GetSceneAt(x).name.ToLower().Contains("event"))
             {
                 SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(x));
                 break;

@@ -33,6 +33,10 @@ public class Scroll_Updater : MonoBehaviour
         {
             switch (Menu.Singleton.active_menu_item)
             {
+                case Menu.Menu_item.Events:
+                    Calendar_Events.Load_Data_Server();
+                    break;
+
                 case Menu.Menu_item.News:
                     News.Load_Data_Server();
                     break;
