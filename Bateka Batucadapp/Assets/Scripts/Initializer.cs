@@ -9,7 +9,8 @@ public class Initializer : MonoBehaviour
     void Awake()
     {
         Singleton = this;
-        Database_Handlers.Initialize_Dictionaries();
+        Database_Handler.Initialize_Dictionaries();
+        Scroll_Updater.Initialize();
     }
 
     void Start()
@@ -17,13 +18,13 @@ public class Initializer : MonoBehaviour
         Load_Data_Cache();
     }
 
-    public static void Load_Data_Cache()
+    static void Load_Data_Cache()
     {
         if (PlayerPrefs.HasKey("user_database"))
             Login.Parse_Login_Data(PlayerPrefs.GetString("user_database"));
 
-        Polls.Load_Data_Cache();
-        News.Load_Data_Cache();
-        Calendar_Events.Load_Data_Cache();
+        Database_Handler.Load_Data_Cache(Handler_Type.news);
+        Database_Handler.Load_Data_Cache(Handler_Type.events);
+        Database_Handler.Load_Data_Cache(Handler_Type.polls);
     }
 }

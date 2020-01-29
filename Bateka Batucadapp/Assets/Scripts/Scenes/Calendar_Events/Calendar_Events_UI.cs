@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Calendar_Events_UI : MonoBehaviour
+public class Calendar_Events_UI : Data_UI
 {
     public Text Title;
     public Text Date;
@@ -13,7 +13,7 @@ public class Calendar_Events_UI : MonoBehaviour
 
     public void Show_Details()
     {
-        Calendar_Events.Selected_Event = calendar_event;
+        Calendar_Events.Selected_Data = calendar_event;
         Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Events_details);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)

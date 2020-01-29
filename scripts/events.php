@@ -41,7 +41,7 @@ function get_events_data()
 			}
 		}
 
-		echo '_EDBEND_';
+		echo '_DBEND_';
 	}
 
 	echo '|';

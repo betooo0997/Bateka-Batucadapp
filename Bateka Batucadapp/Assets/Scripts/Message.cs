@@ -13,10 +13,10 @@ public class Message : MonoBehaviour
     static bool active;
 
     float alpha = 1;
-    float alpha_rate = 1f;
+    float alpha_rate = 2f;
 
     float timer = 0;
-    float timer_limit = 2;
+    float timer_limit = 1.5f;
 
     void Start()
     {

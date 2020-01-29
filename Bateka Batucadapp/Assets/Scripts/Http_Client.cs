@@ -17,7 +17,7 @@ public class Http_Client: MonoBehaviour
         Singleton = this;
     }
 
-    public static void Send_Post(string[] field_name, string[] field_value, Action<string> concludingMethod, bool add_user_credentials = true)
+    public static void Send_Post(string[] field_name, string[] field_value, Action<string, Handler_Type> concludingMethod, Handler_Type type = Handler_Type.none, bool add_user_credentials = true)
     {
         string data = "";
 
@@ -25,10 +25,10 @@ public class Http_Client: MonoBehaviour
             data += field_name[x] + ": " + field_value[x] + "\n";
 
         Debug.Log("Sending HTTP Request:\n" + data);
-        Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod, add_user_credentials));
+        Singleton.StartCoroutine(Singleton.Send_Post_Coroutine(field_name, field_value, concludingMethod, add_user_credentials, type));
     }
 
-    IEnumerator Send_Post_Coroutine(string[] field_name, string[] field_value, Action<string> concludingMethod, bool add_user_credentials)
+    IEnumerator Send_Post_Coroutine(string[] field_name, string[] field_value, Action<string, Handler_Type> concludingMethod, bool add_user_credentials, Handler_Type type)
     {
         WWWForm form = new WWWForm();
         form.AddField("API_USER", "USER");
@@ -49,8 +49,14 @@ public class Http_Client: MonoBehaviour
 
             if (www.isNetworkError)
             {
-                Message.ShowMessage(www.error);
+                string error = www.error;
+
+                if (error == "Cannot resolve destination host")
+                    error = "No estás conectad@ a internet.";
+
+                Message.ShowMessage(error);
                 Debug.LogWarning(www.error);
+                Scroll_Updater.Disable();
             }
             else
             {
@@ -63,7 +69,7 @@ public class Http_Client: MonoBehaviour
                 string response_content = www.downloadHandler.text;
 
                 Debug.Log(response_content);
-                concludingMethod(response_content);
+                concludingMethod(response_content, type);
             }
         }
     }

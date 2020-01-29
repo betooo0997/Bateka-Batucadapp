@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Poll : Data_structs
+public class Poll : Data_struct
 {
     public Poll_Type Type;
     public string Status;

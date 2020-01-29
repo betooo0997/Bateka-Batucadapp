@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public abstract class Poll_UI : MonoBehaviour
+public abstract class Poll_UI : Data_UI
 {
     [SerializeField]
     protected Text title;
@@ -20,7 +20,7 @@ public abstract class Poll_UI : MonoBehaviour
 
     public void Show_Poll_Details()
     {
-        Polls.Selected_Poll = poll;
+        Polls.Selected_Data = poll;
         Menu.Singleton.Load_Scene_Menu_Item((Menu.Menu_item)poll.Type);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)

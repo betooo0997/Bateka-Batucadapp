@@ -9,11 +9,11 @@ public class Poll_UI_summarized : Poll_UI
         background = GetComponent<Image>();
     }
 
-    public void Set_Values(Poll poll)
+    public override void Set_Values(Data_struct poll)
     {
-        this.poll = poll;
-        title.text = poll.Title;
-        expiration_date.text = poll.Expiration_time;
+        this.poll = (Poll)poll;
+        title.text = this.poll.Title;
+        expiration_date.text = this.poll.Expiration_time;
         Update_Color(background);
     }
 

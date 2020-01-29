@@ -43,7 +43,7 @@ function get_news_data()
 				echo $child->nodeName . '$' . $child->nodeValue . '#';
 		}
 
-		echo '_NDBEND_';
+		echo '_DBEND_';
 	}
 
 	return 'NONE';

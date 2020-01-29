@@ -30,8 +30,8 @@ public class Menu : MonoBehaviour
     [SerializeField]
     float alpha_unselected;
 
-    public Menu_item active_menu_item { get; private set; }
-    Menu_item prev_menu_item;
+    public static Menu_item Active_Item { get; private set; }
+    static Menu_item prev_item;
 
     [SerializeField]
     GameObject home_Button;
@@ -75,7 +75,7 @@ public class Menu : MonoBehaviour
 
         Enum.TryParse(scene_name, out Menu_item scene);
 
-        if (scene == active_menu_item && active_menu_item != Menu_item.Poll_details_yes_no && active_menu_item != Menu_item.Poll_details_other) return;
+        if (scene == Active_Item && Active_Item != Menu_item.Poll_details_yes_no && Active_Item != Menu_item.Poll_details_other) return;
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
             scenes[x] = SceneManager.GetSceneAt(x);
@@ -98,13 +98,13 @@ public class Menu : MonoBehaviour
         }
 
         SceneManager.LoadScene(scene.ToString(), LoadSceneMode.Additive);
-        prev_menu_item = active_menu_item;
-        active_menu_item = scene;
+        prev_item = Active_Item;
+        Active_Item = scene;
 
-        if (!active_menu_item.ToString().Contains(prev_menu_item.ToString()))
-            modify_Buttons(prev_menu_item, change_alpha, alpha_unselected);
+        if (!Active_Item.ToString().Contains(prev_item.ToString()))
+            modify_Buttons(prev_item, change_alpha, alpha_unselected);
 
-        modify_Buttons(active_menu_item, change_alpha, alpha_selected);
+        modify_Buttons(Active_Item, change_alpha, alpha_selected);
     }
 
     void modify_Buttons(Menu_item menu_item, Action<GameObject, float> method, float new_alpha)

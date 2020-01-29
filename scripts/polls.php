@@ -68,7 +68,7 @@ function get_poll_data()
 			}
 		}
 
-		echo '_PDBEND_';
+		echo '_DBEND_';
 	}
 
 	echo '|';

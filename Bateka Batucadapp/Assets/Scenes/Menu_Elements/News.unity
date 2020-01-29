@@ -668,9 +668,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 286336246630493448890e91025b3469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  news_entry_prefab: {fileID: 4326799604461977226, guid: 35bec4ce3ca43fc4a868d370760aea3c,
+  data_UI_prefab: {fileID: 4326799604461977226, guid: 35bec4ce3ca43fc4a868d370760aea3c,
     type: 3}
-  news_entry_parent: {fileID: 1109058805}
+  data_UI_parent: {fileID: 1109058805}
 --- !u!114 &1109058808
 MonoBehaviour:
   m_ObjectHideFlags: 0

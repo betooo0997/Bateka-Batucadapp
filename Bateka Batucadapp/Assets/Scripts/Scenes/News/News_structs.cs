@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 [System.Serializable]
-public class News_Entry : Data_structs
+public class News_Entry : Data_struct
 {
     public News_Entry()
     {

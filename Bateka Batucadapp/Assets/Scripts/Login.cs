@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +16,10 @@ public class Login : MonoBehaviour
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_user_data", user.text, password.text };
-        Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, false);
+        Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, Handler_Type.none, false);
     }
 
-    void Handle_Login_Response(string response)
+    void Handle_Login_Response(string response, Handler_Type type)
     {
         Parse_Login_Data(response, true);
     }

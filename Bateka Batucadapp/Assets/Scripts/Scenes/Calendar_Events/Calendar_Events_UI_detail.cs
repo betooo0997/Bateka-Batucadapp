@@ -13,7 +13,7 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     protected void Start()
     {
-        calendar_event = Calendar_Events.Selected_Event;
+        calendar_event = (Calendar_Event)Calendar_Events.Selected_Data;
         Initialize();
     }
 

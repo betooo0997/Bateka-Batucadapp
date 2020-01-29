@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Calendar_Event : Data_structs
+public class Calendar_Event : Data_struct
 {
     public string Location;
     public DateTime Date;

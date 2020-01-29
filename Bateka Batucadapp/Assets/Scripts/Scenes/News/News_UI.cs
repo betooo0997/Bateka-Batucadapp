@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class News_UI : MonoBehaviour
+public class News_UI : Data_UI
 {
     public Text Title;
     public Text Creation_time;
@@ -13,7 +13,7 @@ public class News_UI : MonoBehaviour
 
     public void Show_News_Details()
     {
-        News.Set_Selected_data(news_entry);
+        News.Selected_Data = news_entry;
         Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.News_details);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)

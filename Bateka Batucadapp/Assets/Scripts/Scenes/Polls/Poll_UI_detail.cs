@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class Poll_UI_detail : Poll_UI
@@ -10,7 +11,7 @@ public abstract class Poll_UI_detail : Poll_UI
 
     protected void Start()
     {
-        poll = Polls.Selected_Poll;
+        poll = (Poll)Polls.Selected_Data;
         Initialize();
     }
 
@@ -53,7 +54,7 @@ public abstract class Poll_UI_detail : Poll_UI
     /// <summary>
     /// Called on server response.
     /// </summary>
-    protected void Handle_Vote_Response(string response)
+    protected void Handle_Vote_Response(string response, Handler_Type type)
     {
         Set_Interactable(true);
 
@@ -63,13 +64,15 @@ public abstract class Poll_UI_detail : Poll_UI
             return;
         }
 
-        poll = Polls.Parse_Single_Poll_Data(response);
+        poll = Polls.Parse_Single_Data(response);
 
-        for (int x = 0; x < Polls.Poll_List.Count; x++)
+        List<Data_struct> polls = Polls.Data_List_Get(typeof(Polls));
+
+        for (int x = 0; x < polls.Count; x++)
         {
-            if (Polls.Poll_List[x].Id == poll.Id)
+            if (polls[x].Id == poll.Id)
             {
-                Polls.Poll_List[x] = poll;
+                Polls.Data_List_Set(typeof(Polls), x, poll);
                 break;
             }
         }

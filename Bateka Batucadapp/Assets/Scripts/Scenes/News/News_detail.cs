@@ -12,7 +12,7 @@ public class News_detail : News_UI
 
     protected void Start()
     {
-        news_entry = (News_Entry)News.Get_Selected_data(typeof(News_Entry));
+        news_entry = (News_Entry)News.Selected_Data;
         Initialize();
     }
 
