@@ -7,12 +7,15 @@ public class Calendar_Events : Database_Handler
 {
     static List<Calendar_Events_section> sections;
 
-    private new void Awake()
+    public GameObject Data_Section_UI_Prefab;
+
+    protected override void Awake()
     {
+        base.Awake();
         sections = new List<Calendar_Events_section>();
     }
 
-
+    
 
     // ______________________________________
     //

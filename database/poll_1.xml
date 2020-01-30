@@ -1,28 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<poll>
-  <id>1</id>
-  <title>Prueba2</title>
-  <subtitle>Esto es una prueba chachi</subtitle>
-  <description>Esto es la información detallada de la segunda encuesta de Batekapp. Es muy guay y blablabla.</description>
-  <creation_time/>
-  <author>beto</author>
-  <privacy>public</privacy>
-  <options>
-    <rejection>1</rejection>
-    <affirmation>3</affirmation>
-  </options>
-  <comments>
-    <comment>
-      <author>ivan</author>
-      <content>diosssss</content>
-    </comment>
-    <comment>
-      <author>yael</author>
-      <content>OMG</content>
-    </comment>
-    <comment>
-      <author>aitor</author>
-      <content>pffff</content>
-    </comment>
-  </comments>
-</poll>
+<poll><id>1</id><title>Prueba2</title><subtitle>Esto es una prueba chachi</subtitle><description>Esto es la información detallada de la segunda encuesta de Batekapp. Es muy guay y blablabla.</description><creation_time/><author>beto</author><privacy>public</privacy><options><rejection>1</rejection><affirmation>3</affirmation></options><comments><comment><author>ivan</author><content>diosssss</content></comment><comment><author>yael</author><content>OMG</content></comment><comment><author>aitor</author><content>pffff</content></comment></comments></poll>

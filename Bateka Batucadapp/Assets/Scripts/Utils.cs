@@ -105,4 +105,24 @@ public class Utils : MonoBehaviour
         }
         return list;
     }
+
+    public delegate void Function();
+
+    public static void InvokeNextFrame(Function function)
+    {
+        try
+        {
+            Singleton.StartCoroutine(_InvokeNextFrame(function));
+        }
+        catch
+        {
+            Debug.Log("Trying to invoke " + function.ToString() + " but it doesn't seem to exist");
+        }
+    }
+
+    static IEnumerator _InvokeNextFrame(Function function)
+    {
+        yield return null;
+        function();
+    }
 }

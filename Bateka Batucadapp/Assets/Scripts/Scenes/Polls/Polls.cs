@@ -17,6 +17,11 @@ public class Polls : Database_Handler
     /// </summary>
     public static Poll Parse_Single_Data(string poll_data)
     {
+        if (poll_data.Contains("|"))
+            poll_data = Utils.Split(poll_data, '|')[1];
+
+        poll_data = poll_data.Replace("_PDBEND_", "");
+
         // Separate information and comment section from database.
         string[] data_split = Utils.Split(poll_data, "\\COMMENTS");
 

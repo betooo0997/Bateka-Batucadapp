@@ -212,7 +212,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data_UI_prefab: {fileID: 5870722766553100434, guid: a945e9dc9bc6c6844b961cf647ac09ee,
     type: 3}
-  data_UI_parent: {fileID: 69977665}
+  Data_UI_Parent: {fileID: 69977665}
 --- !u!1 &144066214
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,10 +796,10 @@ RectTransform:
   m_Father: {fileID: 69977665}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 245, y: 0}
-  m_SizeDelta: {x: 490, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1795012889
 CanvasRenderer:

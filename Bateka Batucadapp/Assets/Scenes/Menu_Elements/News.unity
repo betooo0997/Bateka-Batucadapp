@@ -670,7 +670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data_UI_prefab: {fileID: 4326799604461977226, guid: 35bec4ce3ca43fc4a868d370760aea3c,
     type: 3}
-  data_UI_parent: {fileID: 1109058805}
+  Data_UI_Parent: {fileID: 1109058805}
 --- !u!114 &1109058808
 MonoBehaviour:
   m_ObjectHideFlags: 0

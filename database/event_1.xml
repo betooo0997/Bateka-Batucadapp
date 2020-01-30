@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<event>
+  <id>1</id>
+  <title>Evento de Prueba 2</title>
+  <details>Detalle del segundo evento de Bateka</details>
+  <location>Casa Beto</location>
+  <date>4.02.2020-14.00</date>
+  <confirm_deadline>3.02.2020-17.00</confirm_deadline>
+</event>

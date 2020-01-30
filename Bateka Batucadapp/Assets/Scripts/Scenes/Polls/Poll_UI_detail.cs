@@ -72,7 +72,8 @@ public abstract class Poll_UI_detail : Poll_UI
         {
             if (polls[x].Id == poll.Id)
             {
-                Polls.Data_List_Set(typeof(Polls), x, poll);
+                polls[x] = poll;
+                Polls.Data_List_Set(typeof(Polls), polls);
                 break;
             }
         }

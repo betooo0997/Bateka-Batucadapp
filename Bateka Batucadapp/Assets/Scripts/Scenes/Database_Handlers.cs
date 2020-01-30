@@ -37,7 +37,7 @@ public abstract class Database_Handler : MonoBehaviour
     /// The parent of the data_UI_prefab instance to be spwaned.
     /// </summary>
     [SerializeField]
-    protected Transform data_UI_parent;
+    public Transform Data_UI_Parent;
 
 
 
@@ -63,7 +63,7 @@ public abstract class Database_Handler : MonoBehaviour
     //
 
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         Singleton = this;
     }
@@ -237,16 +237,19 @@ public abstract class Database_Handler : MonoBehaviour
     /// </summary>
     protected void Spawn_UI_Elements()
     {
-        foreach (Transform transform in data_UI_parent.GetComponentsInChildren<Transform>())
-            if (transform.name == GetType().ToString() + "_element")
+        foreach (Transform transform in Data_UI_Parent.GetComponentsInChildren<Transform>())
+            if (transform.name == GetType().ToString() + "_element" || transform.name == GetType().ToString() + "_section")
                 Destroy(transform.gameObject);
 
         foreach (Data_struct element in Data_List_Get(GetType()))
         {
-            GameObject element_obj = Instantiate(data_UI_prefab, data_UI_parent);
+            GameObject element_obj = Instantiate(data_UI_prefab, Data_UI_Parent);
             element_obj.name = GetType().ToString() + "_element";
             element_obj.GetComponent<Data_UI>().Set_Values(element);
         }
+
+        if (GetType() == typeof(Calendar_Events))
+            Utils.InvokeNextFrame(Calendar_Events_section.Spawn_Sections);
 
         enabled = false;
     }

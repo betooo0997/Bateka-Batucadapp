@@ -1047,7 +1047,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data_UI_prefab: {fileID: 8052728048315561576, guid: 94830c67a72a7c546b955f06438f1016,
     type: 3}
-  data_UI_parent: {fileID: 1655034197}
+  Data_UI_Parent: {fileID: 1655034197}
+  Data_Section_UI_Prefab: {fileID: 5596346773914153980, guid: cbd7d57f138ee8047a2ffa7a72fd9bd8,
+    type: 3}
 --- !u!1 &2013750635
 GameObject:
   m_ObjectHideFlags: 0
