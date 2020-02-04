@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7b124cd53bf714190bf2a93b6ffff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data_UI_prefab: {fileID: 8052728048315561576, guid: 94830c67a72a7c546b955f06438f1016,
+  data_UI_prefab: {fileID: 7394627503208684774, guid: 94830c67a72a7c546b955f06438f1016,
     type: 3}
   Data_UI_Parent: {fileID: 1655034197}
   Data_Section_UI_Prefab: {fileID: 5596346773914153980, guid: cbd7d57f138ee8047a2ffa7a72fd9bd8,

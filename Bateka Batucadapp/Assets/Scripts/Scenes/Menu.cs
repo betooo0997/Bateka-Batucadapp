@@ -75,7 +75,7 @@ public class Menu : MonoBehaviour
 
         Enum.TryParse(scene_name, out Menu_item scene);
 
-        if (scene == Active_Item && Active_Item != Menu_item.Poll_details_yes_no && Active_Item != Menu_item.Poll_details_other) return;
+        if (scene == Active_Item && Active_Item != Menu_item.Poll_details_yes_no && Active_Item != Menu_item.Poll_details_other && Active_Item != Menu_item.Events_details) return;
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
             scenes[x] = SceneManager.GetSceneAt(x);

@@ -17,10 +17,7 @@ public class Polls : Database_Handler
     /// </summary>
     public static Poll Parse_Single_Data(string poll_data)
     {
-        if (poll_data.Contains("|"))
-            poll_data = Utils.Split(poll_data, '|')[1];
-
-        poll_data = poll_data.Replace("_PDBEND_", "");
+        poll_data = Utils.Clear_Response(poll_data);
 
         // Separate information and comment section from database.
         string[] data_split = Utils.Split(poll_data, "\\COMMENTS");
@@ -76,7 +73,7 @@ public class Polls : Database_Handler
                         string[] node = Utils.Split(option, "@");
                         newPoll.Vote_Types.Add(node[0]);
                         if(node.Length == 2)
-                            newPoll.Vote_Voters.Add(Get_Voters(node[1]));
+                            newPoll.Vote_Voters.Add(Utils.Get_Voters(node[1]));
                     }
                     break;
             }
@@ -135,25 +132,6 @@ public class Polls : Database_Handler
 
         return newPoll;
     }
-
-    /// <summary>
-    /// Get list of users from a data string.
-    /// </summary>
-    static List<User.User_Information> Get_Voters(string data)
-    {
-        string[] user_ids = Utils.Split(data, ',');
-        List<User.User_Information> vote_list = new List<User.User_Information>();
-
-        foreach (string user_id in user_ids)
-        {
-            User.User_Information voter = User.Get_User(uint.Parse(user_id));
-            if (voter.Id != 0)
-                vote_list.Add(voter);
-        }
-
-        return vote_list;
-    }
-
 
 
     // ______________________________________

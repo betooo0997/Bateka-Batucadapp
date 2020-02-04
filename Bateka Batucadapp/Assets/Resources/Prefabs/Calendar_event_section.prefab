@@ -76,7 +76,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ensayo
+  m_Text: Month Year
 --- !u!1 &5596346773914153980
 GameObject:
   m_ObjectHideFlags: 0

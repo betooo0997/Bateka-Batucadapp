@@ -3,7 +3,13 @@
   <id>1</id>
   <title>Evento de Prueba 2</title>
   <details>Detalle del segundo evento de Bateka</details>
-  <location>Casa Beto</location>
+  <location>Otro lugar</location>
   <date>4.02.2020-14.00</date>
   <confirm_deadline>3.02.2020-17.00</confirm_deadline>
+  <meeting_time>4.02.2020-12.00</meeting_time>
+  <meeting_location>Agrupa</meeting_location>
+  <options>
+    <rejection>1</rejection>
+    <affirmation>3</affirmation>
+  </options>
 </event>

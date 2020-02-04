@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class Calendar_Events_UI : Data_UI
 {
     public Text Title;
-    public Text Date;
+    public Text Location;
+
+    public Text Meeting_Location;
 
     protected Calendar_Event calendar_event;
 

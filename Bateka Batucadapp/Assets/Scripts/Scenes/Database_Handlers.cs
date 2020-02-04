@@ -140,6 +140,7 @@ public abstract class Database_Handler : MonoBehaviour
     static void Parse_Data(string data_to_parse, bool save, Handler_Type handler_type)
     {
         Func<string, Data_struct> Parse_Data_Single = News.Parse_Single_Data;
+        Func<List<Data_struct>> Sort_List = null;
         Type type = typeof(News);
 
         switch (handler_type)
@@ -152,6 +153,7 @@ public abstract class Database_Handler : MonoBehaviour
             case Handler_Type.events:
                 Parse_Data_Single = Calendar_Events.Parse_Single_Data;
                 type = typeof(Calendar_Events);
+                Sort_List = Calendar_Events.Sort_List;
                 break;
         }
 
@@ -171,6 +173,9 @@ public abstract class Database_Handler : MonoBehaviour
 
         if (Singleton != null)
             Singleton.enabled = true;
+
+        if(Sort_List != null)
+            Sort_List();
 
         Scroll_Updater.Disable();
     }

@@ -79,17 +79,17 @@ public class Utils : MonoBehaviour
         return false;
     }
 
-    public static object[] Bubble_Sort_DateTime(object[] list, DateTime[] date_time_list)
+    public static List<Data_struct> Bubble_Sort_DateTime(List<Data_struct> list, DateTime[] date_time_list)
     {
-        for (int x = 1; x < list.Length; x++)
+        for (int x = 1; x < list.Count; x++)
         {
             bool switched = false;
 
-            for (int y = 0; y < list.Length - x; y++)
+            for (int y = 0; y < list.Count - x; y++)
             {
                 if (Is_Sooner(date_time_list[y + 1], date_time_list[y]))
                 {
-                    object temp = list[y];
+                    Data_struct temp = list[y];
                     DateTime dt_temp = date_time_list[y];
 
                     list[y] = list[y + 1];
@@ -124,5 +124,33 @@ public class Utils : MonoBehaviour
     {
         yield return null;
         function();
+    }
+
+    /// <summary>
+    /// Get list of users from a data string.
+    /// </summary>
+    public static List<User.User_Information> Get_Voters(string data)
+    {
+        string[] user_ids = Utils.Split(data, ',');
+        List<User.User_Information> vote_list = new List<User.User_Information>();
+
+        foreach (string user_id in user_ids)
+        {
+            User.User_Information voter = User.Get_User(uint.Parse(user_id));
+            if (voter.Id != 0)
+                vote_list.Add(voter);
+        }
+
+        return vote_list;
+    }
+
+    public static string Clear_Response(string response)
+    {
+        if (response.Contains("|"))
+            response = Split(response, '|')[1];
+
+        response = response.Replace("_PDBEND_", "");
+
+        return response;
     }
 }

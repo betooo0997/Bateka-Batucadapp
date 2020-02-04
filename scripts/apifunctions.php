@@ -39,6 +39,9 @@ function handleRequest()
 				case 'get_events':
 					return get_events_data();
 
+				case 'set_event_vote':
+					return set_event_vote($user_data);
+
 				default:
 					return 'REQUEST_TYPE "' . $_POST['REQUEST_TYPE'] . '" not understood.';
 			}
