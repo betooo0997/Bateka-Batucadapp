@@ -55,7 +55,7 @@ public class Http_Client: MonoBehaviour
                     error = "No estás conectad@ a internet.";
 
                 Message.ShowMessage(error);
-                Debug.LogWarning(www.error);
+                Debug.LogWarning(error);
                 Scroll_Updater.Disable();
             }
             else

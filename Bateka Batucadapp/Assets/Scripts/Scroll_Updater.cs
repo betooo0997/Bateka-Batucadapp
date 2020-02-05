@@ -43,17 +43,31 @@ public class Scroll_Updater : MonoBehaviour
         {
             Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
 
+            if (Menu.Active_Item == Menu.Menu_item.News)
+                Database_Handler.Load_Data_Server(Handler_Type.events);
+
             updating = true;
             image.enabled = true;
             icon.enabled = true;
             initialized[Database_Handler.Singleton.GetType()] = true;
-            Spacer.sizeDelta = new Vector3(Spacer.sizeDelta.x, 34);
+            Spacer.sizeDelta = new Vector3(Spacer.sizeDelta.x, 60);
             Canvas.ForceUpdateCanvases();
             FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
         else if(updating)
         {
             icon.rectTransform.Rotate(new Vector3(0, 0, -Time.deltaTime * 360));
+        }
+        else if (Singleton.Spacer.sizeDelta.y > 0)
+        {
+            icon.rectTransform.Rotate(new Vector3(0, 0, -Time.deltaTime * 360));
+            Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, Singleton.Spacer.sizeDelta.y - Time.deltaTime * 250);
+
+            if (Singleton.Spacer.sizeDelta.y < 0)
+            {
+                Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
+                Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
+            }
         }
     }
 
@@ -64,9 +78,6 @@ public class Scroll_Updater : MonoBehaviour
             Singleton.updating = false;
             Singleton.image.enabled = false;
             Singleton.icon.enabled = false;
-            Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
-            Canvas.ForceUpdateCanvases();
-            FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
     }
 }

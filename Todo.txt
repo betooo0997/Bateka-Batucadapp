@@ -1,0 +1,6 @@
+TODO:
+
+-Implement notification system
+-Add drag by touch on scroll updater
+
+-refactor load menu item method, unclear
