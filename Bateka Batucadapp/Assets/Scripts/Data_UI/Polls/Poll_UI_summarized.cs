@@ -1,4 +1,6 @@
-﻿using UnityEngine.UI;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Poll_UI_summarized : Poll_UI
 {
@@ -9,11 +11,12 @@ public class Poll_UI_summarized : Poll_UI
         background = GetComponent<Image>();
     }
 
-    public override void Set_event(Data_struct poll)
+    public override void Set_Event(Data_struct poll)
     {
         this.poll = (Poll)poll;
         title.text = this.poll.Title;
-        expiration_date.text = this.poll.Expiration_time;
+
+        expiration_date.text = this.poll.Expiration_time.ToString("dd/MM/yyyy | HH:mm") + "h";
         Update_Color(background);
     }
 
@@ -37,5 +40,8 @@ public class Poll_UI_summarized : Poll_UI
                 image.color = color_other(1);
                 break;
         }
+
+        if (Utils.Is_Sooner(poll.Expiration_time, DateTime.Now))
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,12 +19,15 @@ public abstract class Poll_UI_detail : Poll_UI
     protected virtual void Initialize()
     {
         title.text = poll.Title;
-        expiration_date.text = poll.Expiration_time;
+        expiration_date.text = poll.Expiration_time.ToString("dd/MM/yyyy | HH:mm") + "h";
         description.text = poll.Details;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
         initialized = true;
+
+        if (Utils.Is_Sooner(poll.Expiration_time, DateTime.Now))
+            Set_Interactable(false);
     }
 
     protected abstract void Set_Interactable(bool interactable);

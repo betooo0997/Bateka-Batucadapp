@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum Handler_Type
 {
@@ -151,6 +152,7 @@ public abstract class Database_Handler : MonoBehaviour
             case Handler_Type.polls:
                 Parse_Data_Single = Polls.Parse_Single_Data;
                 type = typeof(Polls);
+                Sort_List = Polls.Sort_List;
                 break;
 
             case Handler_Type.events:
@@ -253,7 +255,7 @@ public abstract class Database_Handler : MonoBehaviour
         {
             GameObject element_obj = Instantiate(data_UI_prefab, Data_UI_Parent);
             element_obj.name = GetType().ToString() + "_element";
-            element_obj.GetComponent<Data_UI>().Set_event(element);
+            element_obj.GetComponent<Data_UI>().Set_Event(element);
         }
 
         if (GetType() == typeof(Calendar_Events))

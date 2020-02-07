@@ -1103,8 +1103,6 @@ MonoBehaviour:
     Status: 0
     Selected_Option_Idx: 0
     Subtitle: 
-    Creation_time: 17.01.2020 18:24h
-    Expiration_time: 
     Author: 
     Privacy: 
     Vote_Types: []
@@ -1312,8 +1310,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 245, y: 0}
+  m_SizeDelta: {x: 490, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1276292052
 MonoBehaviour:

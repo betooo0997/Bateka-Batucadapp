@@ -4,7 +4,8 @@
   <title>Prueba2</title>
   <subtitle>Esto es una prueba chachi</subtitle>
   <description>Esto es la información detallada de la segunda encuesta de Batekapp. Es muy guay y blablabla.</description>
-  <creation_time/>
+  <creation_time>31.01.2020-10:00</creation_time>
+  <expiration_time>4.02.2020-12.00</expiration_time>
   <author>beto</author>
   <privacy>public</privacy>
   <options>

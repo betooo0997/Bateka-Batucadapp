@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -54,7 +55,7 @@ public class Polls : Database_Handler
                     break;
 
                 case "creation_time":
-                    newPoll.Creation_time = tokens[1];
+                    newPoll.Creation_time = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "author":
@@ -63,6 +64,10 @@ public class Polls : Database_Handler
 
                 case "privacy":
                     newPoll.Privacy = tokens[1];
+                    break;
+
+                case "expiration_time":
+                    newPoll.Expiration_time = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "options":
@@ -151,5 +156,26 @@ public class Polls : Database_Handler
 
     void Handle_Poll_Update_Response(string response, Handler_Type type)
     {
+    }
+
+
+
+    // ______________________________________
+    //
+    // 3. SORT.
+    // ______________________________________
+    //
+
+
+    public static List<Data_struct> Sort_List()
+    {
+        List<Data_struct> Unsorted_List = Polls.Data_List_Get(typeof(Polls));
+        DateTime[] date_Times = new DateTime[Unsorted_List.Count];
+
+        for (int x = 0; x < date_Times.Length; x++)
+            date_Times[x] = ((Poll)Unsorted_List[x]).Creation_time;
+
+        List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
+        return Sorted_List;
     }
 }

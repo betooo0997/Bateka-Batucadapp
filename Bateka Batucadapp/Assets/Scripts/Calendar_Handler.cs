@@ -9,15 +9,18 @@ public class Calendar_Handler : MonoBehaviour
     DateTime first_day;
 
     [SerializeField]
-    GameObject week_prefab;
-
-    [SerializeField]
-    GameObject day_prefab;
-
-    [SerializeField]
     Text month;
 
     public static Calendar_Handler Singleton;
+
+    [SerializeField]
+    List<Calendar_Day> days;
+
+    [SerializeField]
+    GameObject event_overview_prefab;
+
+    [SerializeField]
+    RectTransform event_overview_transform;
 
     private void Awake()
     {
@@ -46,37 +49,27 @@ public class Calendar_Handler : MonoBehaviour
 
         DateTime temp = first_day;
 
-        for (int x = 0; x < 6; x++)
+        foreach (Calendar_Day day in days)
         {
-            GameObject week = Instantiate(week_prefab, transform);
-            week.name = "Week_instance";
+            day.Set_date(temp);
+            temp = temp.AddDays(1);
 
-            for (int y = 0; y < 7; y++)
-            {
-                GameObject day = Instantiate(day_prefab, week.transform);
-                day.name = "Day_instance";
-                Calendar_Day calendar_day = day.GetComponent<Calendar_Day>();
-                calendar_day.Set_date(temp);
+            List<Data_struct> list = new List<Data_struct>();
 
-                // Set Calendar_Day values.
-                foreach (Calendar_Event data in Database_Handler.Data_List_Get(typeof(Calendar_Events)))
-                {
-                    if (data.Date.Year == temp.Year && data.Date.Month == temp.Month && data.Date.Day == temp.Day)
-                    {
-                        calendar_day.Set_event(data);
-                        break;
-                    }
-                }
+            // Set Calendar_Day values.
+            foreach (Calendar_Event data in Database_Handler.Data_List_Get(typeof(Calendar_Events)))
+                if (data.Date.Year == temp.Year && data.Date.Month == temp.Month && data.Date.Day == temp.Day)
+                    list.Add(data);
 
-                temp = temp.AddDays(1);
-            }
-
-            Canvas.ForceUpdateCanvases();
-            week.GetComponent<HorizontalLayoutGroup>().SetLayoutHorizontal();
+            day.Set_Event(list);
         }
 
         Canvas.ForceUpdateCanvases();
-        GetComponent<VerticalLayoutGroup>().SetLayoutVertical();
+
+        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
+            vLayout.SetLayoutVertical();
+
+        Canvas.ForceUpdateCanvases();
     }
 
     int Get_Distance_To_Monday(DayOfWeek week_day)
@@ -85,5 +78,28 @@ public class Calendar_Handler : MonoBehaviour
             return 6;
 
         return (int)week_day - 1;
+    }
+
+    public void Show_Overview(Calendar_Day day)
+    {
+        foreach (Button button in event_overview_transform.GetComponentsInChildren<Button>())
+            Destroy(button.gameObject);
+
+        foreach (Calendar_Event calendar_event in day.Calendar_events)
+        {
+            Calendar_Overview overview = Instantiate(event_overview_prefab, event_overview_transform).GetComponent<Calendar_Overview>();
+            overview.SetValues(calendar_event);
+        }
+
+        Canvas.ForceUpdateCanvases();
+        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
+            vLayout.SetLayoutVertical();
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(event_overview_transform.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+
+        Canvas.ForceUpdateCanvases();
+        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
+            vLayout.SetLayoutVertical();
     }
 }

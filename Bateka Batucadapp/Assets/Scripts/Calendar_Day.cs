@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Calendar_Day : Data_UI
 {
-    public Calendar_Event calendar_event;
+    public List<Calendar_Event> Calendar_events;
 
     [SerializeField]
     Image type;
@@ -25,16 +26,17 @@ public class Calendar_Day : Data_UI
     private void Awake()
     {
         day = GetComponentInChildren<Text>();
-        calendar_event = new Calendar_Event();
     }
 
-    public override void Set_event(Data_struct data_struct)
+    public void Set_Event(List<Data_struct> data_struct)
     {
         if (data_struct == null)
             return;
 
-        calendar_event = (Calendar_Event)data_struct;
-        Update_Color(status);
+        Calendar_events = data_struct.Cast<Calendar_Event>().ToList();
+
+        if(Calendar_events.Count > 0)
+            Update_Color(status);
     }
 
     public void Set_date(DateTime date)
@@ -47,7 +49,7 @@ public class Calendar_Day : Data_UI
 
     protected void Update_Color(Image image)
     {
-        switch (calendar_event.Status)
+        switch (Calendar_events[0].Status)
         {
             case "affirmation":
                 image.color = color_affirmed(1);
@@ -65,16 +67,28 @@ public class Calendar_Day : Data_UI
 
     public void Show_Details()
     {
+        if (enabled_borders != null)
+            enabled_borders.SetActive(false);
+
+        borders.SetActive(true);
+        enabled_borders = borders;
+
+        Calendar_Handler.Singleton.Show_Overview(this);
+    }
+
+    /*
+    public void Show_Details()
+    {
         if(enabled_borders != null)
             enabled_borders.SetActive(false);
 
         borders.SetActive(true);
         enabled_borders = borders;
 
-        if (calendar_event.Date.Year == 1)
+        if (Calendar_events.Date.Year == 1)
             return;
 
-        Calendar_Events.Selected_Data = calendar_event;
+        Calendar_Events.Selected_Data = Calendar_events;
         Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Events_details);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
@@ -85,5 +99,5 @@ public class Calendar_Day : Data_UI
                 break;
             }
         }
-    }
+    }*/
 }

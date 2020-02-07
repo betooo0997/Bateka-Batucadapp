@@ -10,8 +10,8 @@ public class Poll : Data_struct
     public string Status;
     public int Selected_Option_Idx;
     public string Subtitle;
-    public string Creation_time;
-    public string Expiration_time;
+    public DateTime Creation_time;
+    public DateTime Expiration_time;
     public string Author;
     public string Privacy;
     public List<List<User.User_Information>> Vote_Voters;
@@ -54,7 +54,7 @@ public class Poll : Data_struct
 
     public Poll()
     {
-        Creation_time = DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm") + "h";
+        Creation_time = DateTime.Now;
     }
 }
 

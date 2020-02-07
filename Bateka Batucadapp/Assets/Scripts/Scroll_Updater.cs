@@ -67,6 +67,13 @@ public class Scroll_Updater : MonoBehaviour
             {
                 Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
                 Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
+
+                if (Database_Handler.Singleton.GetType() == typeof(News))
+                {
+                    Canvas.ForceUpdateCanvases();
+                    foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
+                        vLayout.SetLayoutVertical();
+                }
             }
         }
     }

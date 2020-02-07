@@ -62,6 +62,9 @@ public class Utils : MonoBehaviour
     /// </summary>
     public static DateTime Get_DateTime(string date)
     {
+        if (date.Length < 9)
+            return new DateTime(9999, 12, 31);
+
         string[] data = Split(date, '-');
         int[] day_data = Split_To_Int(data[0], '.');
         int[] hour_data = Split_To_Int(data[1], '.');

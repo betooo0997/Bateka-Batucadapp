@@ -1407,15 +1407,13 @@ MonoBehaviour:
   title: {fileID: 7349674948257275161}
   expiration_date: {fileID: 1699563826}
   poll:
+    Id: 0
+    Title: 
+    Details: 
     Type: 0
     Status: 0
     Selected_Option_Idx: 0
-    Id: 0
-    Title: 
     Subtitle: 
-    Description: 
-    Creation_time: 19.01.2020 22:33h
-    Expiration_time: 
     Author: 
     Privacy: 
     Vote_Types: []
