@@ -52,8 +52,6 @@ public class Calendar_Handler : MonoBehaviour
         foreach (Calendar_Day day in days)
         {
             day.Set_date(temp);
-            temp = temp.AddDays(1);
-
             List<Data_struct> list = new List<Data_struct>();
 
             // Set Calendar_Day values.
@@ -62,6 +60,7 @@ public class Calendar_Handler : MonoBehaviour
                     list.Add(data);
 
             day.Set_Event(list);
+            temp = temp.AddDays(1);
         }
 
         Canvas.ForceUpdateCanvases();
@@ -82,24 +81,14 @@ public class Calendar_Handler : MonoBehaviour
 
     public void Show_Overview(Calendar_Day day)
     {
-        foreach (Button button in event_overview_transform.GetComponentsInChildren<Button>())
-            Destroy(button.gameObject);
+        foreach (Button button in GetComponentsInChildren<Button>())
+            if(button.name.Contains("overview"))
+                Destroy(button.gameObject);
 
         foreach (Calendar_Event calendar_event in day.Calendar_events)
         {
-            Calendar_Overview overview = Instantiate(event_overview_prefab, event_overview_transform).GetComponent<Calendar_Overview>();
+            Calendar_Overview overview = Instantiate(event_overview_prefab, transform).GetComponent<Calendar_Overview>();
             overview.SetValues(calendar_event);
         }
-
-        Canvas.ForceUpdateCanvases();
-        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-            vLayout.SetLayoutVertical();
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(event_overview_transform.GetComponent<RectTransform>());
-        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
-
-        Canvas.ForceUpdateCanvases();
-        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-            vLayout.SetLayoutVertical();
     }
 }

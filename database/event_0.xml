@@ -4,9 +4,9 @@
   <title>Evento de Prueba</title>
   <details>Detalle del primer evento de Bateka</details>
   <location>Algún lugar</location>
-  <date>28.02.2020-14.00</date>
-  <confirm_deadline>27.02.2020-17.00</confirm_deadline>
-  <meeting_time>28.02.2020-12.00</meeting_time>
+  <date>28.02.2020-14:00</date>
+  <confirm_deadline>27.02.2020-17:00</confirm_deadline>
+  <meeting_time>28.02.2020-12:00</meeting_time>
   <meeting_location>Agrupa</meeting_location>
   <options>
     <rejection>1</rejection>

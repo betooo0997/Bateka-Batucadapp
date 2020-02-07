@@ -58,7 +58,7 @@ public class Utils : MonoBehaviour
     }
 
     /// <summary>
-    /// Parses a date string with format 'dd.mm.yyyy|hh.mm'.
+    /// Parses a date string with format 'dd.mm.yyyy-hh:mm'.
     /// </summary>
     public static DateTime Get_DateTime(string date)
     {
@@ -67,7 +67,7 @@ public class Utils : MonoBehaviour
 
         string[] data = Split(date, '-');
         int[] day_data = Split_To_Int(data[0], '.');
-        int[] hour_data = Split_To_Int(data[1], '.');
+        int[] hour_data = Split_To_Int(data[1], ':');
 
         return new DateTime(day_data[2], day_data[1], day_data[0], hour_data[0], hour_data[1], 0);
     }
