@@ -19,7 +19,7 @@ public class News_detail : News_UI
     protected virtual void Initialize()
     {
         Title.text = news_entry.Title;
-        Creation_time.text = news_entry.Creation_time;
+        Creation_time.text = Utils.Get_String(news_entry.Creation_time);
         Detail.text = news_entry.Details;
 
         foreach (string image in news_entry.Img_URLs)

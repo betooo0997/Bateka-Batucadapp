@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,5 +46,8 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
                 image.color = color_not_answered(1);
                 break;
         }
+
+        if (Utils.Is_Sooner(calendar_event.Confirm_Deadline, DateTime.Now))
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

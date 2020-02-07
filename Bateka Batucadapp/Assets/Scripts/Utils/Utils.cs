@@ -53,8 +53,7 @@ public class Utils : MonoBehaviour
 
     public static string Get_String(DateTime date)
     {
-        return date.Day.ToString() + "." + date.Month.ToString() + "." + date.Year.ToString() 
-            + " " + date.Hour.ToString() + ":" + date.Minute.ToString() + ":" + date.Second.ToString();
+        return date.ToString("dd.MM.yyyy | HH:mm") + "h";
     }
 
     /// <summary>

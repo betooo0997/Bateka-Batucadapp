@@ -10,7 +10,10 @@ public class Calendar_Overview : Data_UI
     Text title;
 
     [SerializeField]
-    Text detail;
+    Text meeting_location;
+
+    [SerializeField]
+    Text location;
 
     Image image;
 
@@ -25,7 +28,8 @@ public class Calendar_Overview : Data_UI
     {
         this.calendar_event = calendar_event;
         title.text = calendar_event.Title;
-        detail.text = calendar_event.Details;
+        meeting_location.text = calendar_event.Meeting_Location + " " + calendar_event.Meeting_Time.ToString("HH:mm") + "h";
+        location.text = calendar_event.Location + " " + calendar_event.Date.ToString("HH:mm") + "h";
 
         Update_Color(image);
     }

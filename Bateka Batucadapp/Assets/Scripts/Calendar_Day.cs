@@ -21,6 +21,8 @@ public class Calendar_Day : Data_UI
 
     static GameObject enabled_borders;
 
+    DateTime date;
+
     Text day;
 
     private void Awake()
@@ -35,12 +37,23 @@ public class Calendar_Day : Data_UI
 
         Calendar_events = data_struct.Cast<Calendar_Event>().ToList();
 
-        if(Calendar_events.Count > 0)
+        if (Calendar_events.Count > 0)
             Update_Color(status);
+        else if (date.Day == DateTime.Now.Day && date.Month == DateTime.Now.Month && date.Year == DateTime.Now.Year)
+        {
+            status.color = new Color(0.9f, 0.9f, 0.9f);
+
+            if (enabled_borders != null)
+                enabled_borders.SetActive(false);
+
+            borders.SetActive(true);
+            enabled_borders = borders;
+        }
     }
 
     public void Set_date(DateTime date)
     {
+        this.date = date;
         day.text = date.Day.ToString();
 
         if (date.Month != DateTime.Now.Month)

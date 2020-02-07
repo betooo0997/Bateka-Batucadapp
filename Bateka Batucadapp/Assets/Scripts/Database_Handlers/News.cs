@@ -35,7 +35,7 @@ public class News : Database_Handler
                     break;
 
                 case "creation_time":
-                    news_entry.Creation_time = tokens[1];
+                    news_entry.Creation_time = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "imgs":

@@ -8,6 +8,6 @@ public class News_summarized : News_UI
     {
         this.news_entry = (News_Entry)news_entry;
         Title.text = this.news_entry.Title;
-        Creation_time.text = this.news_entry.Creation_time;
+        Creation_time.text = Utils.Get_String(this.news_entry.Creation_time);
     }
 }

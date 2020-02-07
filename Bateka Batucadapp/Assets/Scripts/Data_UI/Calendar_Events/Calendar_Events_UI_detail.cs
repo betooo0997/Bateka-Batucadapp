@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,9 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     protected virtual void Initialize()
     {
+        if (Utils.Is_Sooner(calendar_event.Confirm_Deadline, DateTime.Now))
+            Set_Interactable(false);
+
         Title.text = calendar_event.Title;
         Meeting_Location.text = calendar_event.Meeting_Location + ", " + Utils.Get_String(calendar_event.Meeting_Time);
         Location.text = calendar_event.Location + ", " + Utils.Get_String(calendar_event.Date);

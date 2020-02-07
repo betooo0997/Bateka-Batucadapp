@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class News_Entry : Data_struct
@@ -8,6 +9,6 @@ public class News_Entry : Data_struct
         Img_URLs = new List<string>();
     }
 
-    public string Creation_time;
+    public DateTime Creation_time;
     public List<string> Img_URLs;
 }
