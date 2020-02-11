@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <poll>
   <id>1</id>
-  <title>Prueba2</title>
-  <subtitle>Esto es una prueba chachi</subtitle>
-  <description>Esto es la información detallada de la segunda encuesta de Batekapp. Es muy guay y blablabla.</description>
+  <title>Abrazo a los creadores de la app?</title>
+  <subtitle></subtitle>
+  <description>Tu piensa que los abrazos son muy vukis. Depende de las circustancias se puede intercambiar un abrazo por sekso.</description>
   <creation_time>31.01.2020-10:00</creation_time>
   <expiration_time>4.02.2020-12:00</expiration_time>
   <author>beto</author>
   <privacy>public</privacy>
   <options>
-    <rejection>1</rejection>
-    <affirmation>3</affirmation>
+    <rejection></rejection>
+    <affirmation>1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19</affirmation>
   </options>
   <comments>
-    <comment>
-      <author>ivan</author>
-      <content>diosssss</content>
-    </comment>
-    <comment>
-      <author>yael</author>
-      <content>OMG</content>
-    </comment>
-    <comment>
-      <author>aitor</author>
-      <content>pffff</content>
-    </comment>
   </comments>
 </poll>

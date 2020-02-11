@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <poll>
   <id>0</id>
-  <title>Prueba</title>
-  <subtitle>Esto es una prueba chachi</subtitle>
-  <description>Esto es la información detallada de la primera encuesta de Batekapp. Es muy guay y blablabla.</description>
+  <title>Que opinas de esta aplicación?</title>
+  <subtitle></subtitle>
+  <description>Aquí van los detalles de esta encuesta de gran importancia. Oh dios cuanto detalle, cuanto texto y uau que currada de descripción.</description>
   <creation_time>05.02.2020-10:00</creation_time>
   <expiration_time>20.02.2020-12:00</expiration_time>
   <author>beto</author>
   <privacy>public</privacy>
   <options>
-    <a>2</a>
-    <b>3</b>
-    <c>1</c>
+    <es_genial></es_genial>
+    <es_increible></es_increible>
+    <voy_a_llorar_de_emosion></voy_a_llorar_de_emosion>
   </options>
   <comments>
-    <comment>
-      <author>izan</author>
-      <content>uau que guay</content>
-    </comment>
     <comment>
       <author>aitor</author>
       <content>meh</content>

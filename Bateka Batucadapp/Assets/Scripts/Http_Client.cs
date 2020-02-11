@@ -57,6 +57,8 @@ public class Http_Client: MonoBehaviour
                 Message.ShowMessage(error);
                 Debug.LogWarning(error);
                 Scroll_Updater.Disable();
+                
+                Login.Singleton.Login_Button.interactable = true;
             }
             else
             {

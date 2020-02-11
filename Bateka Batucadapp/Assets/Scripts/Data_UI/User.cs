@@ -43,9 +43,9 @@ public class User : MonoBehaviour
 
         foreach (User_Information user_info in Users_Info)
         {
-            GameObject new_user = GameObject.Instantiate(users_Prefab, user_parent);
+            GameObject new_user = Instantiate(users_Prefab, user_parent);
             new_user.name = "User " + user_info.Name;
-            new_user.GetComponentInChildren<Text>().text = user_info.Name;
+            new_user.GetComponentInChildren<Text>().text = user_info.Username;
             new_user.GetComponent<Button>().onClick.AddListener(delegate { Show_Add_User_Info(user_info.Username); });
         }
     }

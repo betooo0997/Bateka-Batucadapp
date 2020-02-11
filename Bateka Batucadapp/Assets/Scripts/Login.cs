@@ -12,16 +12,27 @@ public class Login : MonoBehaviour
     [SerializeField]
     InputField password;
 
+    public Button Login_Button;
+
+    public static Login Singleton;
+
+    private void Awake()
+    {
+        Singleton = this;
+    }
+
     public void Send_Login_Request()
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_user_data", user.text, password.text };
         Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, Handler_Type.none, false);
+        Login_Button.interactable = false;
     }
 
     void Handle_Login_Response(string response, Handler_Type type)
     {
         Parse_Login_Data(response, true);
+        Login_Button.interactable = true;
     }
 
     public static void Parse_Login_Data(string response, bool save = false)

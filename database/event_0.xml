@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <event>
   <id>0</id>
-  <title>Evento de Prueba</title>
-  <details>Detalle del primer evento de Bateka</details>
-  <location>Algún lugar</location>
-  <date>28.02.2020-14:00</date>
-  <confirm_deadline>27.02.2020-17:00</confirm_deadline>
-  <meeting_time>28.02.2020-12:00</meeting_time>
+  <title>Ensayo extra de carnaval</title>
+  <details>Horario: 19:00 a 20:30</details>
+  <location>Agrupa</location>
+  <date>10.02.2020-19:00</date>
+  <confirm_deadline>10.02.2020-19:00</confirm_deadline>
+  <meeting_time>10.02.2020-19:00</meeting_time>
   <meeting_location>Agrupa</meeting_location>
   <options>
-    <rejection>1</rejection>
-    <affirmation>3</affirmation>
+    <rejection></rejection>
+    <affirmation></affirmation>
   </options>
 </event>

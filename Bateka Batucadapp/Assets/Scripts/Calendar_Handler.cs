@@ -62,13 +62,6 @@ public class Calendar_Handler : MonoBehaviour
             day.Set_Event(list);
             temp = temp.AddDays(1);
         }
-
-        Canvas.ForceUpdateCanvases();
-
-        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-            vLayout.SetLayoutVertical();
-
-        Canvas.ForceUpdateCanvases();
     }
 
     int Get_Distance_To_Monday(DayOfWeek week_day)

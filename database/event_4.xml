@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <event>
-  <id>2</id>
+  <id>4</id>
   <title>Ensayo</title>
   <details>
     Holaaa se acerca carnaval y queremos sacar el ritmo nuevo, para ello necesitamos que hagáis un esfuerzo estos 3 viernes que quedan hasta carnaval y todos os quedéis hasta final del ensayo.
@@ -8,9 +8,9 @@
     Att: los caps😊
   </details>
   <location>Agrupa</location>
-  <date>14.02.2020-20:30</date>
-  <confirm_deadline>14.02.2020-20:30</confirm_deadline>
-  <meeting_time>14.02.2020-20:30</meeting_time>
+  <date>21.02.2020-20:30</date>
+  <confirm_deadline>21.02.2020-20:30</confirm_deadline>
+  <meeting_time>21.02.2020-20:30</meeting_time>
   <meeting_location>Agrupa</meeting_location>
   <options>
     <rejection></rejection>

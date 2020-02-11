@@ -58,6 +58,9 @@ function get_poll_data()
 					echo '\COMMENTS';
 					$comments = $child->childNodes;
 
+					if($comments->length == 0)
+						break;
+
 					foreach ($comments as $comment)
 					{
 						foreach ($comment->childNodes as $data)
