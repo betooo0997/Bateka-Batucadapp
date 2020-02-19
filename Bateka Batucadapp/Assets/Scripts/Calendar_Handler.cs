@@ -2,75 +2,116 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Calendar_Handler : MonoBehaviour
+public class Calendar_Handler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    DateTime first_day;
-
-    [SerializeField]
-    Text month;
-
     public static Calendar_Handler Singleton;
-
-    [SerializeField]
-    List<Calendar_Day> days;
 
     [SerializeField]
     GameObject event_overview_prefab;
 
     [SerializeField]
-    RectTransform event_overview_transform;
+    LayoutElement horizontal_scrollview;
 
-    private void Awake()
-    {
-        Singleton = this;
-    }
+    [SerializeField]
+    RectTransform month_element;
 
-    private void Start()
-    {
-        Initialize();
-    }
+    Calendar_Month[] months;
+
+    bool update, late_update = false;
+
+    int current_month_element;
+
+    DateTime month_to_show;
+
+    Vector2 previous_mouse_pos;
+
+
+    // ______________________________________
+    //
+    // 1. INITIALIZE.
+    // ______________________________________
+    //
+
 
     public void Initialize()
     {
-        Transform[] transforms = GetComponentsInChildren<Transform>();
+        months[0].Initialize(month_to_show.AddMonths(-1));
+        months[1].Initialize(month_to_show);
+        months[2].Initialize(month_to_show.AddMonths(1));
+    }
 
-        foreach (Transform element in transforms)
-            if (element.name.Contains("instance"))
-               Destroy(element.gameObject);
 
-        month.text = DateTime.Now.ToString("MMMM");
 
+    // ______________________________________
+    //
+    // 2. MONOBEHAVIOUR LIFE CYCLE.
+    // ______________________________________
+    //
+
+
+    void Awake()
+    {
+        Singleton = this;        
+        months = GetComponentsInChildren<Calendar_Month>();
+    }
+
+    void Start()
+    {
         // Get first of month.
-        first_day = DateTime.Now.AddDays(-DateTime.Now.Day + 1);
-        // Get monday before that.
-        first_day = first_day.AddDays(-Get_Distance_To_Monday(first_day.DayOfWeek));
+        month_to_show = DateTime.Now.AddDays(-DateTime.Now.Day + 1); 
+        Initialize();
+    }
 
-        DateTime temp = first_day;
+    private void Update()
+    {
+        if (!update)
+            return;
 
-        foreach (Calendar_Day day in days)
+        int change_value = -(current_month_element + 1);
+        float target = (current_month_element) * month_element.sizeDelta.x;
+        float movement = Time.deltaTime * (target - transform.localPosition.x) * 8 - change_value;
+
+        transform.localPosition += new Vector3(movement, 0);
+
+        if (Math.Abs(transform.localPosition.x - target) < 1)
         {
-            day.Set_date(temp);
-            List<Data_struct> list = new List<Data_struct>();
+            transform.localPosition = new Vector3(-month_element.sizeDelta.x, transform.localPosition.y);
+            update = false;
 
-            // Set Calendar_Day values.
-            foreach (Calendar_Event data in Database_Handler.Data_List_Get(typeof(Calendar_Events)))
-                if (data.Date.Year == temp.Year && data.Date.Month == temp.Month && data.Date.Day == temp.Day)
-                    list.Add(data);
+            if (change_value != 0)
+            {
+                month_to_show = month_to_show.AddMonths(change_value);
 
-            day.Set_Event(list);
-            temp = temp.AddDays(1);
+                months[0].Initialize(month_to_show.AddMonths(-1));
+                months[1].Initialize(month_to_show);
+                months[2].Initialize(month_to_show.AddMonths(1));
+            }
         }
     }
 
-    int Get_Distance_To_Monday(DayOfWeek week_day)
+    void LateUpdate()
     {
-        if (week_day == DayOfWeek.Sunday)
-            return 6;
+        if (!late_update)
+            return;
 
-        return (int)week_day - 1;
+        Canvas.ForceUpdateCanvases();
+        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
+            vLayout.SetLayoutVertical();
+        horizontal_scrollview.minHeight = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
+        late_update = false;
     }
+
+
+
+    // ______________________________________
+    //
+    // 3. SHOW OVERVIEW.
+    // ______________________________________
+    //
+
 
     public void Show_Overview(Calendar_Day day)
     {
@@ -80,8 +121,40 @@ public class Calendar_Handler : MonoBehaviour
 
         foreach (Calendar_Event calendar_event in day.Calendar_events)
         {
-            Calendar_Overview overview = Instantiate(event_overview_prefab, transform).GetComponent<Calendar_Overview>();
+            Calendar_Overview overview = Instantiate(event_overview_prefab, months[1].transform).GetComponent<Calendar_Overview>();
             overview.SetValues(calendar_event);
         }
+
+        late_update = true;
+    }
+
+
+
+    // ______________________________________
+    //
+    // 4. DRAG HANDLING.
+    // ______________________________________
+    //
+
+
+    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+    {
+        if(!update)
+            previous_mouse_pos = eventData.pressPosition;
+    }
+
+    void IDragHandler.OnDrag(PointerEventData eventData)
+    {
+        if (!update)
+        {
+            transform.localPosition += new Vector3((eventData.position - previous_mouse_pos).x, 0);
+            previous_mouse_pos = eventData.position;
+        }
+    }
+
+    void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+    {
+        current_month_element = (int)Math.Round(transform.localPosition.x / month_element.sizeDelta.x, 0);
+        update = true;
     }
 }

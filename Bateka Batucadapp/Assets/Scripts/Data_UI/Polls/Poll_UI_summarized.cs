@@ -4,12 +4,8 @@ using UnityEngine.UI;
 
 public class Poll_UI_summarized : Poll_UI
 {
-    protected Image background;
-
-    protected void Awake()
-    {
-        background = GetComponent<Image>();
-    }
+    [SerializeField]
+    Image background;
 
     public override void Set_Event(Data_struct poll)
     {

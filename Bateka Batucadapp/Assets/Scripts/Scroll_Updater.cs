@@ -14,14 +14,8 @@ public class Scroll_Updater : MonoBehaviour
 
     Image image;
 
-    [SerializeField]
-    RectTransform rectTransform;
-
-    [SerializeField]
-    RectTransform Spacer;
-
-    [SerializeField]
-    Image icon;
+    RectTransform scroll_view_content;
+    RectTransform load_icon;
 
     public static void Initialize()
     {
@@ -35,11 +29,13 @@ public class Scroll_Updater : MonoBehaviour
     {
         Singleton = this;
         image = GetComponent<Image>();
+        load_icon = transform.GetChild(0).gameObject.GetComponent<RectTransform>();
+        scroll_view_content = transform.parent.GetComponent<RectTransform>();
     }
 
     void Update()
     {
-        if (!initialized[Database_Handler.Singleton.GetType()] || (!updating && rectTransform.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
+        if (!initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
         {
             Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
 
@@ -47,26 +43,25 @@ public class Scroll_Updater : MonoBehaviour
                 Database_Handler.Load_Data_Server(Handler_Type.events);
 
             updating = true;
-            image.enabled = true;
-            icon.enabled = true;
+            load_icon.gameObject.SetActive(true);
             initialized[Database_Handler.Singleton.GetType()] = true;
-            Spacer.sizeDelta = new Vector3(Spacer.sizeDelta.x, 60);
+            Utils.InvokeNextFrame(() => load_icon.sizeDelta = new Vector3(load_icon.sizeDelta.x, 60));
+            Utils.InvokeNextFrame(() => FindObjectOfType<ContentSizeFitter>().SetLayoutVertical());
+            Utils.InvokeNextFrame(() => Canvas.ForceUpdateCanvases());
+            FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
+            FindObjectOfType<ContentSizeFitter>().SetLayoutVertical();
             Canvas.ForceUpdateCanvases();
             FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
-        else if(updating)
+        else if (!updating && Singleton.load_icon.sizeDelta.y > 0)
         {
-            icon.rectTransform.Rotate(new Vector3(0, 0, -Time.deltaTime * 360));
-        }
-        else if (Singleton.Spacer.sizeDelta.y > 0)
-        {
-            icon.rectTransform.Rotate(new Vector3(0, 0, -Time.deltaTime * 360));
-            Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, Singleton.Spacer.sizeDelta.y - Time.deltaTime * 250);
+            Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, Singleton.load_icon.sizeDelta.y - Time.deltaTime * 250);
 
-            if (Singleton.Spacer.sizeDelta.y < 0)
+            if (Singleton.load_icon.sizeDelta.y < 0)
             {
-                Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
-                Singleton.Spacer.sizeDelta = new Vector3(Singleton.Spacer.sizeDelta.x, 0);
+                Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, 0);
+                Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, 0);
+                Singleton.load_icon.gameObject.SetActive(false);
 
                 if (Database_Handler.Singleton.GetType() == typeof(News))
                 {
@@ -83,8 +78,6 @@ public class Scroll_Updater : MonoBehaviour
         if (Singleton != null)
         {
             Singleton.updating = false;
-            Singleton.image.enabled = false;
-            Singleton.icon.enabled = false;
         }
     }
 }

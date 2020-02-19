@@ -31,7 +31,7 @@ public class Menu : MonoBehaviour
     float alpha_unselected;
 
     public static Menu_item Active_Item { get; private set; }
-    static Menu_item prev_item;
+    public static Menu_item Prev_Item { get; private set; }
 
     [SerializeField]
     GameObject home_Button;
@@ -98,11 +98,11 @@ public class Menu : MonoBehaviour
         }
 
         SceneManager.LoadScene(scene.ToString(), LoadSceneMode.Additive);
-        prev_item = Active_Item;
+        Prev_Item = Active_Item;
         Active_Item = scene;
 
-        if (!Active_Item.ToString().Contains(prev_item.ToString()))
-            modify_Buttons(prev_item, change_alpha, alpha_unselected);
+        if (!Active_Item.ToString().Contains(Prev_Item.ToString()))
+            modify_Buttons(Prev_Item, change_alpha, alpha_unselected);
 
         modify_Buttons(Active_Item, change_alpha, alpha_selected);
     }

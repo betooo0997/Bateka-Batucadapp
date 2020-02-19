@@ -19,6 +19,8 @@ public class Calendar_Day : Data_UI
     [SerializeField]
     GameObject borders;
 
+    static Calendar_Day selected_day;
+
     static GameObject enabled_borders;
 
     DateTime date;
@@ -32,32 +34,30 @@ public class Calendar_Day : Data_UI
 
     public void Set_Event(List<Data_struct> data_struct)
     {
-        if (data_struct == null)
-            return;
-
         Calendar_events = data_struct.Cast<Calendar_Event>().ToList();
 
         if (Calendar_events.Count > 0)
             Update_Color(status);
+
         else if (date.Day == DateTime.Now.Day && date.Month == DateTime.Now.Month && date.Year == DateTime.Now.Year)
         {
             status.color = new Color(0.9f, 0.9f, 0.9f);
-
-            if (enabled_borders != null)
-                enabled_borders.SetActive(false);
-
-            borders.SetActive(true);
-            enabled_borders = borders;
+            Show_Details();
         }
+
+        else
+            status.color = new Color(1, 1, 1);
     }
 
-    public void Set_date(DateTime date)
+    public void Set_date(DateTime date, Calendar_Month month_instance)
     {
         this.date = date;
         day.text = date.Day.ToString();
 
-        if (date.Month != DateTime.Now.Month)
+        if (date.Month != month_instance.Date.Month)
             day.color = new Color(0.65f, 0.65f, 0.65f);
+        else
+            day.color = new Color(0, 0, 0);
     }
 
     protected void Update_Color(Image image)
@@ -86,31 +86,10 @@ public class Calendar_Day : Data_UI
         borders.SetActive(true);
         enabled_borders = borders;
 
-        Calendar_Handler.Singleton.Show_Overview(this);
-    }
-
-    /*
-    public void Show_Details()
-    {
-        if(enabled_borders != null)
-            enabled_borders.SetActive(false);
-
-        borders.SetActive(true);
-        enabled_borders = borders;
-
-        if (Calendar_events.Date.Year == 1)
-            return;
-
-        Calendar_Events.Selected_Data = Calendar_events;
-        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Events_details);
-
-        for (int x = 0; x < SceneManager.sceneCount; x++)
+        if (selected_day != this)
         {
-            if (SceneManager.GetSceneAt(x).name.ToLower().Contains("event"))
-            {
-                SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(x));
-                break;
-            }
+            selected_day = this;
+            Calendar_Handler.Singleton.Show_Overview(this);
         }
-    }*/
+    }
 }

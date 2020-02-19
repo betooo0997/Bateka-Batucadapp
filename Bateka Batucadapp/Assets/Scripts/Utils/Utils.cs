@@ -155,4 +155,25 @@ public class Utils : MonoBehaviour
 
         return response;
     }
+
+    static void Loop<T>(Transform parent, ref List<T> result)
+    {
+        for (int x = 0; x < parent.childCount; x++)
+        {
+            T component = parent.GetChild(x).GetComponent<T>();
+            if (component != null)
+                result.Add(component);
+
+            Loop(parent.GetChild(x), ref result);
+        }
+    }
+
+    static public List<T> GetComponentsInChildren_Order<T>(Transform parent)
+    {
+        List<T> result = new List<T>();
+
+        Loop<T>(parent, ref result);
+
+        return result;
+    }
 }
