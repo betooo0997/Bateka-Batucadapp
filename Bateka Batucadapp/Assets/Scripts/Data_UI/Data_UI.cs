@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Data_UI : MonoBehaviour
 {
-    public virtual void Set_Event(Data_struct data) { }
+    public virtual void Set_Data(Data_struct data) { }
 
     protected Color color_not_answered(float a) { return new Color(1f, 0.83f, 0f, a); }
     protected Color color_affirmed(float a) { return new Color(0.5f, 1, 0.5f, a); }

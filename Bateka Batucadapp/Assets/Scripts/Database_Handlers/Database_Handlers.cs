@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public enum Handler_Type
 {
     none,
-    news = Menu.Menu_item.News,
+    news = Menu.Menu_item.Home,
     polls = Menu.Menu_item.Polls,
-    events = Menu.Menu_item.Events
+    events = Menu.Menu_item.Events,
+    docs = Menu.Menu_item.Docs
 }
 
 public abstract class Database_Handler : MonoBehaviour
@@ -51,7 +52,6 @@ public abstract class Database_Handler : MonoBehaviour
 
     public static void Initialize_Dictionaries()
     {
-
         data_list = new Dictionary<Type, List<Data_struct>>();
     }
 
@@ -124,6 +124,17 @@ public abstract class Database_Handler : MonoBehaviour
 
         if (Calendar_Handler.Singleton != null)
             Calendar_Handler.Singleton.Initialize();
+
+        switch (type)
+        {
+            case Handler_Type.news:
+                News.On_Data_Parsed();
+                break;
+
+            case Handler_Type.events:
+                Calendar_Events.On_Data_Parsed();
+                break;
+        }
     }
 
 
@@ -143,12 +154,17 @@ public abstract class Database_Handler : MonoBehaviour
     /// <param name="handler_type">The child class type of Database_Handler that is going to parse data_to_parse.</param>
     static void Parse_Data(string data_to_parse, bool save, Handler_Type handler_type)
     {
-        Func<string, Data_struct> Parse_Data_Single = News.Parse_Single_Data;
+        Func<string, Data_struct> Parse_Data_Single = null;
         Func<List<Data_struct>> Sort_List = null;
-        Type type = typeof(News);
+        Type type = null;
 
         switch (handler_type)
         {
+            case Handler_Type.news:
+                Parse_Data_Single = News.Parse_Single_Data;
+                type = typeof(News);
+                break;
+
             case Handler_Type.polls:
                 Parse_Data_Single = Polls.Parse_Single_Data;
                 type = typeof(Polls);
@@ -159,6 +175,11 @@ public abstract class Database_Handler : MonoBehaviour
                 Parse_Data_Single = Calendar_Events.Parse_Single_Data;
                 type = typeof(Calendar_Events);
                 Sort_List = Calendar_Events.Sort_List;
+                break;
+
+            case Handler_Type.docs:
+                Parse_Data_Single = Docs.Parse_Single_Data;
+                type = typeof(Docs);
                 break;
         }
 
@@ -179,10 +200,10 @@ public abstract class Database_Handler : MonoBehaviour
         if (Singleton != null)
             Singleton.enabled = true;
 
-        if(Sort_List != null)
-            Sort_List();
+        Sort_List?.Invoke();
 
-        Scroll_Updater.Disable();
+        if (Menu.Active_Item != Menu.Menu_item.Home)
+            Scroll_Updater.Disable();
     }
 
 
@@ -255,7 +276,7 @@ public abstract class Database_Handler : MonoBehaviour
         {
             GameObject element_obj = Instantiate(data_UI_prefab, Data_UI_Parent);
             element_obj.name = GetType().ToString() + "_element";
-            element_obj.GetComponent<Data_UI>().Set_Event(element);
+            element_obj.GetComponent<Data_UI>().Set_Data(element);
         }
 
         if (GetType() == typeof(Calendar_Events))

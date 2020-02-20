@@ -27,6 +27,7 @@ public class Login : MonoBehaviour
         string[] field_values = { "get_user_data", user.text, password.text };
         Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, Handler_Type.none, false);
         Login_Button.interactable = false;
+        Loading_Screen.Set_Active(true);
     }
 
     void Handle_Login_Response(string response, Handler_Type type)
@@ -43,6 +44,8 @@ public class Login : MonoBehaviour
         if (tokens[0] == "VERIFIED.")
         {
             Load_Scene.Load_Scene_ST("Menu");
+            Loading_Screen.Set_Active(true);
+
             User.Handle_User_Data(tokens[1]);
 
             if (save)
@@ -51,10 +54,14 @@ public class Login : MonoBehaviour
             else if (PlayerPrefs.HasKey("user_database_timestamp"))
                 Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));
         }
+        else
+        {
+            if (tokens_error.Length > 1 && tokens_error[tokens_error.Length - 2] == "ERROR 500")
+                Message.ShowMessage("Error 500 " + tokens_error[tokens_error.Length - 1]);
 
-        else if (tokens_error.Length > 1 && tokens_error[tokens_error.Length - 2] == "ERROR 500")
-            Message.ShowMessage("Error 500 " + tokens_error[tokens_error.Length - 1]);
+            else Message.ShowMessage("Error: usuario o contraseña incorrectos.");
 
-        else Message.ShowMessage("Error: usuario o contraseña incorrectos.");
+            Loading_Screen.Set_Active(false);
+        }
     }
 }

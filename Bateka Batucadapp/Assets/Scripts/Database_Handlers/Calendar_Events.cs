@@ -109,4 +109,9 @@ public class Calendar_Events : Database_Handler
         List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
         return Sorted_List;
     }
+
+    public static void On_Data_Parsed()
+    {
+        Home.Events_Loaded = true;
+    }
 }

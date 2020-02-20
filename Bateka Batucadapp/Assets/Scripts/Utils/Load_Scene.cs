@@ -12,7 +12,7 @@ public class Load_Scene : MonoBehaviour
 
     public static void Load_Scene_ST(string scene_name, bool additive = true)
     {
-        if (additive) SceneManager.LoadScene(scene_name, LoadSceneMode.Additive);
+        if (additive) SceneManager.LoadSceneAsync(scene_name, LoadSceneMode.Additive);
         else SceneManager.LoadScene(scene_name, LoadSceneMode.Single);
     }
 }

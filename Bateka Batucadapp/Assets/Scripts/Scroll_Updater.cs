@@ -23,6 +23,7 @@ public class Scroll_Updater : MonoBehaviour
         initialized.Add(typeof(News), false);
         initialized.Add(typeof(Polls), false);
         initialized.Add(typeof(Calendar_Events), false);
+        initialized.Add(typeof(Docs), false);
     }
 
     private void Awake()
@@ -39,8 +40,11 @@ public class Scroll_Updater : MonoBehaviour
         {
             Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
 
-            if (Menu.Active_Item == Menu.Menu_item.News)
+            if (Menu.Active_Item == Menu.Menu_item.Home)
+            {
+                Home.Reset_Load();
                 Database_Handler.Load_Data_Server(Handler_Type.events);
+            }
 
             updating = true;
             load_icon.gameObject.SetActive(true);

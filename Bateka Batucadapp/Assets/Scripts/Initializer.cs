@@ -21,10 +21,12 @@ public class Initializer : MonoBehaviour
     static void Load_Data_Cache()
     {
         if (PlayerPrefs.HasKey("user_database"))
+        {
             Login.Parse_Login_Data(PlayerPrefs.GetString("user_database"));
-
-        Database_Handler.Load_Data_Cache(Handler_Type.news);
-        Database_Handler.Load_Data_Cache(Handler_Type.events);
-        Database_Handler.Load_Data_Cache(Handler_Type.polls);
+            Loading_Screen.Set_Active(true);
+            Database_Handler.Load_Data_Cache(Handler_Type.news);
+            Database_Handler.Load_Data_Cache(Handler_Type.events);
+            Database_Handler.Load_Data_Cache(Handler_Type.polls);
+        }
     }
 }

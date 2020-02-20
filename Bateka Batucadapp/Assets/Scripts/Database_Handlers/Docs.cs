@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class News : Database_Handler
+public class Docs : Database_Handler
 {
     // ______________________________________
     //
@@ -11,11 +11,11 @@ public class News : Database_Handler
     //
 
 
-    public static News_Entry Parse_Single_Data(string news_entry_data)
+    public static Doc Parse_Single_Data(string doc_data)
     {
-        News_Entry news_entry = new News_Entry();
+        Doc doc = new Doc();
 
-        foreach (string element in Utils.Split(news_entry_data, '#'))
+        foreach (string element in Utils.Split(doc_data, '#'))
         {
             string[] tokens = Utils.Split(element, '$');
 
@@ -23,33 +23,37 @@ public class News : Database_Handler
             switch (tokens[0])
             {
                 case "id":
-                    news_entry.Id = uint.Parse(tokens[1]);
+                    doc.Id = uint.Parse(tokens[1]);
                     break;
 
                 case "title":
-                    news_entry.Title = tokens[1];
+                    doc.Title = tokens[1];
+                    break;
+
+                case "subtitle":
+                    doc.Subtitle = tokens[1];
                     break;
 
                 case "details":
-                    news_entry.Details = tokens[1];
+                    doc.Details = tokens[1];
                     break;
 
                 case "creation_time":
-                    news_entry.Creation_time = Utils.Get_DateTime(tokens[1]);
+                    doc.Creation_time = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "imgs":
                     foreach (string img in Utils.Split(tokens[1], '~'))
-                        news_entry.Img_URLs.Add(img);
+                        doc.Img_URLs.Add(img);
+                    break;
+
+                case "content_urls":
+                    foreach (string url in Utils.Split(tokens[1], '~'))
+                        doc.Content_URLs.Add(url);
                     break;
             }
         }
 
-        return news_entry;
-    }
-
-    public static void On_Data_Parsed()
-    {
-        Home.News_Loaded = true;
+        return doc;
     }
 }

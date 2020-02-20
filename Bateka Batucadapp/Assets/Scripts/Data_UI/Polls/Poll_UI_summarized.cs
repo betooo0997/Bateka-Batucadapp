@@ -7,7 +7,7 @@ public class Poll_UI_summarized : Poll_UI
     [SerializeField]
     Image background;
 
-    public override void Set_Event(Data_struct poll)
+    public override void Set_Data(Data_struct poll)
     {
         this.poll = (Poll)poll;
         title.text = this.poll.Title;

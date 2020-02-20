@@ -135,8 +135,8 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     public void On_Back_Button()
     {
-        if (Menu.Prev_Item == Menu.Menu_item.News)
-            Utils.Singleton.Load_Menu_Scene("News");
+        if (Menu.Prev_Item == Menu.Menu_item.Home)
+            Utils.Singleton.Load_Menu_Scene("Home");
         else
             Utils.Singleton.Load_Menu_Scene("Events");
     }

@@ -12,7 +12,7 @@ public class Menu : MonoBehaviour
     public enum Menu_item
     {
         None,
-        News = 2,
+        Home = 2,
         Polls,
         Events,
         Docs,
@@ -59,7 +59,7 @@ public class Menu : MonoBehaviour
 
     void Start()
     {
-        Load_Scene_Menu_Item(Menu_item.News.ToString());
+        Load_Scene_Menu_Item(Menu_item.Home.ToString());
         Message.ShowMessage("¡Hola " + User.User_Info.Username + "!");
     }
 
@@ -81,11 +81,11 @@ public class Menu : MonoBehaviour
             scenes[x] = SceneManager.GetSceneAt(x);
 
         // Check if scene_name is a Menu_item.
-        for (int x = (int)Menu.Menu_item.News; x <= (int)Menu.Menu_item.Poll_details_yes_no; x++)
+        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Poll_details_yes_no; x++)
         {
             if (scene == (Menu.Menu_item)x)
             {
-                for (int y = (int)Menu.Menu_item.News; y <= (int)Menu.Menu_item.Poll_details_yes_no; y++)
+                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Poll_details_yes_no; y++)
                 {
                     if (y == x) continue;
 
@@ -97,7 +97,7 @@ public class Menu : MonoBehaviour
             }
         }
 
-        SceneManager.LoadScene(scene.ToString(), LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(scene.ToString(), LoadSceneMode.Additive);
         Prev_Item = Active_Item;
         Active_Item = scene;
 
@@ -111,7 +111,7 @@ public class Menu : MonoBehaviour
     {
         switch (menu_item)
         {
-            case Menu_item.News:
+            case Menu_item.Home:
                 method(home_Button, new_alpha);
                 break;
 

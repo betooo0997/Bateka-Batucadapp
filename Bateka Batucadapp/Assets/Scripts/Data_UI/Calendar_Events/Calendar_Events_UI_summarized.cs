@@ -19,7 +19,7 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
         background = GetComponent<Image>();
     }
 
-    public override void Set_Event(Data_struct calendar_event)
+    public override void Set_Data(Data_struct calendar_event)
     {
         this.calendar_event = (Calendar_Event)calendar_event;
         day.text = this.calendar_event.Date.Day.ToString();
