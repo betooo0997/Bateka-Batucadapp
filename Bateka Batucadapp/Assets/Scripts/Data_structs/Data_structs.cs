@@ -9,3 +9,10 @@ public abstract class Data_struct
     public string Title;
     public string Details;
 }
+
+public enum Privacy
+{
+    Secret,
+    Private,
+    Public
+}

@@ -55,7 +55,7 @@ public class Polls : Database_Handler
                     break;
 
                 case "creation_time":
-                    newPoll.Creation_time = Utils.Get_DateTime(tokens[1]);
+                    newPoll.Creation_Time = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "author":
@@ -63,11 +63,11 @@ public class Polls : Database_Handler
                     break;
 
                 case "privacy":
-                    newPoll.Privacy = tokens[1];
+                    newPoll.Vote_Privacy = Utils.Parse_Privacy(tokens[1]);
                     break;
 
                 case "expiration_time":
-                    newPoll.Expiration_time = Utils.Get_DateTime(tokens[1]);
+                    newPoll.Answering_Deadline = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "options":
@@ -173,7 +173,7 @@ public class Polls : Database_Handler
         DateTime[] date_Times = new DateTime[Unsorted_List.Count];
 
         for (int x = 0; x < date_Times.Length; x++)
-            date_Times[x] = ((Poll)Unsorted_List[x]).Creation_time;
+            date_Times[x] = ((Poll)Unsorted_List[x]).Creation_Time;
 
         List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
         return Sorted_List;

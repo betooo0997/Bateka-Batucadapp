@@ -4,19 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Poll : Data_struct
+public class Poll : Votable
 {
     public Poll_Type Type;
     public string Status;
     public int Selected_Option_Idx;
     public string Subtitle;
-    public DateTime Creation_time;
-    public DateTime Expiration_time;
+    public DateTime Creation_Time;
     public string Author;
-    public string Privacy;
-    public List<List<User.User_Information>> Vote_Voters;
-    public List<string> Vote_Types;
-    public List<Comment> Comments;
 
     public  string Convert_To_String()
     {
@@ -26,10 +21,10 @@ public class Poll : Data_struct
         result += "<title>" + Title + @"</title>";
         result += "<subtitle>" + Subtitle + @"</subtitle>";
         result += "<description>" + Details + @"</description>";
-        result += "<creation_time>" + Creation_time + @"</creation_time>";
-        result += "<expiration_time>" + Expiration_time + @"</expiration_time>";
+        result += "<creation_time>" + Creation_Time + @"</creation_time>";
+        result += "<expiration_time>" + Answering_Deadline + @"</expiration_time>";
         result += "<author>" + Author + @"</author>";
-        result += "<privacy>" + Privacy + @"</privacy>";
+        result += "<privacy>" + Vote_Privacy.ToString() + @"</privacy>";
 
         for (int x = 0; x < Vote_Types.Count; x++)
             result += Get_VoteList(Vote_Voters[x], Vote_Types[x]);
@@ -54,7 +49,7 @@ public class Poll : Data_struct
 
     public Poll()
     {
-        Creation_time = DateTime.Now;
+        Creation_Time = DateTime.Now;
     }
 }
 

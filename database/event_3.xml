@@ -8,6 +8,7 @@
   <confirm_deadline>28.03.2020-00:00</confirm_deadline>
   <meeting_time>28.03.2020-00:00</meeting_time>
   <meeting_location>Hospitalet</meeting_location>
+  <privacy>public</privacy>
   <options>
     <rejection></rejection>
     <affirmation></affirmation>

@@ -58,7 +58,7 @@ public class Calendar_Events : Database_Handler
                     break;
 
                 case "confirm_deadline":
-                    calendar_event.Confirm_Deadline = Utils.Get_DateTime(tokens[1]);
+                    calendar_event.Answering_Deadline = Utils.Get_DateTime(tokens[1]);
                     break;
 
                 case "meeting_time":
@@ -67,6 +67,10 @@ public class Calendar_Events : Database_Handler
 
                 case "meeting_location":
                     calendar_event.Meeting_Location = tokens[1];
+                    break;
+
+                case "privacy":
+                    calendar_event.Vote_Privacy = Utils.Parse_Privacy(tokens[1]);
                     break;
 
                 case "options":

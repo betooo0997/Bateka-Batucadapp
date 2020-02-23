@@ -8,6 +8,7 @@
   <confirm_deadline>10.02.2020-19:00</confirm_deadline>
   <meeting_time>10.02.2020-19:00</meeting_time>
   <meeting_location>Agrupa</meeting_location>
+  <privacy>secret</privacy>
   <options>
     <rejection></rejection>
     <affirmation></affirmation>

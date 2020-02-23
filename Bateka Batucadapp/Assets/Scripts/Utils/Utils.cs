@@ -176,4 +176,12 @@ public class Utils : MonoBehaviour
 
         return result;
     }
+
+    public static Privacy Parse_Privacy(string data)
+    {
+        if (Enum.TryParse(data.ToUpper()[0] + data.Substring(1), out Privacy result))
+            Debug.LogError("Could not parse privacy setting.");
+
+        return result;
+    }
 }

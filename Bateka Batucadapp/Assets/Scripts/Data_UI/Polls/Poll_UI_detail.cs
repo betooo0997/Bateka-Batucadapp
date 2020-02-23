@@ -19,14 +19,14 @@ public abstract class Poll_UI_detail : Poll_UI
     protected virtual void Initialize()
     {
         title.text = poll.Title;
-        expiration_date.text = poll.Expiration_time.ToString("dd/MM/yyyy | HH:mm") + "h";
+        expiration_date.text = poll.Answering_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
         description.text = poll.Details;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
         initialized = true;
 
-        if (Utils.Is_Sooner(poll.Expiration_time, DateTime.Now))
+        if (Utils.Is_Sooner(poll.Answering_Deadline, DateTime.Now))
             Set_Interactable(false);
     }
 

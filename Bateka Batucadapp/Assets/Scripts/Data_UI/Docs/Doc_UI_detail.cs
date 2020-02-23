@@ -1,29 +1,42 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class News_detail : News_UI
+public class Doc_UI_detail : Doc_UI
 {
-    public Text Detail;
+    [SerializeField]
+    Text details;
 
     [SerializeField]
     GameObject image_prefab;
 
-    protected void Start()
+    [SerializeField]
+    GameObject url_prefab;
+
+    void Start()
     {
-        news_entry = (News_Entry)News.Selected_Data;
+        Doc = (Doc)Docs.Selected_Data;
         Initialize();
     }
 
     protected virtual void Initialize()
     {
-        Title.text = news_entry.Title;
-        Creation_time.text = Utils.Get_String(news_entry.Creation_time);
-        Detail.text = news_entry.Details;
+        Title.text = Doc.Title;
+        Subtitle.text = Doc.Subtitle;
+        Date.text = Utils.Get_String(Doc.Creation_time);
+        details.text = Doc.Details;
 
-        foreach (string image in news_entry.Img_URLs)
+        foreach (string url in Doc.Content_URLs)
+        {
+            Button button = Instantiate(url_prefab, transform).GetComponent<Button>();
+            button.onClick.AddListener(() => Application.OpenURL(url));
+            button.GetComponentInChildren<Text>().text = url;
+        }
+
+        Date.transform.SetAsLastSibling();
+
+        foreach (string image in Doc.Img_URLs)
             Http_Client.Download_Image(image, transform, Handle_Img_Response);
 
         Canvas.ForceUpdateCanvases();
@@ -45,6 +58,6 @@ public class News_detail : News_UI
 
         Vector2 result = new Vector2(rectTransform.sizeDelta.x, (int)(rectTransform.sizeDelta.x * ratio));
         rectTransform.sizeDelta = result;
-        Creation_time.transform.SetAsLastSibling();
+        Date.transform.SetAsLastSibling();
     }
 }

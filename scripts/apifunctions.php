@@ -46,6 +46,10 @@ function handleRequest()
 				case 'get_docs':
 					return get_docs_data();
 
+				case 'get_version':
+					echo "1.1";
+					return 'NONE';
+
 				default:
 					return 'REQUEST_TYPE "' . $_POST['REQUEST_TYPE'] . '" not understood.';
 			}

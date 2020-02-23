@@ -31,14 +31,14 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     protected virtual void Initialize()
     {
-        if (Utils.Is_Sooner(calendar_event.Confirm_Deadline, DateTime.Now))
+        if (Utils.Is_Sooner(calendar_event.Answering_Deadline, DateTime.Now))
             Set_Interactable(false);
 
         Title.text = calendar_event.Title;
         Meeting_Location.text = calendar_event.Meeting_Location + ", " + Utils.Get_String(calendar_event.Meeting_Time);
         Location.text = calendar_event.Location + ", " + Utils.Get_String(calendar_event.Date);
         Detail.text = calendar_event.Details;
-        confirm_deadline.text = "Fecha de cierre de encuesta: " + Utils.Get_String(calendar_event.Confirm_Deadline);
+        confirm_deadline.text = "Fecha de cierre de encuesta: " + Utils.Get_String(calendar_event.Answering_Deadline);
 
         switch (calendar_event.Status)
         {

@@ -47,7 +47,7 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
                 break;
         }
 
-        if (Utils.Is_Sooner(calendar_event.Confirm_Deadline, DateTime.Now))
+        if (Utils.Is_Sooner(calendar_event.Answering_Deadline, DateTime.Now))
             image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

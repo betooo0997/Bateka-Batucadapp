@@ -12,6 +12,7 @@
   <confirm_deadline>21.02.2020-20:30</confirm_deadline>
   <meeting_time>21.02.2020-20:30</meeting_time>
   <meeting_location>Agrupa</meeting_location>
+  <privacy>public</privacy>
   <options>
     <rejection></rejection>
     <affirmation></affirmation>

@@ -12,7 +12,7 @@ public class Poll_UI_summarized : Poll_UI
         this.poll = (Poll)poll;
         title.text = this.poll.Title;
 
-        expiration_date.text = this.poll.Expiration_time.ToString("dd/MM/yyyy | HH:mm") + "h";
+        expiration_date.text = this.poll.Answering_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
         Update_Color(background);
     }
 
@@ -37,7 +37,7 @@ public class Poll_UI_summarized : Poll_UI
                 break;
         }
 
-        if (Utils.Is_Sooner(poll.Expiration_time, DateTime.Now))
+        if (Utils.Is_Sooner(poll.Answering_Deadline, DateTime.Now))
             image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

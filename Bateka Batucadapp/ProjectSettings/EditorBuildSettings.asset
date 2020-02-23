@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Elements/News_details.unity
     guid: 8ad87ca1a0bfa054aac48522dd0f27f3
   - enabled: 1
+    path: Assets/Scenes/Menu_Elements/Docs_details.unity
+    guid: d916d1f3ad5bbb14da429c1fc496c865
+  - enabled: 1
     path: Assets/Scenes/Menu_Elements/Events_details.unity
     guid: 4f3dccbf5b2306e49a04f295df6ef12a
   - enabled: 1
