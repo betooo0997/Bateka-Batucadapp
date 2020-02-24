@@ -6,7 +6,7 @@ function get_events_data()
 
 	if (!isset($_POST['vote_event_id']))
 	{
-		$max_files = 5;
+		$max_files = 10;
 		if (isset($_POST['max_files']))
 			$max_files = intval($_POST['max_files']);
 

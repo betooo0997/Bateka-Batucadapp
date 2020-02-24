@@ -6,12 +6,16 @@ using UnityEngine;
 [System.Serializable]
 public class Poll : Votable
 {
-    public Poll_Type Type;
     public string Status;
     public int Selected_Option_Idx;
     public string Subtitle;
     public DateTime Creation_Time;
     public string Author;
+
+    public Poll()
+    {
+        Creation_Time = DateTime.Now;
+    }
 
     public  string Convert_To_String()
     {
@@ -46,22 +50,4 @@ public class Poll : Votable
 
         return result + "</" + nodeName + ">";
     }
-
-    public Poll()
-    {
-        Creation_Time = DateTime.Now;
-    }
-}
-
-public enum Poll_Type
-{
-    Yes_No = Menu.Menu_item.Poll_details_yes_no,
-    Other = Menu.Menu_item.Poll_details_other
-}
-
-[System.Serializable]
-public struct Comment
-{
-    public string Author;
-    public string Content;
 }

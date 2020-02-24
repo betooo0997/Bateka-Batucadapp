@@ -8,6 +8,7 @@ public class Calendar_Event : Votable
 {
     public Calendar_Event() : base()
     {
+        Votable_Type = Votable_Type.Yes_No;
         Location = "";
         Meeting_Location = "";
         Date = new DateTime();

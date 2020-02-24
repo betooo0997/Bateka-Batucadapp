@@ -15,7 +15,7 @@ public class Loading_Screen : MonoBehaviour
     public static void Set_Active(bool active)
     {
         if (active)
-            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
+            SceneManager.LoadScene("Loading", LoadSceneMode.Additive);
         else if (!active)
         {
             List<Scene> scenes = new List<Scene>();

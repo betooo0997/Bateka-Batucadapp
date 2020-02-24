@@ -16,7 +16,7 @@ public abstract class Poll_UI : Data_UI
     public void Show_Poll_Details()
     {
         Polls.Selected_Data = poll;
-        Menu.Singleton.Load_Scene_Menu_Item((Menu.Menu_item)poll.Type);
+        Menu.Singleton.Load_Scene_Menu_Item((Menu.Menu_item)poll.Votable_Type);
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
         {

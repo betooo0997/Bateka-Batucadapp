@@ -26,6 +26,7 @@ public class App_Updater : MonoBehaviour
                 Message.ShowMessage("No hay ninguna actualización disponible en este momento.");
             else
             {
+                Debug.Log(response + VERSION.ToString());
                 Message.ShowMessage("¡Hay nuevas actualizaciones disponibles!");
                 Message.ShowMessage("Abriendo enlace en tu navegador");
                 Invoke("Open_In_Browser", 4);

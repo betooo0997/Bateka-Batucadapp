@@ -111,7 +111,7 @@ public class Polls : Database_Handler
         }
 
         // Set Poll Type and Poll Status.
-        newPoll.Type = Poll_Type.Other;
+        newPoll.Votable_Type = Votable_Type.Other;
         newPoll.Status = "";
 
         for (int y = 0; y < newPoll.Vote_Voters.Count; y++)
@@ -130,7 +130,7 @@ public class Polls : Database_Handler
         if (newPoll.Vote_Voters.Count == 2 && 
            (newPoll.Vote_Types[0] == "rejection" ^ newPoll.Vote_Types[1] == "rejection") && 
            (newPoll.Vote_Types[0] == "affirmation" ^ newPoll.Vote_Types[1] == "affirmation"))
-            newPoll.Type = Poll_Type.Yes_No;
+            newPoll.Votable_Type = Votable_Type.Yes_No;
 
         if (newPoll.Vote_Voters.Count < 2)
             Debug.LogError("No options detected.");

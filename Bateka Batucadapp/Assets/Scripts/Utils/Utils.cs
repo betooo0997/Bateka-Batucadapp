@@ -179,9 +179,38 @@ public class Utils : MonoBehaviour
 
     public static Privacy Parse_Privacy(string data)
     {
-        if (Enum.TryParse(data.ToUpper()[0] + data.Substring(1), out Privacy result))
-            Debug.LogError("Could not parse privacy setting.");
+        if (!Enum.TryParse(data.ToUpper()[0] + data.Substring(1), out Privacy result))
+            Debug.LogError("Could not parse privacy setting '" + data.ToUpper()[0] + data.Substring(1) + "'");
 
         return result;
+    }
+
+    public static string Translate(string data)
+    {
+        switch (data)
+        {
+            case "rejection":
+                return "Denegaciones";
+
+            case "affirmation":
+                return "Confirmaciones";
+
+            default:
+                return data;
+        }
+    }
+
+    public static Color Darken_Color(Color color, float darkness)
+    {
+        if (color.r != 0)
+            color = new Color(color.r - darkness * color.r, color.g, color.b);
+
+        if (color.g != 0)
+            color = new Color(color.r, color.g - darkness * color.g, color.b);
+
+        if (color.b != 0)
+            color = new Color(color.r, color.g, color.b - darkness * color.b);
+
+        return color;
     }
 }

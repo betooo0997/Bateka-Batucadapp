@@ -30,7 +30,8 @@ function get_user_data($user_data, $xpath)
 	foreach ($userNodes as $userNode)
 	{
 		foreach($userNode->childNodes as $child)
-			echo $child->nodeName . '$' . $child->nodeValue . '#';
+			if($child->nodeName != 'psswd')
+				echo $child->nodeName . '$' . $child->nodeValue . '#';
 
 		echo '%';
 	}

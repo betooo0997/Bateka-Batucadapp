@@ -16,7 +16,7 @@ function handleRequest()
 	{
 		$user_data = get_user_nodes($xpath);
 
-		if ($user_data != false && $user_data["psswd"]->nodeValue == $_POST['psswd'])
+		if ($user_data != false && strval($user_data["psswd"]->nodeValue) === strval($_POST['psswd']))
 		{
 			echo 'VERIFIED.|';
 
