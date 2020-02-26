@@ -5,24 +5,7 @@ function get_poll_data()
 	$files_output = [];
 
 	if (!isset($_POST['vote_poll_id']))
-	{
-		$max_files = 5;
-		if (isset($_POST['max_files']))
-			$max_files = intval($_POST['max_files']);
-
-		$files = scandir("wp-content/asambleapp/batekapp/database/polls");
-
-		foreach ($files as $file)
-		{
-			if (strlen($file) >= 10 && strlen($file) <= 14 && $file != 'polls_lock')
-			{
-				$files_output[] = $file;
-
-				if (count($files_output) >= $max_files)
-					break;
-			}
-		}
-	}
+		$files_output = scan_directory("wp-content/asambleapp/batekapp/database/polls", 10, 14, 'polls_lock');
 	else
 		$files_output[] = "poll_" . $_POST['vote_poll_id'] . ".xml";
 

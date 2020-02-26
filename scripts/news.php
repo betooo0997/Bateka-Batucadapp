@@ -2,23 +2,7 @@
 
 function get_news_data()
 {
-	$files_output = [];
-	$files = scandir("wp-content/asambleapp/batekapp/database/news");
-
-	$max_files = 5;
-	if (isset($_POST['max_files']))
-		$max_files = intval($_POST['max_files']);
-
-	foreach ($files as $file)
-	{
-		if (strlen($file) >= 10 && strlen($file) <= 14)
-		{
-			$files_output[] = $file;
-
-			if (count($files_output) >= $max_files)
-				break;
-		}
-	}
+	$files_output = scan_directory("wp-content/asambleapp/batekapp/database/news", 10, 14);
 
 	foreach ($files_output as $file)
 	{

@@ -18,7 +18,8 @@ public class App_Updater : MonoBehaviour
 
     void Handle_Version_Response(string response, Handler_Type none)
     {
-        bool success = float.TryParse(Utils.Clear_Response(response), out float version);
+        response = Utils.Clear_Response(response);
+        bool success = float.TryParse(response, out float version);
 
         if (success)
         {
@@ -26,7 +27,7 @@ public class App_Updater : MonoBehaviour
                 Message.ShowMessage("No hay ninguna actualización disponible en este momento.");
             else
             {
-                Debug.Log(response + VERSION.ToString());
+                Debug.Log(response + VERSION.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." }));
                 Message.ShowMessage("¡Hay nuevas actualizaciones disponibles!");
                 Message.ShowMessage("Abriendo enlace en tu navegador");
                 Invoke("Open_In_Browser", 4);

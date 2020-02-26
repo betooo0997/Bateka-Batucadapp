@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rythm>
+  <id>0</id>
+  <sound>
+    <type>surdo_20</type>
+    <inst>0v1</inst>
+    <inst>0.125v1</inst>
+    <inst>0.25v1</inst>
+    <inst>0.5v1</inst>
+    <inst>0.75v1</inst>
+  </sound>
+</rythm>

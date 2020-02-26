@@ -42,5 +42,28 @@ function sanitize_xml($databasePath)
     return $content;
 }
 
+function scan_directory($path, $minLength, $maxLength, $excludeFile = '')
+{
+	$files_output = [];
+	$files = scandir($path, SCANDIR_SORT_DESCENDING);
+
+	$max_files = 10;
+	if (isset($_POST['max_files']))
+		$max_files = intval($_POST['max_files']);
+
+	foreach ($files as $file)
+	{
+		if (strlen($file) >= $minLength && strlen($file) <= $maxLength && $file != $excludeFile)
+		{
+			$files_output[] = $file;
+
+			if (count($files_output) >= $max_files)
+				break;
+		}
+	}
+
+	return $files_output;
+}
+
 
 ?>

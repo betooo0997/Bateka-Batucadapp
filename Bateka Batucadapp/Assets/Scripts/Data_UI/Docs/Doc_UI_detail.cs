@@ -30,7 +30,13 @@ public class Doc_UI_detail : Doc_UI
         foreach (string url in Doc.Content_URLs)
         {
             Button button = Instantiate(url_prefab, transform).GetComponent<Button>();
-            button.onClick.AddListener(() => Application.OpenURL(url));
+            button.onClick.AddListener(() => 
+            {
+                Message.ShowMessage("Enlace copiado, abriéndolo en el navegador.");
+                GUIUtility.systemCopyBuffer = url;
+                Application.OpenURL(url);
+            });
+
             button.GetComponentInChildren<Text>().text = url;
         }
 

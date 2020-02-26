@@ -28,6 +28,7 @@ public class Initializer : MonoBehaviour
             Database_Handler.Load_Data_Cache(Handler_Type.news);
             Database_Handler.Load_Data_Cache(Handler_Type.events);
             Database_Handler.Load_Data_Cache(Handler_Type.polls);
+            Database_Handler.Load_Data_Cache(Handler_Type.docs);
         }
     }
 }

@@ -5,24 +5,7 @@ function get_events_data()
 	$files_output = [];
 
 	if (!isset($_POST['vote_event_id']))
-	{
-		$max_files = 10;
-		if (isset($_POST['max_files']))
-			$max_files = intval($_POST['max_files']);
-
-		$files = scandir("wp-content/asambleapp/batekapp/database/events");
-
-		foreach ($files as $file)
-		{
-			if (strlen($file) >= 11 && strlen($file) <= 14 && $file != 'events_lock')
-			{
-				$files_output[] = $file;
-
-				if (count($files_output) >= $max_files)
-					break;
-			}
-		}
-	}
+		$files_output = scan_directory("wp-content/asambleapp/batekapp/database/events", 11, 14, 'events_lock');
 	else
 		$files_output[] = "event_" . $_POST['vote_event_id'] . ".xml";
 

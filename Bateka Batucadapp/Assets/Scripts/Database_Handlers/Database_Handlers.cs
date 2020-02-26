@@ -266,7 +266,7 @@ public abstract class Database_Handler : MonoBehaviour
     /// <summary>
     /// Spawns all UI elements stored in its corresponding data_list.
     /// </summary>
-    protected void Spawn_UI_Elements()
+    protected virtual void Spawn_UI_Elements()
     {
         foreach (Transform transform in Data_UI_Parent.GetComponentsInChildren<Transform>())
             if (transform.name == GetType().ToString() + "_element" || transform.name == GetType().ToString() + "_section")
