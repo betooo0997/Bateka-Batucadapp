@@ -15,5 +15,6 @@ public class Sound : MonoBehaviour
     public void On_Time(object sender, EventArgs e)
     {
         source.PlayOneShot(source.clip);
+        Debug.Log("fired");
     }
 }

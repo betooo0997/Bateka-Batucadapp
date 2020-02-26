@@ -53,7 +53,7 @@ public class Rythm_Player : MonoBehaviour
             Check_Time_Events();
         }
 
-        transform.localPosition = new Vector3(Timer * 50 * 8, 0);
+        transform.localPosition = new Vector3(-203.5f + Timer * 50 * 8, 0);
     }
 
     public static float Round_To_Existing_Key(float number)
@@ -77,8 +77,10 @@ public class Rythm_Player : MonoBehaviour
 
         if (!Time_Events_Fired[key])
         {
-            Time_Events[key].Invoke(this, null);
             Time_Events_Fired[key] = true;
+            
+            if(Time_Events[key] != null)
+                Time_Events[key].Invoke(this, null);
         }
     }
 
