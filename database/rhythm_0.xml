@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rhythm>
+  <id>0</id>
+  <last_modification_date></last_modification_date>
+  <sound>
+    <type>surdo_20</type>
+    <inst>0.125d1d-</inst>
+    <inst>0.875d1d-</inst>
+  </sound>
+  <sound>
+    <type>surdo_18</type>
+    <inst>0d1d-</inst>
+    <inst>0.25d1d-</inst>
+    <inst>0.5d1d-</inst>
+    <inst>0.75d1d-</inst>
+  </sound>
+  <sound>
+    <type>surdo_16</type>
+    <inst>0.625d1d-</inst>
+  </sound>
+  <sound>
+    <type>tabal</type>
+    <inst>0.375d1d-</inst>
+  </sound>
+</rhythm>

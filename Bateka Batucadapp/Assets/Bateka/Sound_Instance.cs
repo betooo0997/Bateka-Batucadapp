@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,18 +17,48 @@ public class Sound_Instance : MonoBehaviour
 
     bool enabled;
 
-    public void Load()
+    Image background;
+    Color default_color;
+
+    private void Awake()
     {
-        if (enabled)
-        {
-            float key = Rythm_Player.Round_To_Existing_Key(Fire_Time);
-            Rythm_Player.Singleton.Time_Events[key] += sound.On_Time;
-        }
+        background = GetComponent<Image>();
+        default_color = background.color;
     }
 
-    public void Toggle_Enable()
+    private void Start()
     {
-        enabled = !enabled;
-        image.enabled = enabled;
+        sound.Instances.Add(Fire_Time, this);
     }
+
+    public void Load()
+    {
+        Fire_Time = Rhythm_Player.Round_To_Existing_Key(Fire_Time);
+        Rhythm_Player.Singleton.Time_Events[Fire_Time] += On_Time;
+
+        if (enabled)
+            Rhythm_Player.Singleton.Time_Events[Fire_Time] += sound.On_Time;
+    }
+
+    public void Toggle_Enable(bool toggle = false)
+    {
+        if (toggle) enabled = !enabled;
+        else enabled = true;
+
+        image.enabled = enabled;
+        Rhythm_Player.Singleton.Reset_Events();
+    }
+
+
+    void On_Time(object sender, EventArgs e)
+    {
+        background.color = new Color(0.8f, 0.8f, 0.8f);
+        Invoke("Reset_Background", Rhythm_Player.Singleton.Step / Rhythm_Player.Singleton.Speed);
+    }
+
+    public void Reset_Background()
+    {
+        background.color = default_color;
+    }
+
 }

@@ -6,6 +6,7 @@ include "wp-content/asambleapp/batekapp/polls.php";
 include "wp-content/asambleapp/batekapp/news.php";
 include "wp-content/asambleapp/batekapp/events.php";
 include "wp-content/asambleapp/batekapp/docs.php";
+include "wp-content/asambleapp/batekapp/rhythms.php";
 
 function handleRequest()
 {	
@@ -49,6 +50,9 @@ function handleRequest()
 				case 'get_version':
 					echo "1.1";
 					return 'NONE';
+
+				case 'get_rhythms':
+					return get_rhythms_data();
 
 				default:
 					return 'REQUEST_TYPE "' . $_POST['REQUEST_TYPE'] . '" not understood.';
