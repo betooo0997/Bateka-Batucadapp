@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Sound_Instance : MonoBehaviour
@@ -40,11 +41,16 @@ public class Sound_Instance : MonoBehaviour
             Rhythm_Player.Singleton.Time_Events[Fire_Time] += sound.On_Time;
     }
 
-    public void Toggle_Enable(bool toggle = false)
+    public void Toggle_Enable()
     {
-        if (toggle) enabled = !enabled;
-        else enabled = true;
+        enabled = !enabled;
+        image.enabled = enabled;
+        Rhythm_Player.Singleton.Reset_Events();
+    }
 
+    public void Set_Enabled(bool enabled)
+    {
+        this.enabled = enabled;
         image.enabled = enabled;
         Rhythm_Player.Singleton.Reset_Events();
     }

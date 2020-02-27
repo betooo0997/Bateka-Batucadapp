@@ -4,13 +4,15 @@
   <last_modification_date></last_modification_date>
   <sound>
     <type>surdo_20</type>
-    <inst>0.125d1d-d1d1</inst>
+    <inst>0.125d1d-</inst>
     <inst>0.875d1d-</inst>
   </sound>
   <sound>
     <type>surdo_18</type>
-    <loop>0t0.125t3</loop>
-    <inst>0d1d-</inst>
+    <repetitions>
+      <repetition>start  end  repeat_amount</repetition>
+    </repetitions>
+    <inst>Fire_Time  Volume  Notes</inst>
   </sound>
   <sound>
     <type>surdo_16</type>

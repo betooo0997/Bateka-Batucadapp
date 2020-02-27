@@ -23,7 +23,9 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     GameObject sound_instance_prefab;
 
     EventHandler[] event_handlers;
-    int events_count;
+    int total_cells_count;
+    static float cells_per_second;
+    static float cell_width;
     bool playing;
     bool dragging;
 
@@ -40,8 +42,10 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Step = 0.125f;
         Singleton = this;
         Rhythms = new List<Rhythm>();
-        events_count = (int)Math.Round(Song_Length / Step, 0);
-        event_handlers = new EventHandler[events_count];
+        total_cells_count = (int)Math.Round(Song_Length / Step, 0);
+        event_handlers = new EventHandler[total_cells_count];
+        cells_per_second = 1 / Step;
+        cell_width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
     }
 
     private void Start()
@@ -52,7 +56,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         foreach (Sound sound in sounds)
         {
-            for (float x = 0; x < 8; x++)
+            for (float x = 0; x < total_cells_count; x++)
             {
                 Sound_Instance instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance>();
                 instance.Fire_Time = x * Step;
@@ -72,7 +76,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (Timer >= Song_Length)
             {
                 Timer -= Song_Length;
-                for (float x = 0; x < events_count; x++)
+                for (float x = 0; x < total_cells_count; x++)
                     Time_Events_Fired[x * Step] = false;
             }
 
@@ -85,8 +89,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        if(!dragging)
-            transform.localPosition = new Vector3(-203.5f + Timer * 50 * 8, transform.localPosition.y);
+        if (!dragging)
+            transform.localPosition = new Vector3(Timer_To_Position(Timer), transform.localPosition.y);
     }
 
 
@@ -108,7 +112,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Time_Events = new Dictionary<float, EventHandler>();
         Time_Events_Fired = new Dictionary<float, bool>();
 
-        for (float x = 0; x < events_count; x++)
+        for (float x = 0; x < total_cells_count; x++)
         {
             Time_Events.Add(x * Step, event_handlers[(int)x]);
             Time_Events_Fired.Add(x * Step, false);
@@ -130,8 +134,18 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public static float Round_To_Existing_Key(float number)
     {
         float rest = number % 1;
-        rest = (float)Math.Floor(rest * 8) / 8;
+        rest = (float)Math.Floor(rest * cells_per_second) / cells_per_second;
         return (float)Math.Floor(number) + rest;
+    }
+
+    float Position_To_Timer(float position)
+    {
+        return (position + 203.5f) / cell_width / cells_per_second;
+    }
+
+    float Timer_To_Position(float timer)
+    {
+        return -203.5f + timer * cell_width * cells_per_second;
     }
 
 
@@ -150,13 +164,18 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void IDragHandler.OnDrag(PointerEventData eventData)
     {
-        transform.position += new Vector3(eventData.delta.x, 0);
+        transform.position = new Vector3(eventData.position.x, transform.position.y);
+
+        float timer = Position_To_Timer(transform.localPosition.x);
+        if (timer < 0)
+            transform.localPosition = new Vector3(Timer_To_Position(0), transform.localPosition.y);
+        else if (timer >= Song_Length)
+            transform.localPosition = new Vector3(Timer_To_Position(Song_Length - 0.001f), transform.localPosition.y);
     }
 
     void IEndDragHandler.OnEndDrag(PointerEventData eventData)
     {
-        Timer = (transform.localPosition.x + 203.5f) / 50 / 8;
-        transform.localPosition = new Vector3(-203.5f + Timer * 50 * 8, transform.localPosition.y);
+        Timer = Position_To_Timer(transform.localPosition.x);
         Reset_Events();
 
         dragging = false;
@@ -205,28 +224,45 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
                     case "sound":
                         Rhythm.Sound sound = new Rhythm.Sound();
-                        string[] sound_elements = Utils.Split(tokens[1], '~');
 
-                        string sound_type = sound_elements[0];
-
-                        if (!Enum.TryParse(sound_type.ToUpper()[0] + sound_type.Substring(1), out sound.Type))
-                            Debug.LogError("Sound Type could not be parsed.");
-
-                        Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == sound.Type);
-
-                        for (int x = 1; x < sound_elements.Length; x++)
+                        foreach (string sound_element in Utils.Split(tokens[1], '~'))
                         {
-                            string[] instance_parts = Utils.Split(sound_elements[x], 'd');
+                            string[] sound_tokens = Utils.Split(sound_element, '*');
 
-                            Rhythm.Sound.Instance sound_instance = new Rhythm.Sound.Instance
+                            switch (sound_tokens[0])
                             {
-                                Fire_Time = Round_To_Existing_Key(float.Parse(instance_parts[0], CultureInfo.InvariantCulture)),
-                                Volume = Round_To_Existing_Key(float.Parse(instance_parts[1], CultureInfo.InvariantCulture)),
-                                Note = instance_parts[2]
-                            };
+                                case "type":
+                                    if (!Enum.TryParse(sound_tokens[1].ToUpper()[0] + sound_tokens[1].Substring(1), out sound.Type))
+                                        Debug.LogError("Sound Type could not be parsed.");
+                                    break;
 
-                            sound.Instances.Add(sound_instance);
-                            sound_mono.Instances[sound_instance.Fire_Time].Toggle_Enable(); ;
+                                case "inst":
+                                    string[] instance_parts = Utils.Split(sound_tokens[1], 'd');
+                                    Rhythm.Sound.Instance sound_instance = new Rhythm.Sound.Instance
+                                    {
+                                        Fire_Time = Round_To_Existing_Key(float.Parse(instance_parts[0], CultureInfo.InvariantCulture)),
+                                        Volume = Round_To_Existing_Key(float.Parse(instance_parts[1], CultureInfo.InvariantCulture)),
+                                        Note = instance_parts[2]
+                                    };
+                                    sound.Instances.Add(sound_instance);
+                                    break;
+
+                                case "loop":
+                                    string[] loop_parts = Utils.Split(sound_tokens[1], 't');
+                                    Rhythm.Sound.Loop loop = new Rhythm.Sound.Loop
+                                    {
+                                        Start_Time = float.Parse(loop_parts[0], CultureInfo.InvariantCulture),
+                                        End_Time = float.Parse(loop_parts[1], CultureInfo.InvariantCulture),
+                                        Repetitions = uint.Parse(loop_parts[2])
+                                    };
+                                    sound.Loops.Add(loop);
+                                    break;
+                            }
+
+                            Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == sound.Type);
+
+                            foreach (Rhythm.Sound.Instance instance in sound.Instances)
+                                sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
                         }
 
                         new_rhythm.Sounds.Add(sound);
@@ -246,7 +282,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             canvas.SetActive(true);
             Loading_Screen.Set_Active(false);
         });
-           }
+    }
 
     public void Save_Rhythm()
     {

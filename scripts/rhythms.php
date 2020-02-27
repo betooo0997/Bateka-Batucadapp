@@ -19,18 +19,9 @@ function get_rhythms_data()
 			if($child->nodeName == 'sound')
 			{
 				echo 'sound$';
-				foreach ($child->childNodes as $grandchild)
-				{
-					if ($grandchild->nodeName == 'type')
-					{
-						echo $grandchild->nodeValue . '~';
-						break;
-					}
-				}
 
 				foreach ($child->childNodes as $grandchild)
-					if ($grandchild->nodeName != 'type')
-						echo $grandchild->nodeValue . '~';
+					echo $grandchild->nodeName . '*' . $grandchild->nodeValue . '~';
 
 				echo '#';
 			}

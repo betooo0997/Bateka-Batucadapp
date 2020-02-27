@@ -25,12 +25,22 @@ public class Rhythm
             public string Note;
         }
 
+        [System.Serializable]
+        public struct Loop
+        {
+            public float Start_Time;
+            public float End_Time;
+            public uint Repetitions;
+        }
+
         public Sound_Type Type;
         public List<Instance> Instances;
+        public List<Loop> Loops;
 
         public Sound()
         {
             Instances = new List<Instance>();
+            Loops = new List<Loop>();
         }
     }
 
