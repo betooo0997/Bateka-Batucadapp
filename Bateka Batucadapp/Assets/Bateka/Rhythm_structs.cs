@@ -30,6 +30,8 @@ public class Rhythm
         {
             public float Start_Time;
             public float End_Time;
+            public float Length { get { return End_Time - Start_Time; } set { End_Time = Start_Time + value; } }
+            public int Length_Steps { get { return (int)(Length / Rhythm_Player.Singleton.Step) + 1; } set { End_Time = Start_Time + value * Rhythm_Player.Singleton.Step; } }
             public uint Repetitions;
         }
 

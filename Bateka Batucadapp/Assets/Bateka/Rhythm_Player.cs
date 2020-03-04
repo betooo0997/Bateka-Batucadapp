@@ -22,12 +22,16 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField]
     GameObject sound_instance_prefab;
 
+    [SerializeField]
+    GameObject loop_prefab;
+
     EventHandler[] event_handlers;
     int total_cells_count;
     static float cells_per_second;
-    static float cell_width;
+    public static float Cell_Width;
     bool playing;
     bool dragging;
+    RectTransform content_rect_transform;
 
 
     // ______________________________________
@@ -45,7 +49,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         total_cells_count = (int)Math.Round(Song_Length / Step, 0);
         event_handlers = new EventHandler[total_cells_count];
         cells_per_second = 1 / Step;
-        cell_width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
+        Cell_Width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
+        content_rect_transform = transform.parent.GetComponent<RectTransform>();
     }
 
     private void Start()
@@ -80,7 +85,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     Time_Events_Fired[x * Step] = false;
             }
 
-            float key = Round_To_Existing_Key(Timer);
+            float key = Round_To_Existing_Key_Floor(Timer);
 
             if (!Time_Events_Fired[key])
             {
@@ -122,6 +127,11 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             instance.Load();
     }
 
+    public void Change_PPM(string value)
+    {
+        Speed = float.Parse(value) / 60;
+    }
+
 
     // ______________________________________
     //
@@ -131,21 +141,33 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
 
 
-    public static float Round_To_Existing_Key(float number)
+    public static float Round_To_Existing_Key_Floor(float number)
     {
         float rest = number % 1;
         rest = (float)Math.Floor(rest * cells_per_second) / cells_per_second;
         return (float)Math.Floor(number) + rest;
     }
 
-    float Position_To_Timer(float position)
+    public static float Round_To_Existing_Key(float number)
     {
-        return (position + 203.5f) / cell_width / cells_per_second;
+        float rest = number % 1;
+        rest = (float)Math.Round(rest * cells_per_second, 0) / cells_per_second;
+        return (float)Math.Floor(number) + rest;
     }
 
-    float Timer_To_Position(float timer)
+    public static float Position_To_Timer(float position, bool rect = true)
     {
-        return -203.5f + timer * cell_width * cells_per_second;
+        float rect_f = Singleton.content_rect_transform.rect.width / 2;
+
+        if (!rect)
+            rect_f = 0;
+
+        return (position + rect_f) / Cell_Width / cells_per_second;
+    }
+
+    public static float Timer_To_Position(float timer)
+    {
+        return -Singleton.content_rect_transform.rect.width / 2 + timer * Cell_Width * cells_per_second;
     }
 
 
@@ -240,8 +262,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                                     string[] instance_parts = Utils.Split(sound_tokens[1], 'd');
                                     Rhythm.Sound.Instance sound_instance = new Rhythm.Sound.Instance
                                     {
-                                        Fire_Time = Round_To_Existing_Key(float.Parse(instance_parts[0], CultureInfo.InvariantCulture)),
-                                        Volume = Round_To_Existing_Key(float.Parse(instance_parts[1], CultureInfo.InvariantCulture)),
+                                        Fire_Time = Round_To_Existing_Key_Floor(float.Parse(instance_parts[0], CultureInfo.InvariantCulture)),
+                                        Volume = Round_To_Existing_Key_Floor(float.Parse(instance_parts[1], CultureInfo.InvariantCulture)),
                                         Note = instance_parts[2]
                                     };
                                     sound.Instances.Add(sound_instance);
@@ -258,11 +280,26 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                                     sound.Loops.Add(loop);
                                     break;
                             }
+                        }
 
-                            Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == sound.Type);
+                        if (!Sound.Sounds.Exists(a => a.Sound_Type == sound.Type))
+                            break;
 
-                            foreach (Rhythm.Sound.Instance instance in sound.Instances)
-                                sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
+                        Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == sound.Type);
+
+                        foreach (Rhythm.Sound.Instance instance in sound.Instances)
+                            sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
+
+                        foreach (Rhythm.Sound.Loop loop in sound.Loops)
+                        {
+                            int sibling_index = sound_mono.Instances[loop.Start_Time].transform.GetSiblingIndex();
+
+                            Rhythm_Loop rhythm_loop = Instantiate(loop_prefab, sound_mono.transform).GetComponent<Rhythm_Loop>();
+                            rhythm_loop.Data = loop;
+                            rhythm_loop.Sound = sound_mono;
+                            rhythm_loop.Sound.Loops.Add(rhythm_loop);
+                            rhythm_loop.Update_Core();
+                            rhythm_loop.Update_Periphery();
                         }
 
                         new_rhythm.Sounds.Add(sound);
