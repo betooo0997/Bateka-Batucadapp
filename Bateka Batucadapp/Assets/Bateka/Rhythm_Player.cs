@@ -25,6 +25,17 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField]
     GameObject loop_prefab;
 
+    [SerializeField]
+    InputField rhythm_title;
+
+    [SerializeField]
+    InputField rhythm_speed;
+
+    [SerializeField]
+    InputField rhythm_length;
+
+    float PPM { get { return Speed * 60; } set { Speed = value / 60; } }
+
     EventHandler[] event_handlers;
     int total_cells_count;
     static float cells_per_second;
@@ -116,6 +127,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         Time_Events = new Dictionary<float, EventHandler>();
         Time_Events_Fired = new Dictionary<float, bool>();
+        event_handlers = new EventHandler[total_cells_count];
 
         for (float x = 0; x < total_cells_count; x++)
         {
@@ -129,7 +141,52 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Change_PPM(string value)
     {
-        Speed = float.Parse(value) / 60;
+        PPM = float.Parse(value);
+    }
+
+    public void Change_Song_Length(string value_s)
+    {
+        Loading_Screen.Set_Active(true);
+
+        float value = float.Parse(value_s);
+
+        float diff = value - Song_Length;
+        Song_Length = value;
+
+
+        if (diff > 0)
+        {
+            foreach (Sound sound in FindObjectsOfType<Sound>())
+            {
+                for (int x = total_cells_count; x < total_cells_count + diff * cells_per_second; x++)
+                {
+                    Sound_Instance instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance>();
+                    instance.Fire_Time = x * Step;
+                    instance.sound = sound;
+                }
+            }
+        }
+        else if (diff < 0)
+        {
+            foreach (Sound sound in FindObjectsOfType<Sound>())
+            {
+                for (int x = total_cells_count - 1; x > total_cells_count - 1 + diff * cells_per_second; x--)
+                {
+                    Destroy(sound.Instances[x * Step].gameObject);
+                }
+            }
+        }
+
+        total_cells_count = (int)Math.Round(Song_Length / Step, 0);
+        Reset_Events();
+
+        Utils.InvokeNextFrame(() => Utils.Reactivate(FindObjectOfType<Canvas>().gameObject));
+        rhythm_length.text = Song_Length.ToString();
+    }
+
+    public void Increase_Song_Length()
+    {
+        Change_Song_Length((Song_Length + 1).ToString());
     }
 
 
@@ -152,7 +209,13 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         float rest = number % 1;
         rest = (float)Math.Round(rest * cells_per_second, 0) / cells_per_second;
-        return (float)Math.Floor(number) + rest;
+
+        float no_rest = (float)Math.Floor(number);
+
+        if(number < 0)
+            no_rest = (float)Math.Ceiling(number);
+
+        return no_rest + rest;
     }
 
     public static float Position_To_Timer(float position, bool rect = true)
@@ -165,9 +228,14 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         return (position + rect_f) / Cell_Width / cells_per_second;
     }
 
-    public static float Timer_To_Position(float timer)
+    public static float Timer_To_Position(float timer, bool rect = true)
     {
-        return -Singleton.content_rect_transform.rect.width / 2 + timer * Cell_Width * cells_per_second;
+        float rect_f = Singleton.content_rect_transform.rect.width / 2;
+
+        if (!rect)
+            rect_f = 0;
+
+        return -rect_f + timer * Cell_Width * cells_per_second;
     }
 
 
@@ -311,14 +379,11 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         Reset_Events();
-        GameObject canvas = FindObjectOfType<Canvas>().gameObject;
-        canvas.SetActive(false);
+        Utils.Reactivate(FindObjectOfType<Canvas>().gameObject);
 
-        Utils.InvokeNextFrame(() => 
-        {
-            canvas.SetActive(true);
-            Loading_Screen.Set_Active(false);
-        });
+        rhythm_title.text = Rhythms[0].Id.ToString();
+        rhythm_speed.text = PPM.ToString();
+        rhythm_length.text = Song_Length.ToString();
     }
 
     public void Save_Rhythm()

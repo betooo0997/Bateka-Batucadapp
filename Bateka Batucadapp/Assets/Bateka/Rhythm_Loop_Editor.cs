@@ -32,6 +32,7 @@ public class Rhythm_Loop_Editor : MonoBehaviour
 
     public void Delete_Loop()
     {
-
+        Rhythm_Loop.Selected.Change_Repetitions_Amount(0);
+        Destroy(Rhythm_Loop.Selected.gameObject);
     }
 }

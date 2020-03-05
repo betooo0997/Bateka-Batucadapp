@@ -2,14 +2,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Utils : MonoBehaviour
 {
     public static Utils Singleton;
 
+    static bool update_UI;
+    public static bool Update_UI { get { return update_UI; } set { update_UI = value; if (value) updates = 2; } }
+    static int updates;
+
     private void Awake()
     {
         Singleton = this;
+    }
+
+    private void LateUpdate()
+    {
+        if (updates > 0)
+        {
+            foreach (HorizontalOrVerticalLayoutGroup layout in FindObjectsOfType<HorizontalOrVerticalLayoutGroup>())
+            {
+                layout.SetLayoutVertical();
+                layout.SetLayoutHorizontal();
+            }
+
+            Canvas.ForceUpdateCanvases();
+            updates--;
+
+            if (updates == 0)
+                update_UI = false;
+        }
     }
 
     public void Logout()
@@ -212,5 +235,17 @@ public class Utils : MonoBehaviour
             color = new Color(color.r, color.g, color.b - darkness * color.b);
 
         return color;
+    }
+
+    public static void Reactivate(GameObject target)
+    {
+        Loading_Screen.Set_Active(true);
+        target.SetActive(false);
+
+        InvokeNextFrame(() =>
+        {
+            target.gameObject.SetActive(true);
+            Loading_Screen.Set_Active(false);
+        });
     }
 }

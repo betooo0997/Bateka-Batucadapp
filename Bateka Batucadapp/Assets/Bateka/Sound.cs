@@ -78,14 +78,7 @@ public class Sound : MonoBehaviour
         }
 
         Update_Loop_Borders();
-
-        foreach (HorizontalOrVerticalLayoutGroup layout in FindObjectsOfType<HorizontalOrVerticalLayoutGroup>())
-        {
-            layout.SetLayoutVertical();
-            layout.SetLayoutHorizontal();
-        }
-
-        Canvas.ForceUpdateCanvases();
+        Utils.Update_UI = true;
     }
 
     void Set_Height(Sound_Instance instance, float height)

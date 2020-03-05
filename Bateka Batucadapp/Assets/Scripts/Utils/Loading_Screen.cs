@@ -35,7 +35,13 @@ public class Loading_Screen : MonoBehaviour
                     scenes.Add(SceneManager.GetSceneAt(x));
 
             foreach (Scene scene in scenes)
-                SceneManager.UnloadSceneAsync(scene);
+                Utils.Singleton.StartCoroutine(Delayed_Unloading(scene));
         }
+    }
+
+    static IEnumerator Delayed_Unloading(Scene scene)
+    {
+        yield return new WaitForSeconds(0.25f);
+        SceneManager.UnloadSceneAsync(scene);
     }
 }

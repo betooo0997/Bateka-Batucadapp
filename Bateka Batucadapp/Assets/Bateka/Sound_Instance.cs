@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Sound_Instance : MonoBehaviour
+public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public bool Repeated;
 
@@ -51,6 +51,11 @@ public class Sound_Instance : MonoBehaviour
     {
         sound.Instances.Add(Fire_Time, this);
         Button.interactable = false;
+    }
+
+    private void OnDestroy()
+    {
+        sound.Instances.Remove(Fire_Time);
     }
 
     public void Load()
@@ -122,5 +127,33 @@ public class Sound_Instance : MonoBehaviour
     {
         Enabled = Repeating_From.Enabled;
         image.enabled = Enabled;
+    }
+
+    private void DoForVolumeSetter<T>(Action<T> action) where T : IEventSystemHandler
+    {
+        foreach (var component in Volume_Setter.Singleton.GetComponents<Component>())
+            if (component is T)
+                action((T)(IEventSystemHandler)component);
+    }
+
+    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+    {
+        if (Button.interactable)
+        {
+            Volume_Setter.Seting_Volume_Of = this;
+            DoForVolumeSetter<IBeginDragHandler>((volume_setter) => { volume_setter.OnBeginDrag(eventData); });
+        }
+    }
+
+    void IDragHandler.OnDrag(PointerEventData eventData)
+    {
+        if (Button.interactable)
+            DoForVolumeSetter<IDragHandler>((volume_setter) => { volume_setter.OnDrag(eventData); });
+    }
+
+    void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+    {
+        if (Button.interactable)
+            DoForVolumeSetter<IEndDragHandler>((volume_setter) => { volume_setter.OnEndDrag(eventData); });
     }
 }
