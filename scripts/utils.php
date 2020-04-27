@@ -1,5 +1,14 @@
 <?php
 
+function modify_empty($obj)
+{
+	foreach ($obj as $key => $value)
+		if($obj->$key == '')
+			$obj->$key = 'empty';
+
+	return $obj;
+}
+
 function utils_get_xpath($xml_filepath)
 {
 	$xmlDoc = new DOMDocument();
@@ -64,6 +73,5 @@ function scan_directory($path, $minLength, $maxLength, $excludeFile = '')
 
 	return $files_output;
 }
-
 
 ?>

@@ -1,38 +1,32 @@
 <?php
 
-function get_user_nodes($xpath)
+function get_user_data($con)
 {
-	$userNode = $xpath->query("/users/user[username='" . $_POST['username'] . "']");
+	function query($changer)
+	{
+		return "SELECT id, username, name, surname, role, telephone, email, polls_data, events_data 
+				FROM users 
+				WHERE id " . $changer . "= '" . $_POST['id'] . "';";
+	}
 
-	if ($userNode->length > 0)
-		$userNode = $userNode->item(0);
-	else return false;
-
-	$user_nodes = [];
-
-	foreach($userNode->childNodes as $child)
-        $user_nodes[$child->nodeName] = $child;
-
-	return $user_nodes;
-}
-
-function get_user_data($user_data, $xpath)
-{
 	// Echo own user data
-	foreach ($user_data as $key => $value)
-		echo $key . '$' . $user_data[$key]->nodeValue . '#';
+	$result = mysqli_query($con, query(""));
+	$obj = mysqli_fetch_object($result);
+	$obj = modify_empty($obj);
+
+	foreach ($obj as $key => $value)
+		echo $obj->$key . '#';
 
 	echo '%';
 
 	// Echo other user data
-	$userNodes = $xpath->query("/users/user");
+	$result = mysqli_query($con, query("!"));
 
-	foreach ($userNodes as $userNode)
+    while ($obj = mysqli_fetch_object($result))
 	{
-		foreach($userNode->childNodes as $child)
-			if($child->nodeName != 'psswd')
-				echo $child->nodeName . '$' . $child->nodeValue . '#';
-
+		$m_obj = modify_empty($obj);
+		foreach ($m_obj as $key => $value)
+			echo $m_obj->$key . '#';
 		echo '%';
 	}
 

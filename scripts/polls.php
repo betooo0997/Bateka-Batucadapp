@@ -1,157 +1,105 @@
 <?php
 
-function get_poll_data()
+function get_poll_data($con)
 {
-	$files_output = [];
+	$query = "SELECT * FROM polls;";
+	$result = mysqli_query($con, $query);
 
-	if (!isset($_POST['vote_poll_id']))
-		$files_output = scan_directory("wp-content/asambleapp/batekapp/database/polls", 10, 14, 'polls_lock');
-	else
-		$files_output[] = "poll_" . $_POST['vote_poll_id'] . ".xml";
-
-	foreach ($files_output as $file)
+    while ($obj = mysqli_fetch_object($result))
 	{
-		$pollDatabasePath = "wp-content/asambleapp/batekapp/database/polls/" . $file;
-		$xpath = utils_get_xpath($pollDatabasePath)[1];
+		$m_obj = modify_empty($obj);
+		foreach ($m_obj as $key => $value)
+			echo $m_obj->$key . '#';
+		echo '%';
+	}
 
-		if ($xpath == false)
-			return "Couldn't load poll database '" . $file . "'.";
+	return 'NONE';
+}
 
-		$rootNode = $xpath->query("/poll")[0];
+function set_poll_vote($con)
+{
+	// $_POST['poll_id'] = 1;
+	// $_POST['poll_response'] = 0;
 
-		foreach ($rootNode->childNodes as $child)
+	$query = "SELECT polls_data FROM users WHERE id = '" . $_POST['id'] . "';";
+	$result = mysqli_query($con, $query);
+	$object = mysqli_fetch_object($result);
+	$polls_data = $object->polls_data;
+
+	$elements = explode("|", $polls_data);
+	$updated = false;
+
+	for ($x = 0; $x < sizeof($elements); $x++)
+	{
+		$tokens = explode("-", $elements[$x]);
+
+		if($tokens[0] == $_POST['poll_id'])
 		{
-			switch($child->nodeName)
-			{
-				default:
-					echo $child->nodeName . '$' . $child->nodeValue . '#';
-					break;
-
-				case 'options':
-					echo 'options$';
-					$options = $child->childNodes;
-
-					foreach ($options as $option)
-						echo $option->nodeName . '@,' . $option->nodeValue . '+';
-
-					echo '#';
-					break;
-
-				case 'comments':
-					echo '\COMMENTS';
-					$comments = $child->childNodes;
-
-					if($comments->length == 0)
-						break;
-
-					foreach ($comments as $comment)
-					{
-						foreach ($comment->childNodes as $data)
-							echo $data->nodeName . '^' . $data->nodeValue . '~';
-						echo '#';
-					}
-					break;
-			}
+			$tokens[1] = $_POST['poll_response'];
+			$elements[$x] = implode("-", $tokens);
+			$updated = true;
+			break;
 		}
-
-		echo '_DBEND_';
 	}
 
-	echo '|';
-	return 'NONE';
+	if ($updated)
+		$polls_data = implode("|", $elements);
+	else
+		$polls_data .= $_POST['poll_id'] . "-" . $_POST['poll_response'];
+
+	$query = "UPDATE users SET polls_data = '" . $polls_data . "' WHERE id = '" . $_POST['id'] . "';";
+
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating poll vote: " . mysqli_error($con);
 }
 
-// Removes an user_id from a vote list. (E.g. "1,2,3,4" -> user_id = 2 -> "1,3,4")
-function remove_vote($votes, $vote_to_remove)
+function set_poll($con)
 {
-	$votes = str_replace($vote_to_remove, "", $votes);
-	$votes = str_replace(",,", ",", $votes);
+	/*$_POST['poll_name'] = "Encuesta";
+	$_POST['poll_details'] = "Detalles de la encuesta";
+	$_POST['poll_date_deadline'] = "2020-05-30";
+	$_POST['poll_date_creation'] = "2020-05-29";
+	$_POST['poll_author_id'] = "0";
+	$_POST['poll_privacy'] = "0";
+	$_POST['poll_options'] = "no|si";
 
-	if($votes[0] == ',')
-		$votes = substr($votes, 1);
+	$_POST['poll_id'] = 1;*/
+	$query = "SELECT * FROM polls WHERE id = '" . $_POST['poll_id'] . "';";
+	$result = mysqli_query($con, $query);
 
-	if($votes[strlen($votes) - 1] == ',')
-		$votes = substr($votes, 0, strlen($votes) - 1);
-
-	return $votes;
-}
-
-function set_poll_vote($user_data)
-{
-	$lock_path = 'wp-content/asambleapp/batekapp/database/polls/polls_lock';
-
-	// Check if database is locked
-	if (!file_exists($lock_path))
-		echo 'FILENOTEXIST#';
-
-	$file_r = fopen($lock_path, 'r');
-	$content = fread($file_r, 1);
-	fclose($file_r);
-
-	$attempts = 0;
-	while ($content == '1')
+	if (mysqli_num_rows($result) == 0)
 	{
-		if ($attempts > 0) 
-			return 'Timeout database lock';
-
-		sleep(1);
-
-		$file_r = fopen($lock_path, 'r');
-		$content = fread($file_r, 1);
-		fclose($file_r);
-		$attempts += 1;
+		$query = "INSERT INTO polls (id, name, details, date_creation, date_deadline, author_id, privacy, options)
+				  VALUES ('" . 
+						$_POST['poll_id'] . "', '" .
+						$_POST['poll_name'] . "', '" .
+						$_POST['poll_details'] . "', '" .
+						$_POST['poll_date_creation'] . "', '" .
+						$_POST['poll_date_deadline'] . "', '" .
+						$_POST['poll_author_id'] . "', '" .
+						$_POST['poll_privacy'] . "', '" .
+						$_POST['poll_options'] .  
+				  "')";
 	}
-
-	// Lock database
-	set_lock($lock_path, '1');
-
-	// Load database
-	$user_id = $user_data['id']->nodeValue;
-	$pollDatabasePath = "wp-content/asambleapp/batekapp/database/polls/poll_" . $_POST['vote_poll_id'] . ".xml";
-
-	$xdata = utils_get_xpath($pollDatabasePath);
-
-	if ($xdata == false)
-		return return_error($lock_path, "Couldn't load poll database");
-
-	$xmlDoc = $xdata[0];
-	$xpath = $xdata[1];
-
-	$user_vote_node = $xpath->query("/poll/options/" . $_POST['vote_type']);
-
-	if ($user_vote_node->length != 1)
-		return return_error($lock_path, "Vote type '" . $_POST['vote_type'] . "' not recognized [" . $user_vote_node->length . "]");
-
-	$user_vote_node = $user_vote_node[0];
-
-	// Remove previous vote if existent
-	$options_node = $xpath->query("/poll/options")[0];
-
-	foreach ($options_node->childNodes as $option_node)
+	else
 	{
-		$option_node_content = remove_vote($option_node->nodeValue, $user_id);
-		$option_node->nodeValue = $option_node_content;
+		$query = "UPDATE polls SET
+				  name = '" .				$_POST['poll_name'] . "', 
+				  details = '" .			$_POST['poll_details'] . "', 
+				  date_creation = '" .		$_POST['poll_date_creation'] . "', 
+				  date_deadline = '" .		$_POST['poll_date_deadline'] . "', 
+				  author_id = '" .			$_POST['poll_author_id'] . "', 
+				  privacy = '" .			$_POST['poll_privacy'] . "',
+				  options = '" .			$_POST['poll_options'] . "'
+				  WHERE id = '" . $_POST['poll_id'] . "'";
 	}
 
-	// Add new vote
-	$user_vote_node_content = $user_vote_node->nodeValue;
-
-	if (strlen($user_vote_node_content) > 0) $user_vote_node_content .= ',';
-	$user_vote_node_content .= $user_id;
-
-	$user_vote_node->nodeValue = $user_vote_node_content;
-	$xmlDoc->save($pollDatabasePath);
-
-	// Remove Lock
-	set_lock($lock_path, '0');
-
-	return get_poll_data();
-}
-
-function set_poll()
-{
-	echo $_POST['poll_id'] . $_POST['poll_data'];
-	return 'NONE';
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating polls: " . mysqli_error($con);
 }
 
 ?>

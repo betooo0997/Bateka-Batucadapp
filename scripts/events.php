@@ -1,121 +1,111 @@
 <?php
 
-function get_events_data()
+function get_event_data($con)
 {
-	$files_output = [];
+	$query = "SELECT * FROM events;";
+	$result = mysqli_query($con, $query);
 
-	if (!isset($_POST['vote_event_id']))
-		$files_output = scan_directory("wp-content/asambleapp/batekapp/database/events", 11, 14, 'events_lock');
-	else
-		$files_output[] = "event_" . $_POST['vote_event_id'] . ".xml";
-
-	foreach ($files_output as $file)
+    while ($obj = mysqli_fetch_object($result))
 	{
-		$eventDatabasePath = "wp-content/asambleapp/batekapp/database/events/" . $file;
-		$xpath = utils_get_xpath($eventDatabasePath)[1];
-
-		if ($xpath == false)
-			return "Couldn't load event database '" . $file . "'.";
-
-		$rootNode = $xpath->query("/event")[0];
-
-		foreach ($rootNode->childNodes as $child)
-		{
-			switch($child->nodeName)
-			{
-				default:
-					echo $child->nodeName . '$' . $child->nodeValue . '#';
-					break;
-
-				case 'options':
-					echo 'options$';
-					$options = $child->childNodes;
-
-					foreach ($options as $option)
-						echo $option->nodeName . '@,' . $option->nodeValue . '+';
-
-					echo '#';
-					break;
-			}
-		}
-
-		echo '_DBEND_';
+		$m_obj = modify_empty($obj);
+		foreach ($m_obj as $key => $value)
+			echo $m_obj->$key . '#';
+		echo '%';
 	}
 
-	echo '|';
 	return 'NONE';
 }
 
-function set_event_vote($user_data)
+function set_event_vote($con)
 {
-	$lock_path = 'wp-content/asambleapp/batekapp/database/events/lock';
+	// $_POST['event_id'] = 0;
+	// $_POST['event_response'] = 2;
 
-	// Check if database is locked
-	if (!file_exists($lock_path))
-		echo 'FILENOTEXIST#';
+	$query = "SELECT events_data FROM users WHERE id = '" . $_POST['id'] . "';";
+	$result = mysqli_query($con, $query);
+	$object = mysqli_fetch_object($result);
+	$events_data = $object->events_data;
 
-	$file_r = fopen($lock_path, 'r');
-	$content = fread($file_r, 1);
-	fclose($file_r);
+	$elements = explode("|", $events_data);
+	$updated = false;
 
-	$attempts = 0;
-	while ($content == '1')
+	for ($x = 0; $x < sizeof($elements); $x++)
 	{
-		if ($attempts > 0) 
-			return 'Timeout database lock';
+		$tokens = explode("-", $elements[$x]);
 
-		sleep(1);
-
-		$file_r = fopen($lock_path, 'r');
-		$content = fread($file_r, 1);
-		fclose($file_r);
-		$attempts += 1;
+		if($tokens[0] == $_POST['event_id'])
+		{
+			$tokens[1] = $_POST['event_response'];
+			$elements[$x] = implode("-", $tokens);
+			$updated = true;
+			break;
+		}
 	}
 
-	// Lock database
-	set_lock($lock_path, '1');
+	if ($updated)
+		$events_data = implode("|", $elements);
+	else
+		$events_data .= "|" . $_POST['event_id'] . "-" . $_POST['event_response'];
 
-	// Load database
-	$user_id = $user_data['id']->nodeValue;
-	$eventDatabasePath = "wp-content/asambleapp/batekapp/database/events/event_" . $_POST['vote_event_id'] . ".xml";
+	$query = "UPDATE users SET events_data = '" . $events_data . "' WHERE id = '" . $_POST['id'] . "';";
 
-	$xdata = utils_get_xpath($eventDatabasePath);
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating event vote: " . mysqli_error($con);
+}
 
-	if ($xdata == false)
-		return return_error($lock_path, "Couldn't load event database");
+function set_event($con)
+{
+	/*$_POST['event_name'] = "Ensayo";
+	$_POST['event_details'] = "Detalles de ensayo";
+	$_POST['event_location_event'] = "Agrupa";
+	$_POST['event_location_meeting'] = "Agrupa";
+	$_POST['event_date_event'] = "2020-05-30";
+	$_POST['event_date_meeting'] = "2020-05-29";
+	$_POST['event_date_deadline'] = "2020-05-28";
+	$_POST['event_author_id'] = "0";
+	$_POST['event_privacy'] = "0";
 
-	$xmlDoc = $xdata[0];
-	$xpath = $xdata[1];
+	$_POST['event_id'] = 1;*/
+	$query = "SELECT * FROM events WHERE id = '" . $_POST['event_id'] . "';";
+	$result = mysqli_query($con, $query);
 
-	$user_vote_node = $xpath->query("/event/options/" . $_POST['vote_type']);
-
-	if ($user_vote_node->length != 1)
-		return return_error($lock_path, "Vote type '" . $_POST['vote_type'] . "' not recognized [" . $user_vote_node->length . "]");
-
-	$user_vote_node = $user_vote_node[0];
-
-	// Remove previous vote if existent
-	$options_node = $xpath->query("/event/options")[0];
-
-	foreach ($options_node->childNodes as $option_node)
+	if (mysqli_num_rows($result) == 0)
 	{
-		$option_node_content = remove_vote($option_node->nodeValue, $user_id);
-		$option_node->nodeValue = $option_node_content;
+		$query = "INSERT INTO events (id, name, details, location_event, location_meeting, date_event, date_meeting, date_deadline, author_id, privacy)
+				  VALUES ('" . 
+						$_POST['event_id'] . "', '" .
+						$_POST['event_name'] . "', '" .
+						$_POST['event_details'] . "', '" .
+						$_POST['event_location_event'] . "', '" .
+						$_POST['event_location_meeting'] . "', '" .
+						$_POST['event_date_event'] . "', '" .
+						$_POST['event_date_meeting'] . "', '" .
+						$_POST['event_date_deadline'] . "', '" .
+						$_POST['event_author_id'] . "', '" .
+						$_POST['event_privacy'] . 
+				  "')";
+	}
+	else
+	{
+		$query = "UPDATE events SET
+				  name = '" .				$_POST['event_name'] . "', 
+				  details = '" .			$_POST['event_details'] . "', 
+				  location_event = '" .		$_POST['event_location_event'] . "', 
+				  location_meeting = '" .	$_POST['event_location_meeting'] . "', 
+				  date_event = '" .			$_POST['event_date_event'] . "', 
+				  date_meeting = '" .		$_POST['event_date_meeting'] . "', 
+				  date_deadline = '" .		$_POST['event_date_deadline'] . "', 
+				  author_id = '" .			$_POST['event_author_id'] . "', 
+				  privacy = '" .			$_POST['event_privacy'] . "'
+				  WHERE id = '" . $_POST['event_id'] . "'";
 	}
 
-	// Add new vote
-	$user_vote_node_content = $user_vote_node->nodeValue;
-
-	if (strlen($user_vote_node_content) > 0) $user_vote_node_content .= ',';
-	$user_vote_node_content .= $user_id;
-
-	$user_vote_node->nodeValue = $user_vote_node_content;
-	$xmlDoc->save($eventDatabasePath);
-
-	// Remove Lock
-	set_lock($lock_path, '0');
-
-	return get_events_data();
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating events: " . mysqli_error($con);
 }
 
 ?>
