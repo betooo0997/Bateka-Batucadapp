@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -135,6 +136,66 @@ public class User : MonoBehaviour
                 return user_info;
 
         return new User_Information();
+    }
+
+    static Action On_Success_temp;
+    static Action OnFailure_temp;
+    static bool save_temp;
+    static bool load_temp;
+
+    public static void Update_Data(string user, string psswd, bool load = true, bool save = false, Action On_Success = null, Action OnFailure = null)
+    {
+        string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
+        string[] field_values = { "get_user_data", user, psswd };
+        Psswd = psswd;
+        Http_Client.Send_Post(field_names, field_values, Handle_User_Response, Handler_Type.none, false);
+
+        On_Success_temp = On_Success;
+        OnFailure_temp = OnFailure;
+        save_temp = save;
+        load_temp = load;
+    }
+
+    static void Handle_User_Response(string response, Handler_Type type)
+    {
+        Parse_User_Data(response, load_temp, save_temp);
+    }
+
+    public static void Parse_User_Data(string response, bool load = true, bool save = false)
+    {
+        if (load)
+        {
+            On_Success_temp = Login.Singleton.On_Load_Success;
+            OnFailure_temp = Login.Singleton.On_Load_Failure;
+        }
+
+        string[] tokens = Utils.Split(response, '~');
+        string[] tokens_error = Utils.Split(response, '*');
+
+        if (tokens[0] == "VERIFIED.")
+        {
+            Handle_User_Data(tokens[1]);
+
+            if (save)
+            {
+                DataSaver.Save_Database("user_database", response);
+                PlayerPrefs.SetString("user_psswd", User.Psswd);
+            }
+
+            else if (PlayerPrefs.HasKey("user_database_timestamp"))
+                Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));
+
+            On_Success_temp?.Invoke();
+        }
+        else
+        {
+            if (tokens_error.Length > 0)
+                Message.ShowMessage("Error interno del servidor.");
+            else
+                Message.ShowMessage("Error: usuario o contraseña incorrectos.");
+
+            OnFailure_temp?.Invoke();
+        }
     }
 }
 

@@ -24,7 +24,7 @@ public class Initializer : MonoBehaviour
         {
             Loading_Screen.Set_Active(true);
             User.Psswd = PlayerPrefs.GetString("user_psswd");
-            Login.Parse_Login_Data(PlayerPrefs.GetString("user_database"));
+            User.Parse_User_Data(PlayerPrefs.GetString("user_database"));
             Loading_Screen.Set_Active(true);
             Database_Handler.Load_Data_Cache(Handler_Type.news);
             Database_Handler.Load_Data_Cache(Handler_Type.events);

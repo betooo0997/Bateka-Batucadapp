@@ -23,11 +23,10 @@ public class Doc_UI_detail : Doc_UI
     protected virtual void Initialize()
     {
         Title.text = Doc.Title;
-        Subtitle.text = Doc.Subtitle;
         Date.text = Utils.Get_String(Doc.Creation_time);
         details.text = Doc.Details;
 
-        foreach (string url in Doc.Content_URLs)
+        foreach (string url in Doc.Urls)
         {
             Button button = Instantiate(url_prefab, transform).GetComponent<Button>();
             button.onClick.AddListener(() => 

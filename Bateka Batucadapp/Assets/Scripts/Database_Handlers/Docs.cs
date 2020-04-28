@@ -15,44 +15,20 @@ public class Docs : Database_Handler
     {
         Doc doc = new Doc();
 
-        foreach (string element in Utils.Split(doc_data, '#'))
-        {
-            string[] tokens = Utils.Split(element, '$');
+        string[] data       = Utils.Split(doc_data, '#');
+        doc.Id              = uint.Parse(data[0]);
+        doc.Title           = data[1];
+        doc.Details         = data[2];
+        doc.Creation_time   = Utils.Get_DateTime(data[3]);
 
-            if (tokens.Length < 2) continue;
-            switch (tokens[0])
-            {
-                case "id":
-                    doc.Id = uint.Parse(tokens[1]);
-                    break;
+        foreach (string url in Utils.Split(data[4], '~'))
+            doc.Urls.Add(url);
 
-                case "title":
-                    doc.Title = tokens[1];
-                    break;
+        foreach (string element in Utils.Split(data[5], '|'))
+            doc.Imgs.Add(element);
 
-                case "subtitle":
-                    doc.Subtitle = tokens[1];
-                    break;
-
-                case "details":
-                    doc.Details = tokens[1];
-                    break;
-
-                case "creation_time":
-                    doc.Creation_time = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "imgs":
-                    foreach (string img in Utils.Split(tokens[1], '~'))
-                        doc.Imgs.Add(img);
-                    break;
-
-                case "content_urls":
-                    foreach (string url in Utils.Split(tokens[1], '~'))
-                        doc.Content_URLs.Add(url);
-                    break;
-            }
-        }
+        doc.Author_Id       = int.Parse(data[6]);
+        doc.Privacy         = Utils.Parse_Privacy(data[7]);
 
         return doc;
     }

@@ -39,7 +39,6 @@ public class Scroll_Updater : MonoBehaviour
         if (!initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
         {
             Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
-            Database_Handler.Load_Data_Server((Handler_Type)Menu.Menu_item.U);
 
             if (Menu.Active_Item == Menu.Menu_item.Home)
             {

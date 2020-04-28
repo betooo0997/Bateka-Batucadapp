@@ -16,7 +16,6 @@ public class Doc_UI_summarized : Doc_UI
     {
         Doc = (Doc)doc;
         Title.text = Doc.Title;
-        Subtitle.text = Doc.Subtitle;
         Date.text = Utils.Get_String(Doc.Creation_time);
     }
 }
