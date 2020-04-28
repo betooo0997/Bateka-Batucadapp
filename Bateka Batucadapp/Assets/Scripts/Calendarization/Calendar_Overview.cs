@@ -28,8 +28,8 @@ public class Calendar_Overview : Data_UI
     {
         this.calendar_event = calendar_event;
         title.text = calendar_event.Title;
-        meeting_location.text = calendar_event.Meeting_Location + " " + calendar_event.Meeting_Time.ToString("HH:mm") + "h";
-        location.text = calendar_event.Location + " " + calendar_event.Date.ToString("HH:mm") + "h";
+        meeting_location.text = calendar_event.Location_Meeting + " " + calendar_event.Date_Meeting.ToString("HH:mm") + "h";
+        location.text = calendar_event.Location_Event + " " + calendar_event.Date_Event.ToString("HH:mm") + "h";
 
         Update_Color(image);
     }

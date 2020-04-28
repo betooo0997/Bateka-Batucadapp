@@ -22,6 +22,8 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     Button[] buttons;
 
+    int temp_vote;
+
     protected void Start()
     {
         calendar_event = (Calendar_Event)Calendar_Events.Selected_Data;
@@ -31,14 +33,14 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     protected virtual void Initialize()
     {
-        if (Utils.Is_Sooner(calendar_event.Answering_Deadline, DateTime.Now))
+        if (Utils.Is_Sooner(calendar_event.Date_Deadline, DateTime.Now))
             Set_Interactable(false);
 
         Title.text = calendar_event.Title;
-        Meeting_Location.text = calendar_event.Meeting_Location + ", " + Utils.Get_String(calendar_event.Meeting_Time);
-        Location.text = calendar_event.Location + ", " + Utils.Get_String(calendar_event.Date);
+        Meeting_Location.text = calendar_event.Location_Meeting + ", " + Utils.Get_String(calendar_event.Date_Meeting);
+        Location.text = calendar_event.Location_Event + ", " + Utils.Get_String(calendar_event.Date_Event);
         Detail.text = calendar_event.Details;
-        confirm_deadline.text = "Fecha de cierre de encuesta: " + Utils.Get_String(calendar_event.Answering_Deadline);
+        confirm_deadline.text = "Fecha de cierre de encuesta: " + Utils.Get_String(calendar_event.Date_Deadline);
 
         switch (calendar_event.Status)
         {
@@ -72,8 +74,10 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
     {
         if (!initialized) return;
 
-        string[] field_names = { "REQUEST_TYPE", "vote_event_id", "vote_type" };
-        string[] field_values = { "set_event_vote", calendar_event.Id.ToString(), calendar_event.Vote_Types[vote_type] };
+        temp_vote = vote_type;
+
+        string[] field_names = { "REQUEST_TYPE", "event_id", "event_response" };
+        string[] field_values = { "set_event_vote", calendar_event.Id.ToString(), vote_type.ToString() };
         Http_Client.Send_Post(field_names, field_values, Handle_Event_Response);
 
         Set_Interactable(false);
@@ -92,8 +96,9 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
             return;
         }
 
-        calendar_event = Calendar_Events.Parse_Single_Data(response);
+        User.User_Info.Events_Data.Find(x => x.id == calendar_event.Id).response = temp_vote;
 
+        calendar_event.Status = calendar_event.Vote_Types[temp_vote];
         List<Data_struct> calendar_events = Calendar_Events.Data_List_Get(typeof(Calendar_Events));
 
         for (int x = 0; x < calendar_events.Count; x++)

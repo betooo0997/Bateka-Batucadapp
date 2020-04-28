@@ -15,35 +15,17 @@ public class News : Database_Handler
     {
         News_Entry news_entry = new News_Entry();
 
-        foreach (string element in Utils.Split(news_entry_data, '#'))
-        {
-            string[] tokens = Utils.Split(element, '$');
+        string[] data = Utils.Split(news_entry_data, '#');
+        news_entry.Id               = uint.Parse(data[0]);
+        news_entry.Title            = data[1];
+        news_entry.Details          = data[2];
+        news_entry.Creation_time    = Utils.Get_DateTime(data[3]);
 
-            if (tokens.Length < 2) continue;
-            switch (tokens[0])
-            {
-                case "id":
-                    news_entry.Id = uint.Parse(tokens[1]);
-                    break;
+        foreach (string element in Utils.Split(data[4], '|'))
+            news_entry.Imgs.Add(element);
 
-                case "title":
-                    news_entry.Title = tokens[1];
-                    break;
-
-                case "details":
-                    news_entry.Details = tokens[1];
-                    break;
-
-                case "creation_time":
-                    news_entry.Creation_time = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "imgs":
-                    foreach (string img in Utils.Split(tokens[1], '~'))
-                        news_entry.Img_URLs.Add(img);
-                    break;
-            }
-        }
+        news_entry.Author_Id        = int.Parse(data[5]);
+        news_entry.Privacy          = Utils.Parse_Privacy(data[6]);
 
         return news_entry;
     }

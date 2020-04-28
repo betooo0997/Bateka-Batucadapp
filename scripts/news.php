@@ -1,36 +1,47 @@
 <?php
 
-function get_news_data()
+function set_news_entry($con)
 {
-	$files_output = scan_directory("wp-content/asambleapp/batekapp/database/news", 10, 14);
+	/*$_POST['news_name'] = "Noticia";
+	$_POST['news_details'] = "Detalles de la notica";
+	$_POST['news_date_creation'] = "2020-05-29";
+	$_POST['news_author_id'] = "1";
+	$_POST['news_privacy'] = "2";
+	$_POST['news_images'] = "www.image3.jpg";
 
-	foreach ($files_output as $file)
+	$_POST['news_id'] = 0;*/
+	$query = "SELECT * FROM news WHERE id = '" . $_POST['news_id'] . "';";
+	$result = mysqli_query($con, $query);
+
+	if (mysqli_num_rows($result) == 0)
 	{
-		$database_path = "wp-content/asambleapp/batekapp/database/news/" . $file;
-		$xpath = utils_get_xpath($database_path)[1];
-
-		if ($xpath == false)
-			return "Couldn't load news database '" . $file . "'.";
-
-		$rootNode = $xpath->query("/news")[0];
-
-		foreach ($rootNode->childNodes as $child)
-		{
-			if($child->nodeName == 'imgs')
-			{
-				echo 'imgs$';
-				foreach ($child->childNodes as $grandchild)
-					echo $grandchild->nodeValue . '~';
-				echo '#';
-			}
-			else
-				echo $child->nodeName . '$' . $child->nodeValue . '#';
-		}
-
-		echo '_DBEND_';
+		$query = "INSERT INTO news (id, name, details, date_creation, author_id, privacy, images)
+				  VALUES ('" . 
+						$_POST['news_id'] . "', '" .
+						$_POST['news_name'] . "', '" .
+						$_POST['news_details'] . "', '" .
+						$_POST['news_date_creation'] . "', '" .
+						$_POST['news_author_id'] . "', '" .
+						$_POST['news_privacy'] . "', '" .
+						$_POST['news_images'] .  
+				  "')";
+	}
+	else
+	{
+		$query = "UPDATE news SET
+				  name = '" .				$_POST['news_name'] . "', 
+				  details = '" .			$_POST['news_details'] . "', 
+				  date_creation = '" .		$_POST['news_date_creation'] . "', 
+				  author_id = '" .			$_POST['news_author_id'] . "', 
+				  privacy = '" .			$_POST['news_privacy'] . "',
+				  images = '" .				$_POST['news_images'] . "'
+				  WHERE id = '" . $_POST['news_id'] . "'";
 	}
 
-	return 'NONE';
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating news: " . mysqli_error($con);
 }
 
 ?>

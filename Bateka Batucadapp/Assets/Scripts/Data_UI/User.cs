@@ -14,6 +14,8 @@ public class User : MonoBehaviour
     [SerializeField]
     Button user_own;
 
+    public static string Psswd;
+
     public enum User_Role
     {
         default_,
@@ -25,12 +27,41 @@ public class User : MonoBehaviour
     {
         public uint Id;
         public string Username;
-        public string Psswd;
         public User_Role Role;
         public string Name;
         public string Surname;
         public string Email;
         public string Tel;
+        public List<Vote_Data> Events_Data;
+        public List<Vote_Data> Polls_Data;
+    }
+
+    [System.Serializable]
+    public class Vote_Data
+    {
+        public int id;
+        public int response;
+
+        public static List<Vote_Data> Parse_Data(string data)
+        {
+            List<Vote_Data> result = new List<Vote_Data>();
+
+            if (data == "empty")
+                return result;
+
+            string[] elements = Utils.Split(data, "|");
+
+            foreach (string element in elements)
+            {
+                string[] pair = Utils.Split(element, "-");
+                Vote_Data vote_data = new Vote_Data();
+                vote_data.id = int.Parse(pair[0]);
+                vote_data.response = int.Parse(pair[1]);
+                result.Add(vote_data);
+            }
+
+            return result;
+        }
     }
 
     public static User_Information User_Info;
@@ -55,52 +86,21 @@ public class User : MonoBehaviour
         User_Info = new User_Information { Username = "" };
         Users_Info = new List<User_Information>();
 
-        string[] users = token.Split(new char[] { '%' }, System.StringSplitOptions.RemoveEmptyEntries);
+        string[] users = Utils.Split(token, '%');
 
         foreach (string user in users)
         {
-            string[] pairs = user.Split(new char[] { '#' }, System.StringSplitOptions.RemoveEmptyEntries);
+            string[] data = Utils.Split(user, '#');
             User_Information new_User = new User_Information();
-
-            foreach (string pair in pairs)
-            {
-                string[] elements = pair.Split(new char[] { '$' }, System.StringSplitOptions.RemoveEmptyEntries);
-
-                switch (elements[0])
-                {
-                    case "id":
-                        new_User.Id = uint.Parse(elements[1]);
-                        break;
-
-                    case "username":
-                        new_User.Username = elements[1];
-                        break;
-
-                    case "psswd":
-                        new_User.Psswd = elements[1];
-                        break;
-
-                    case "role":
-                        System.Enum.TryParse(elements[1], out new_User.Role);
-                        break;
-
-                    case "name":
-                        new_User.Name = elements[1];
-                        break;
-
-                    case "surname":
-                        new_User.Surname = elements[1];
-                        break;
-
-                    case "email":
-                        new_User.Email = elements[1];
-                        break;
-
-                    case "tel":
-                        new_User.Tel = elements[1];
-                        break;
-                }
-            }
+            new_User.Id         = uint.Parse(data[0]);
+            new_User.Username   = data[1];
+            System.Enum.TryParse(data[2], out new_User.Role);
+            new_User.Name       = data[3];
+            new_User.Surname    = data[4];
+            new_User.Email      = data[5];
+            new_User.Tel        = data[6];
+            new_User.Polls_Data = Vote_Data.Parse_Data(data[7]);
+            new_User.Events_Data = Vote_Data.Parse_Data(data[8]);
 
             if (User_Info.Username == "") User_Info = new_User;
             else if (User_Info.Username != new_User.Username) Users_Info.Add(new_User);

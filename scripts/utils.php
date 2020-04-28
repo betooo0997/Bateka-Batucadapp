@@ -9,6 +9,22 @@ function modify_empty($obj)
 	return $obj;
 }
 
+function get_data($con, $table)
+{
+	$query = "SELECT * FROM " . $table . ";";
+	$result = mysqli_query($con, $query);
+
+    while ($obj = mysqli_fetch_object($result))
+	{
+		$m_obj = modify_empty($obj);
+		foreach ($m_obj as $key => $value)
+			echo $m_obj->$key . '#';
+		echo '%';
+	}
+
+	return 'NONE';
+}
+
 function utils_get_xpath($xml_filepath)
 {
 	$xmlDoc = new DOMDocument();

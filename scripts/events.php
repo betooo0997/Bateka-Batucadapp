@@ -1,21 +1,5 @@
 <?php
 
-function get_event_data($con)
-{
-	$query = "SELECT * FROM events;";
-	$result = mysqli_query($con, $query);
-
-    while ($obj = mysqli_fetch_object($result))
-	{
-		$m_obj = modify_empty($obj);
-		foreach ($m_obj as $key => $value)
-			echo $m_obj->$key . '#';
-		echo '%';
-	}
-
-	return 'NONE';
-}
-
 function set_event_vote($con)
 {
 	// $_POST['event_id'] = 0;

@@ -34,7 +34,7 @@ public class Calendar_Month : MonoBehaviour
 
             // Set Calendar_Day values.
             foreach (Calendar_Event data in Database_Handler.Data_List_Get(typeof(Calendar_Events)))
-                if (data.Date.Year == temp.Year && data.Date.Month == temp.Month && data.Date.Day == temp.Day)
+                if (data.Date_Event.Year == temp.Year && data.Date_Event.Month == temp.Month && data.Date_Event.Day == temp.Day)
                     list.Add(data);
 
             day.Set_Event(list);

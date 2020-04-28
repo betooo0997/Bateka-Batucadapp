@@ -20,9 +20,6 @@ public class Polls : Database_Handler
     {
         poll_data = Utils.Clear_Response(poll_data);
 
-        // Separate information and comment section from database.
-        string[] data_split = Utils.Split(poll_data, "\\COMMENTS");
-
         Poll newPoll = new Poll
         {
             Comments = new List<Comment>(),
@@ -30,85 +27,29 @@ public class Polls : Database_Handler
             Vote_Types = new List<string>()
         };
 
-        // Parse information section.
-        foreach (string element in Utils.Split(data_split[0], '#'))
+        string[] data = Utils.Split(poll_data, '#');
+        newPoll.Id              = uint.Parse(data[0]);
+        newPoll.Title           = data[1];
+        newPoll.Details         = data[2];
+        newPoll.Creation_Time   = Utils.Get_DateTime(data[3]);
+        newPoll.Date_Deadline   = Utils.Get_DateTime(data[4]);
+        newPoll.Author          = data[5];
+        newPoll.Privacy         = Utils.Parse_Privacy(data[6]);
+
+        foreach (string element in Utils.Split(data[7], "|"))
         {
-            string[] tokens = Utils.Split(element, '$');
-
-            if (tokens.Length < 2) continue;
-            switch (tokens[0])
-            {
-                case "id":
-                    newPoll.Id = uint.Parse(tokens[1]);
-                    break;
-
-                case "title":
-                    newPoll.Title = tokens[1];
-                    break;
-
-                case "subtitle":
-                    newPoll.Subtitle = tokens[1];
-                    break;
-
-                case "description":
-                    newPoll.Details = tokens[1];
-                    break;
-
-                case "creation_time":
-                    newPoll.Creation_Time = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "author":
-                    newPoll.Author = tokens[1];
-                    break;
-
-                case "privacy":
-                    newPoll.Vote_Privacy = Utils.Parse_Privacy(tokens[1]);
-                    break;
-
-                case "expiration_time":
-                    newPoll.Answering_Deadline = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "options":
-                    string[] options = Utils.Split(tokens[1], "+");
-
-                    foreach (string option in options)
-                    {
-                        string[] node = Utils.Split(option, "@");
-                        newPoll.Vote_Types.Add(node[0]);
-                        if(node.Length == 2)
-                            newPoll.Vote_Voters.Add(Utils.Get_Voters(node[1]));
-                    }
-                    break;
-            }
+            newPoll.Vote_Types.Add(element);
+            newPoll.Vote_Voters.Add(new List<User.User_Information>());
         }
 
-        // Parse comment section.
-        foreach (string commentNode in Utils.Split(data_split[1], '#'))
-        {
-            string[] comment_elements = Utils.Split(commentNode, '~');
-            Comment newComment = new Comment();
+        foreach (User.User_Information user in User.Users_Info)
+            foreach (User.Vote_Data vote_data in user.Polls_Data)
+                if (vote_data.id == newPoll.Id)
+                    newPoll.Vote_Voters[vote_data.response].Add(user);
 
-            foreach (string comment_element in comment_elements)
-            {
-                string[] tokens = Utils.Split(comment_element, '^');
-
-                if (tokens.Length != 2) continue;
-                switch (tokens[0])
-                {
-                    case "author":
-                        newComment.Author = tokens[1];
-                        break;
-
-                    case "content":
-                        newComment.Content = tokens[1];
-                        break;
-                }
-            }
-
-            newPoll.Comments.Add(newComment);
-        }
+        foreach (User.Vote_Data vote_data in User.User_Info.Polls_Data)
+            if (vote_data.id == newPoll.Id)
+                newPoll.Vote_Voters[vote_data.response].Add(User.User_Info);
 
         // Set Poll Type and Poll Status.
         newPoll.Votable_Type = Votable_Type.Other;

@@ -28,67 +28,36 @@ public class Calendar_Events : Database_Handler
     //
 
 
-    public static Calendar_Event Parse_Single_Data(string news_entry_data)
+    public static Calendar_Event Parse_Single_Data(string event_data)
     {
-        news_entry_data = Utils.Clear_Response(news_entry_data);
+        event_data = Utils.Clear_Response(event_data);
         Calendar_Event calendar_event = new Calendar_Event();
 
-        foreach (string element in Utils.Split(news_entry_data, '#'))
-        {
-            string[] tokens = Utils.Split(element, '$');
+        string[] data = Utils.Split(event_data, '#');
+        calendar_event.Id                   = uint.Parse(data[0]);
+        calendar_event.Title                = data[1];
+        calendar_event.Details              = data[2];
+        calendar_event.Location_Event       = data[3];
+        calendar_event.Location_Meeting     = data[4];
+        calendar_event.Date_Event           = Utils.Get_DateTime(data[5]);
+        calendar_event.Date_Meeting         = Utils.Get_DateTime(data[6]);
+        calendar_event.Date_Deadline        = Utils.Get_DateTime(data[7]);
+        calendar_event.Author_Id            = int.Parse(data[8]);
+        calendar_event.Privacy              = Utils.Parse_Privacy(data[9]);
 
-            if (tokens.Length < 2) continue;
-            switch (tokens[0])
-            {
-                case "id":
-                    calendar_event.Id = uint.Parse(tokens[1]);
-                    break;
+        calendar_event.Vote_Types.Add("rejection");
+        calendar_event.Vote_Types.Add("affirmation");
+        calendar_event.Vote_Voters.Add(new List<User.User_Information>());
+        calendar_event.Vote_Voters.Add(new List<User.User_Information>());
 
-                case "title":
-                    calendar_event.Title = tokens[1];
-                    break;
+        foreach (User.User_Information user in User.Users_Info)
+            foreach (User.Vote_Data vote_data in user.Events_Data)
+                if (vote_data.id == calendar_event.Id)
+                    calendar_event.Vote_Voters[vote_data.response].Add(user);
 
-                case "details":
-                    calendar_event.Details = tokens[1];
-                    break;
-
-                case "location":
-                    calendar_event.Location = tokens[1];
-                    break;
-
-                case "date":
-                    calendar_event.Date = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "confirm_deadline":
-                    calendar_event.Answering_Deadline = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "meeting_time":
-                    calendar_event.Meeting_Time = Utils.Get_DateTime(tokens[1]);
-                    break;
-
-                case "meeting_location":
-                    calendar_event.Meeting_Location = tokens[1];
-                    break;
-
-                case "privacy":
-                    calendar_event.Vote_Privacy = Utils.Parse_Privacy(tokens[1]);
-                    break;
-
-                case "options":
-                    string[] options = Utils.Split(tokens[1], "+");
-
-                    foreach (string option in options)
-                    {
-                        string[] node = Utils.Split(option, "@");
-                        calendar_event.Vote_Types.Add(node[0]);
-                        if (node.Length == 2)
-                            calendar_event.Vote_Voters.Add(Utils.Get_Voters(node[1]));
-                    }
-                    break;
-            }
-        }
+        foreach (User.Vote_Data vote_data in User.User_Info.Events_Data)
+            if (vote_data.id == calendar_event.Id)
+                calendar_event.Vote_Voters[vote_data.response].Add(User.User_Info);
 
         for (int y = 0; y < calendar_event.Vote_Voters.Count; y++)
         {
@@ -111,7 +80,7 @@ public class Calendar_Events : Database_Handler
         DateTime[] date_Times = new DateTime[Unsorted_List.Count];
 
         for (int x = 0; x < date_Times.Length; x++)
-            date_Times[x] = ((Calendar_Event)Unsorted_List[x]).Date;
+            date_Times[x] = ((Calendar_Event)Unsorted_List[x]).Date_Event;
 
         List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
         return Sorted_List;

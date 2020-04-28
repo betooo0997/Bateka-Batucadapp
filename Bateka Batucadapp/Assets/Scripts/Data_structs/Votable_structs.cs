@@ -6,18 +6,17 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Votable : Data_struct
 {
-    public Privacy Vote_Privacy;
     public Votable_Type Votable_Type;
     public List<List<User.User_Information>> Vote_Voters;
     public List<string> Vote_Types;
-    public DateTime Answering_Deadline;
+    public DateTime Date_Deadline;
     public List<Comment> Comments;
 
     public Votable()
     {
         Vote_Voters = new List<List<User.User_Information>>();
         Vote_Types = new List<string>();
-        Answering_Deadline = new DateTime();
+        Date_Deadline = new DateTime();
         Comments = new List<Comment>();
     }
 }

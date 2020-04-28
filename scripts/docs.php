@@ -1,43 +1,50 @@
 <?php
 
-function get_docs_data()
+function set_doc($con)
 {
-	$files_output = scan_directory("wp-content/asambleapp/batekapp/database/docs", 9, 11);
+	/*$_POST['doc_name'] = "Documento";
+	$_POST['doc_details'] = "Detalles del documento";
+	$_POST['doc_date_creation'] = "2020-05-29";
+	$_POST['doc_author_id'] = "0";
+	$_POST['doc_privacy'] = "1";
+	$_POST['doc_imgs'] = "";
+	$_POST['doc_urls'] = "www.url.jpg";
 
-	foreach ($files_output as $file)
+	$_POST['doc_id'] = 0;*/
+	$query = "SELECT * FROM docs WHERE id = '" . $_POST['doc_id'] . "';";
+	$result = mysqli_query($con, $query);
+
+	if (mysqli_num_rows($result) == 0)
 	{
-		$database_path = "wp-content/asambleapp/batekapp/database/docs/" . $file;
-		$xpath = utils_get_xpath($database_path)[1];
-
-		if ($xpath == false)
-			return "Couldn't load docs database '" . $file . "'.";
-
-		$rootNode = $xpath->query("/doc")[0];
-
-		foreach ($rootNode->childNodes as $child)
-		{
-			if($child->nodeName == 'imgs')
-			{
-				echo 'imgs$';
-				foreach ($child->childNodes as $grandchild)
-					echo $grandchild->nodeValue . '~';
-				echo '#';
-			}
-			else if ($child->nodeName == 'content_urls')
-			{
-				echo 'content_urls$';
-				foreach ($child->childNodes as $grandchild)
-					echo $grandchild->nodeValue . '~';
-				echo '#';
-			}
-			else
-				echo $child->nodeName . '$' . $child->nodeValue . '#';
-		}
-
-		echo '_DBEND_';
+		$query = "INSERT INTO docs (id, name, details, date_creation, author_id, privacy, imgs, urls)
+				  VALUES ('" . 
+						$_POST['doc_id'] . "', '" .
+						$_POST['doc_name'] . "', '" .
+						$_POST['doc_details'] . "', '" .
+						$_POST['doc_date_creation'] . "', '" .
+						$_POST['doc_author_id'] . "', '" .
+						$_POST['doc_privacy'] . "', '" .
+						$_POST['doc_imgs'] . "', '" .
+						$_POST['doc_urls'] .  
+				  "')";
+	}
+	else
+	{
+		$query = "UPDATE docs SET
+				  name = '" .				$_POST['doc_name'] . "', 
+				  details = '" .			$_POST['doc_details'] . "', 
+				  date_creation = '" .		$_POST['doc_date_creation'] . "', 
+				  author_id = '" .			$_POST['doc_author_id'] . "', 
+				  privacy = '" .			$_POST['doc_privacy'] . "',
+				  imgs = '" .				$_POST['doc_imgs'] . "',
+				  urls = '" .				$_POST['doc_urls'] . "'
+				  WHERE id = '" . $_POST['doc_id'] . "'";
 	}
 
-	return 'NONE';
+	if (mysqli_query($con, $query))
+		return "NONE";
+	else
+		return "Error updating docs: " . mysqli_error($con);
 }
 
 ?>

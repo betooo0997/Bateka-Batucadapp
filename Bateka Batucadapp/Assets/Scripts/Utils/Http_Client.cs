@@ -33,11 +33,13 @@ public class Http_Client: MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("API_USER", "USER");
         form.AddField("API_PASSWORD", "8420b25f4c1ad7ac906364ee943a7bef");
+        form.AddField("db_username", "dbu14967");
+        form.AddField("db_password", "DrTgcePl06K#");
 
         if (add_user_credentials)
         {
             form.AddField("username", User.User_Info.Username);
-            form.AddField("psswd", User.User_Info.Psswd);
+            form.AddField("psswd", User.Psswd);
         }
 
         for (int x = 0; x < field_name.Length; x++)

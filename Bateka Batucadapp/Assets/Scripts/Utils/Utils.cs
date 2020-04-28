@@ -87,11 +87,17 @@ public class Utils : MonoBehaviour
         if (date.Length < 9)
             return new DateTime(9999, 12, 31);
 
-        string[] data = Split(date, '-');
-        int[] day_data = Split_To_Int(data[0], '.');
-        int[] hour_data = Split_To_Int(data[1], ':');
+        string[] data = Split(date, ' ');
+        int[] day_data = Split_To_Int(data[0], '-');
 
-        return new DateTime(day_data[2], day_data[1], day_data[0], hour_data[0], hour_data[1], 0);
+        int[] hour_data;
+
+        if (data.Length > 1)
+            hour_data = Split_To_Int(data[1], ':');
+        else
+            hour_data = new int[2] { 0, 0 };
+
+        return new DateTime(day_data[0], day_data[1], day_data[2], hour_data[0], hour_data[1], 0);
     }
 
     public static bool Is_Sooner(DateTime a, DateTime b)
@@ -171,10 +177,8 @@ public class Utils : MonoBehaviour
 
     public static string Clear_Response(string response)
     {
-        if (response.Contains("|"))
+        if (response.Contains("~"))
             response = Split(response, '|')[1];
-
-        response = response.Replace("_PDBEND_", "");
 
         return response;
     }

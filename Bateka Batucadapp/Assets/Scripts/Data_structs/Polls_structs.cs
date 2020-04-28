@@ -26,9 +26,9 @@ public class Poll : Votable
         result += "<subtitle>" + Subtitle + @"</subtitle>";
         result += "<description>" + Details + @"</description>";
         result += "<creation_time>" + Creation_Time + @"</creation_time>";
-        result += "<expiration_time>" + Answering_Deadline + @"</expiration_time>";
+        result += "<expiration_time>" + Date_Deadline + @"</expiration_time>";
         result += "<author>" + Author + @"</author>";
-        result += "<privacy>" + Vote_Privacy.ToString() + @"</privacy>";
+        result += "<privacy>" + Privacy.ToString() + @"</privacy>";
 
         for (int x = 0; x < Vote_Types.Count; x++)
             result += Get_VoteList(Vote_Voters[x], Vote_Types[x]);

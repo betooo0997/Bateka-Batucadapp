@@ -10,6 +10,8 @@ public abstract class Poll_UI_detail : Poll_UI
 
     protected bool initialized;
 
+    int temp_vote;
+
     protected void Start()
     {
         poll = (Poll)Polls.Selected_Data;
@@ -19,14 +21,14 @@ public abstract class Poll_UI_detail : Poll_UI
     protected virtual void Initialize()
     {
         title.text = poll.Title;
-        expiration_date.text = poll.Answering_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
+        expiration_date.text = poll.Date_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
         description.text = poll.Details;
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
         initialized = true;
 
-        if (Utils.Is_Sooner(poll.Answering_Deadline, DateTime.Now))
+        if (Utils.Is_Sooner(poll.Date_Deadline, DateTime.Now))
             Set_Interactable(false);
     }
 
@@ -48,8 +50,10 @@ public abstract class Poll_UI_detail : Poll_UI
     {
         if (!initialized) return;
 
-        string[] field_names = { "REQUEST_TYPE", "vote_poll_id", "vote_type" };
-        string[] field_values = { "set_poll_vote", poll.Id.ToString(), poll.Vote_Types[vote_type] };
+        temp_vote = vote_type;
+
+        string[] field_names = { "REQUEST_TYPE", "poll_id", "poll_response" };
+        string[] field_values = { "set_poll_vote", poll.Id.ToString(), vote_type.ToString() };
         Http_Client.Send_Post(field_names, field_values, Handle_Vote_Response);
 
         Set_Interactable(false);
@@ -68,8 +72,10 @@ public abstract class Poll_UI_detail : Poll_UI
             return;
         }
 
-        poll = Polls.Parse_Single_Data(response);
+        User.User_Info.Polls_Data.Find(x => x.id == poll.Id).response = temp_vote;
 
+        poll.Status = poll.Vote_Types[temp_vote];
+        poll.Selected_Option_Idx = temp_vote;
         List<Data_struct> polls = Polls.Data_List_Get(typeof(Polls));
 
         for (int x = 0; x < polls.Count; x++)

@@ -1,21 +1,5 @@
 <?php
 
-function get_poll_data($con)
-{
-	$query = "SELECT * FROM polls;";
-	$result = mysqli_query($con, $query);
-
-    while ($obj = mysqli_fetch_object($result))
-	{
-		$m_obj = modify_empty($obj);
-		foreach ($m_obj as $key => $value)
-			echo $m_obj->$key . '#';
-		echo '%';
-	}
-
-	return 'NONE';
-}
-
 function set_poll_vote($con)
 {
 	// $_POST['poll_id'] = 1;

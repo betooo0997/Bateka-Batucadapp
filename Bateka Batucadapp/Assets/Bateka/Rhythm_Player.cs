@@ -282,8 +282,6 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Load_Rhythm()
     {
-        User.User_Info.Username = "beto";
-        User.User_Info.Psswd = "0001";
         string[] field_names = { "REQUEST_TYPE" };
         string[] field_values = { "get_rhythms" };
         Http_Client.Send_Post(field_names, field_values, Handle_Data_Response);

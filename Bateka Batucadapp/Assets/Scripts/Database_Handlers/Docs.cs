@@ -44,7 +44,7 @@ public class Docs : Database_Handler
 
                 case "imgs":
                     foreach (string img in Utils.Split(tokens[1], '~'))
-                        doc.Img_URLs.Add(img);
+                        doc.Imgs.Add(img);
                     break;
 
                 case "content_urls":

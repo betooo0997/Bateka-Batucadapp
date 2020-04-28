@@ -8,6 +8,8 @@ public abstract class Data_struct
     public uint Id;
     public string Title;
     public string Details;
+    public int Author_Id;
+    public Privacy Privacy;
 }
 
 public enum Privacy

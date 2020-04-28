@@ -42,8 +42,9 @@ public class Doc_UI_detail : Doc_UI
 
         Date.transform.SetAsLastSibling();
 
-        foreach (string image in Doc.Img_URLs)
-            Http_Client.Download_Image(image, transform, Handle_Img_Response);
+        if (Doc.Imgs[0] != "empty")
+            foreach (string image in Doc.Imgs)
+                Http_Client.Download_Image(image, transform, Handle_Img_Response);
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();

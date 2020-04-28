@@ -16,6 +16,8 @@ public class Login : MonoBehaviour
 
     public static Login Singleton;
 
+    string temp_psswd;
+
     private void Awake()
     {
         Singleton = this;
@@ -25,6 +27,7 @@ public class Login : MonoBehaviour
     {
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_user_data", user.text, password.text };
+        User.Psswd = password.text;
         Http_Client.Send_Post(field_names, field_values, Handle_Login_Response, Handler_Type.none, false);
         Login_Button.interactable = false;
         Loading_Screen.Set_Active(true);
@@ -38,7 +41,7 @@ public class Login : MonoBehaviour
 
     public static void Parse_Login_Data(string response, bool save = false)
     {
-        string[] tokens = response.Split('|');
+        string[] tokens = response.Split('~');
         string[] tokens_error = response.Split('*');
 
         if (tokens[0] == "VERIFIED.")
@@ -49,7 +52,10 @@ public class Login : MonoBehaviour
             User.Handle_User_Data(tokens[1]);
 
             if (save)
+            {
                 DataSaver.Save_Database("user_database", response);
+                PlayerPrefs.SetString("user_psswd", User.Psswd);
+            }
 
             else if (PlayerPrefs.HasKey("user_database_timestamp"))
                 Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));

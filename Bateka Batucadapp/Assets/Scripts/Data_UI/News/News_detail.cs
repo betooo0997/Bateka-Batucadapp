@@ -23,8 +23,9 @@ public class News_detail : News_UI
         Creation_time.text = Utils.Get_String(news_entry.Creation_time);
         Detail.text = news_entry.Details;
 
-        foreach (string image in news_entry.Img_URLs)
-            Http_Client.Download_Image(image, transform, Handle_Img_Response);
+        if (news_entry.Imgs[0] != "empty")
+            foreach (string image in news_entry.Imgs)
+                Http_Client.Download_Image(image, transform, Handle_Img_Response);
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();

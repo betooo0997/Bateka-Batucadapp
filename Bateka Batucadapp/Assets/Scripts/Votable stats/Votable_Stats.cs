@@ -25,7 +25,7 @@ public class Votable_Stats : MonoBehaviour
 
     public void Initialize(Votable votable)
     {
-        if (votable.Vote_Privacy == Privacy.Secret && User.User_Info.Role == User.User_Role.default_)
+        if (votable.Privacy == Privacy.Secret && User.User_Info.Role == User.User_Role.default_)
         {
             gameObject.SetActive(false);
             return;
@@ -75,7 +75,7 @@ public class Votable_Stats : MonoBehaviour
             pie_info.text = Utils.Translate(part.Descriptor) + ": " + votable.Vote_Voters[x].Count.ToString();
             pie_info.color = Utils.Darken_Color(colors[x], 0.25f);
 
-            if (votable.Vote_Voters[x].Count > 0 && (votable.Vote_Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin))
+            if (votable.Vote_Voters[x].Count > 0 && (votable.Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin))
             {
                 Text vote_list = Instantiate(voter_list_prefab, voter_list_parent).GetComponent<Text>();
                 vote_list.color = Utils.Darken_Color(colors[x], 0.25f);
@@ -100,7 +100,7 @@ public class Votable_Stats : MonoBehaviour
         pie_info_no_vote.color = Data_UI.color_not_answered(1);
         pie_info_no_vote.transform.SetAsFirstSibling();
 
-        if(not_voted.Count > 0 && votable.Vote_Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin)
+        if(not_voted.Count > 0 && votable.Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin)
         {
             Text no_vote_list = Instantiate(voter_list_prefab, voter_list_parent).GetComponent<Text>();
             no_vote_list.color = Utils.Darken_Color(Data_UI.color_not_answered(1), 0.25f);

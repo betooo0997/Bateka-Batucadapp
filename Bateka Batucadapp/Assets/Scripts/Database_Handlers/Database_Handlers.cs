@@ -189,7 +189,7 @@ public abstract class Database_Handler : MonoBehaviour
             DataSaver.Save_Database(handler_type.ToString() + "_database", data_to_parse);
 
         // Separate news database from initial server information. (E.g. "VERIFIED.|*databases*|")
-        string data = Utils.Split(data_to_parse, '|')[1];
+        string data = Utils.Split(data_to_parse, '~')[1];
 
         // Separate each database to parse it individually. (E.g. "*database_1*_DBEND_*database_2*")
         foreach (string element in Utils.Split(data, "_DBEND_"))

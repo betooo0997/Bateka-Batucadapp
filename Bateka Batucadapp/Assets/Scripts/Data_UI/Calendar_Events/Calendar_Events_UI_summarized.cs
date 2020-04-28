@@ -22,11 +22,11 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
     public override void Set_Data(Data_struct calendar_event)
     {
         this.calendar_event = (Calendar_Event)calendar_event;
-        day.text = this.calendar_event.Date.Day.ToString();
+        day.text = this.calendar_event.Date_Event.Day.ToString();
         Title.text = this.calendar_event.Title;
-        month.text = this.calendar_event.Date.ToString("MMMM").Substring(0, 3);
-        Meeting_Location.text = this.calendar_event.Meeting_Location + ", " + Utils.Get_String(this.calendar_event.Meeting_Time);
-        Location.text = this.calendar_event.Location + ", " + Utils.Get_String(this.calendar_event.Date);
+        month.text = this.calendar_event.Date_Event.ToString("MMMM").Substring(0, 3);
+        Meeting_Location.text = this.calendar_event.Location_Meeting + ", " + Utils.Get_String(this.calendar_event.Date_Meeting);
+        Location.text = this.calendar_event.Location_Event + ", " + Utils.Get_String(this.calendar_event.Date_Event);
         Update_Color(background);
     }
 
@@ -47,7 +47,7 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
                 break;
         }
 
-        if (Utils.Is_Sooner(calendar_event.Answering_Deadline, DateTime.Now))
+        if (Utils.Is_Sooner(calendar_event.Date_Deadline, DateTime.Now))
             image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }
