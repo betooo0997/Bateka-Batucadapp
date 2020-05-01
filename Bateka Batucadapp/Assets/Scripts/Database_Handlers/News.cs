@@ -29,9 +29,4 @@ public class News : Database_Handler
 
         return news_entry;
     }
-
-    public static void On_Data_Parsed()
-    {
-        Home.News_Loaded = true;
-    }
 }

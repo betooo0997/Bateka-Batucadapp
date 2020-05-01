@@ -19,6 +19,7 @@ public class Menu : MonoBehaviour
         Users,
         Config,
         Users_own,
+        News,
         News_details,
         Docs_details,
         Events_details,
@@ -38,6 +39,9 @@ public class Menu : MonoBehaviour
     GameObject home_Button;
 
     [SerializeField]
+    GameObject news_Button;
+
+    [SerializeField]
     GameObject polls_Button;
 
     [SerializeField]
@@ -45,12 +49,6 @@ public class Menu : MonoBehaviour
 
     [SerializeField]
     GameObject docs_Button;
-
-    [SerializeField]
-    GameObject user_Button;
-
-    [SerializeField]
-    GameObject config_Button;
 
     void Awake()
     {
@@ -116,6 +114,14 @@ public class Menu : MonoBehaviour
                 method(home_Button, new_alpha);
                 break;
 
+            case Menu_item.News:
+                method(news_Button, new_alpha);
+                break;
+
+            case Menu_item.News_details:
+                method(news_Button, new_alpha);
+                break;
+
             case Menu_item.Events:
                 method(events_Button, new_alpha);
                 break;
@@ -138,18 +144,6 @@ public class Menu : MonoBehaviour
 
             case Menu_item.Docs:
                 method(docs_Button, new_alpha);
-                break;
-
-            case Menu_item.Users:
-                method(user_Button, new_alpha);
-                break;
-
-            case Menu_item.Users_own:
-                method(user_Button, new_alpha);
-                break;
-
-            case Menu_item.Config:
-                method(config_Button, new_alpha);
                 break;
         }
     }

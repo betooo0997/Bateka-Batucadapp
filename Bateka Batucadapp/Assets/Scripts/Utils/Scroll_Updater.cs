@@ -36,19 +36,21 @@ public class Scroll_Updater : MonoBehaviour
 
     void Update()
     {
-        if (!initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
+        if (!initialized[typeof(Calendar_Events)] || Database_Handler.Singleton != null && !initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
         {
-            Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
-
             if (Menu.Active_Item == Menu.Menu_item.Home)
-            {
-                Home.Reset_Load();
                 Database_Handler.Load_Data_Server(Handler_Type.events);
-            }
+            else
+                Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
 
             updating = true;
             load_icon.gameObject.SetActive(true);
-            initialized[Database_Handler.Singleton.GetType()] = true;
+
+            if (!initialized[typeof(Calendar_Events)])
+                initialized[typeof(Calendar_Events)] = true;
+            else if (Database_Handler.Singleton != null)
+                initialized[Database_Handler.Singleton.GetType()] = true;
+
             Utils.InvokeNextFrame(() => load_icon.sizeDelta = new Vector3(load_icon.sizeDelta.x, 60));
             Utils.InvokeNextFrame(() => FindObjectOfType<ContentSizeFitter>().SetLayoutVertical());
             Utils.InvokeNextFrame(() => Canvas.ForceUpdateCanvases());
@@ -67,7 +69,7 @@ public class Scroll_Updater : MonoBehaviour
                 Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, 0);
                 Singleton.load_icon.gameObject.SetActive(false);
 
-                if (Database_Handler.Singleton.GetType() == typeof(News))
+                if (Menu.Active_Item == Menu.Menu_item.Home)
                 {
                     Canvas.ForceUpdateCanvases();
                     foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
@@ -80,8 +82,6 @@ public class Scroll_Updater : MonoBehaviour
     public static void Disable()
     {
         if (Singleton != null)
-        {
             Singleton.updating = false;
-        }
     }
 }

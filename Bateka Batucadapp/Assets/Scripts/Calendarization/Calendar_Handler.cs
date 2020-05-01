@@ -44,6 +44,9 @@ public class Calendar_Handler : MonoBehaviour, IInitializePotentialDragHandler, 
         months[0].Initialize(month_to_show.AddMonths(-1));
         months[1].Initialize(month_to_show);
         months[2].Initialize(month_to_show.AddMonths(1));
+
+        foreach (Scrollable scrollable in FindObjectsOfType<Scrollable>())
+            scrollable.Initialize();
     }
 
 
@@ -68,46 +71,14 @@ public class Calendar_Handler : MonoBehaviour, IInitializePotentialDragHandler, 
         Initialize();
     }
 
-    private void Update()
+    public void OnFinish(int change_value)
     {
-        if (!update)
-            return;
+        month_to_show = month_to_show.AddMonths(change_value);
 
-        int change_value = -(current_month_element + 1);
-        float target = (current_month_element) * month_element.sizeDelta.x;
-        float movement = Time.deltaTime * (target - transform.localPosition.x) * 8 - change_value;
-
-        transform.localPosition += new Vector3(movement, 0);
-
-        if (Math.Abs(transform.localPosition.x - target) < 1)
-        {
-            transform.localPosition = new Vector3(-month_element.sizeDelta.x, transform.localPosition.y);
-            update = false;
-
-            if (change_value != 0)
-            {
-                month_to_show = month_to_show.AddMonths(change_value);
-
-                months[0].Initialize(month_to_show.AddMonths(-1));
-                months[1].Initialize(month_to_show);
-                months[2].Initialize(month_to_show.AddMonths(1));
-            }
-        }
+        months[0].Initialize(month_to_show.AddMonths(-1));
+        months[1].Initialize(month_to_show);
+        months[2].Initialize(month_to_show.AddMonths(1));
     }
-
-    void LateUpdate()
-    {
-        if (!late_update)
-            return;
-
-        Canvas.ForceUpdateCanvases();
-        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-            vLayout.SetLayoutVertical();
-        horizontal_scrollview.minHeight = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
-        late_update = false;
-    }
-
-
 
     // ______________________________________
     //

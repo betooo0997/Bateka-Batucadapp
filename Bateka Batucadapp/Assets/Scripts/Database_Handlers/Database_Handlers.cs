@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public enum Handler_Type
 {
     none,
-    news = Menu.Menu_item.Home,
+    news = Menu.Menu_item.News,
     polls = Menu.Menu_item.Polls,
     events = Menu.Menu_item.Events,
     docs = Menu.Menu_item.Docs
@@ -124,17 +124,6 @@ public abstract class Database_Handler : MonoBehaviour
 
         if (Calendar_Handler.Singleton != null)
             Calendar_Handler.Singleton.Initialize();
-
-        switch (type)
-        {
-            case Handler_Type.news:
-                News.On_Data_Parsed();
-                break;
-
-            case Handler_Type.events:
-                Calendar_Events.On_Data_Parsed();
-                break;
-        }
     }
 
 
@@ -191,8 +180,8 @@ public abstract class Database_Handler : MonoBehaviour
         // Separate news database from initial server information. (E.g. "VERIFIED.|*databases*|")
         string data = Utils.Split(data_to_parse, '~')[1];
 
-        // Separate each database to parse it individually. (E.g. "*database_1*_DBEND_*database_2*")
-        foreach (string element in Utils.Split(data, "_DBEND_"))
+        // Separate each row to parse it individually. (E.g. "*row*%*row*")
+        foreach (string element in Utils.Split(data, "%"))
             data_list.Add(Parse_Data_Single(element));
 
         Data_List_Set(type, data_list);
@@ -201,9 +190,11 @@ public abstract class Database_Handler : MonoBehaviour
             Singleton.enabled = true;
 
         Sort_List?.Invoke();
+        Scroll_Updater.Disable();
 
-        if (Menu.Active_Item != Menu.Menu_item.Home)
-            Scroll_Updater.Disable();
+        if (Menu.Active_Item == Menu.Menu_item.Home)
+            foreach (Scrollable scrollable in FindObjectsOfType<Scrollable>())
+                scrollable.Initialize();
     }
 
 

@@ -86,11 +86,6 @@ public class Calendar_Events : Database_Handler
         return Sorted_List;
     }
 
-    public static void On_Data_Parsed()
-    {
-        Home.Events_Loaded = true;
-    }
-
     protected override void Spawn_UI_Elements()
     {
         base.Spawn_UI_Elements();

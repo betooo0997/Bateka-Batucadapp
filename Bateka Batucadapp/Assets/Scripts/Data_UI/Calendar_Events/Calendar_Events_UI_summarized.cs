@@ -12,11 +12,13 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
     [SerializeField]
     Text month;
 
-    protected Image background;
+    [SerializeField]
+    Image background;
 
     protected void Awake()
     {
-        background = GetComponent<Image>();
+        if(background == null)
+            background = GetComponent<Image>();
     }
 
     public override void Set_Data(Data_struct calendar_event)
