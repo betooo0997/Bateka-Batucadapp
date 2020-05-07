@@ -182,17 +182,12 @@ public class User : MonoBehaviour
                 PlayerPrefs.SetString("user_psswd", User.Psswd);
             }
 
-            else if (PlayerPrefs.HasKey("user_database_timestamp"))
-                Message.ShowMessage("Fecha de datos: " + PlayerPrefs.GetString("user_database_timestamp"));
-
             On_Success_temp?.Invoke();
         }
         else
         {
-            if (tokens_error.Length > 0)
+            if (!response.ToLower().Contains("wrong_credentials"))
                 Message.ShowMessage("Error interno del servidor.");
-            else
-                Message.ShowMessage("Error: usuario o contraseña incorrectos.");
 
             OnFailure_temp?.Invoke();
         }

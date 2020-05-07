@@ -37,15 +37,15 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
         switch (calendar_event.Status)
         {
             case "affirmation":
-                image.color = color_affirmed(1);
+                image.sprite = Helper.Singleton.Sprite_Event_Affirmed;
                 break;
 
             case "rejection":
-                image.color = color_rejected(1);
+                image.sprite = Helper.Singleton.Sprite_Event_Rejected;
                 break;
 
             default:
-                image.color = color_not_answered(1);
+                image.sprite = Helper.Singleton.Sprite_Event_Not_Answered;
                 break;
         }
 

@@ -20,7 +20,8 @@ public class News_detail : News_UI
     protected virtual void Initialize()
     {
         Title.text = news_entry.Title;
-        Creation_time.text = Utils.Get_String(news_entry.Creation_time);
+        string month = news_entry.Creation_time.ToString("MMMM").ToUpper();
+        Creation_time.text = month[0] + month[1] + month[2] + " " + news_entry.Creation_time.Day.ToString() + " de " + news_entry.Creation_time.Year;
         Detail.text = news_entry.Details;
 
         if (news_entry.Imgs[0] != "empty")
@@ -46,6 +47,5 @@ public class News_detail : News_UI
 
         Vector2 result = new Vector2(rectTransform.sizeDelta.x, (int)(rectTransform.sizeDelta.x * ratio));
         rectTransform.sizeDelta = result;
-        Creation_time.transform.SetAsLastSibling();
     }
 }

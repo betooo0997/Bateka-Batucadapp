@@ -15,8 +15,10 @@ public class Message : MonoBehaviour
     float alpha = 1;
     float alpha_rate = 4f;
 
-    float timer = 0;
+    float timer;
     float timer_limit = 1.5f;
+
+    bool shown;
 
     void Start()
     {
@@ -27,16 +29,24 @@ public class Message : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
-
-        if (timer >= timer_limit)
+        if(!shown)
         {
-            Color color = image.color;
-            image.color = new Color(color.r, color.g, color.b, color.a - alpha_rate * Time.deltaTime);
-
-            if (image.color.a <= 0)
+            if (transform.localPosition.y > -75 - 43)
+                transform.localPosition -= new Vector3(0, Time.deltaTime * 175);
+            else
             {
-                image.color = new Color(color.r, color.g, color.b, 0);
+                transform.localPosition = new Vector3(0, -75 - 43);
+                timer += Time.deltaTime;
+
+                if (timer > timer_limit)
+                    shown = true;
+            }
+        }
+        else
+        {
+            transform.localPosition += new Vector3(0, Time.deltaTime * 175);
+            if (transform.localPosition.y > 100)
+            {
                 active = false;
                 SceneManager.UnloadSceneAsync("Message");
             }

@@ -9,10 +9,10 @@ public class Idx_Handler : MonoBehaviour
     [SerializeField]
     GameObject idx_prefab;
 
-    List<Image> images;
+    [SerializeField]
+    Sprite idx_selected, idx_unselected;
 
-    Color color_default;
-    Color color_selected;
+    List<Image> images;
 
     int current_idx = 0;
 
@@ -35,10 +35,7 @@ public class Idx_Handler : MonoBehaviour
         for(int x = 0; x < idxs; x++)
             images.Add(Instantiate(idx_prefab, transform).GetComponent<Image>());
 
-        color_default = images[0].color;
-        color_selected = color_default * 0.7f;
-
-        images[0].color = color_selected;
+        images[0].sprite = idx_selected;
     }
 
     public void Update_idx(int value)
@@ -46,9 +43,9 @@ public class Idx_Handler : MonoBehaviour
         for (int x = 0; x < images.Count; x++)
         {
             if (x == value)
-                images[x].color = color_selected;
+                images[x].sprite = idx_selected;
             else
-                images[x].color = color_default;
+                images[x].sprite = idx_unselected;
         }
     }
 }

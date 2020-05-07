@@ -36,24 +36,23 @@ public class Menu : MonoBehaviour
     public static Menu_item Prev_Item { get; private set; }
 
     [SerializeField]
-    GameObject home_Button;
+    GameObject button_home, button_news, button_polls, button_events, button_docs;
 
     [SerializeField]
-    GameObject news_Button;
+    Sprite sprite_selected_home, sprite_selected_news, sprite_selected_polls, sprite_selected_events, sprite_selected_docs;
 
-    [SerializeField]
-    GameObject polls_Button;
-
-    [SerializeField]
-    GameObject events_Button;
-
-    [SerializeField]
-    GameObject docs_Button;
+    Sprite sprite_unselected_home, sprite_unselected_news, sprite_unselected_polls, sprite_unselected_events, sprite_unselected_docs;
 
     void Awake()
     {
         Singleton = this;
-        alpha_unselected = home_Button.GetComponent<Image>().color.a;
+        //alpha_unselected = home_Button.GetComponent<Image>().color.a;
+
+        sprite_unselected_home      = button_home.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_news      = button_news.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_polls     = button_polls.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_events    = button_events.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_docs      = button_docs.GetComponentInChildren<Image>().sprite;
     }
 
     void Start()
@@ -101,57 +100,60 @@ public class Menu : MonoBehaviour
         Active_Item = scene;
 
         if (!Active_Item.ToString().Contains(Prev_Item.ToString()))
-            modify_Buttons(Prev_Item, change_alpha, alpha_unselected);
+            modify_Buttons(Prev_Item, change_alpha, false);
 
-        modify_Buttons(Active_Item, change_alpha, alpha_selected);
+        modify_Buttons(Active_Item, change_alpha, true);
     }
 
-    void modify_Buttons(Menu_item menu_item, Action<GameObject, float> method, float new_alpha)
+    void modify_Buttons(Menu_item menu_item, Action<GameObject, Sprite, Sprite, bool> method, bool selected)
     {
         switch (menu_item)
         {
             case Menu_item.Home:
-                method(home_Button, new_alpha);
+                method(button_home, sprite_selected_home, sprite_unselected_home, selected);
                 break;
 
             case Menu_item.News:
-                method(news_Button, new_alpha);
+                method(button_news, sprite_selected_news, sprite_unselected_news, selected);
                 break;
 
             case Menu_item.News_details:
-                method(news_Button, new_alpha);
+                method(button_news, sprite_selected_news, sprite_unselected_news, selected);
                 break;
 
             case Menu_item.Events:
-                method(events_Button, new_alpha);
+                method(button_events, sprite_selected_events, sprite_unselected_events, selected);
                 break;
 
             case Menu_item.Events_details:
-                method(events_Button, new_alpha);
+                method(button_events, sprite_selected_events, sprite_unselected_events, selected);
                 break;
 
             case Menu_item.Polls:
-                method(polls_Button, new_alpha);
+                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Poll_details_yes_no:
-                method(polls_Button, new_alpha);
+                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Poll_details_other:
-                method(polls_Button, new_alpha);
+                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Docs:
-                method(docs_Button, new_alpha);
+                method(button_docs, sprite_selected_docs, sprite_unselected_docs, selected);
                 break;
         }
     }
 
-    void change_alpha(GameObject game_object, float new_alpha)
+    void change_alpha(GameObject game_object, Sprite sprite_selected, Sprite sprite_unselected, bool selected)
     {
-        Image image = game_object.GetComponent<Image>();
-        Color color = image.color;
-        image.color = new Color(color.r, color.g, color.b, new_alpha);
+        Image image = game_object.GetComponentInChildren<Image>();
+
+        if (selected)
+            image.sprite = sprite_selected;
+        else
+            image.sprite = sprite_unselected;
     }
 }

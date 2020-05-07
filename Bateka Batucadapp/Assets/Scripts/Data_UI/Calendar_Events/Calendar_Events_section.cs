@@ -14,7 +14,10 @@ public class Calendar_Events_section : MonoBehaviour
     public void Set_Value(DateTime date)
     {
         Date = new DateTime(date.Year, date.Month, 1);
-        Title.text = Date.ToString("MMMM") + " " + Date.Year;
+        Title.text = Date.ToString("MMMM").ToUpper() + "  ";
+        Utils.Update_UI = true;
+
+        Utils.Update_UI = true;
     }
 
     public static void Spawn_Sections()

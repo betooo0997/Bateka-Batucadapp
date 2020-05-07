@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Utils : MonoBehaviour
@@ -17,17 +19,36 @@ public class Utils : MonoBehaviour
         Singleton = this;
     }
 
+    private void Start()
+    {
+        foreach (InputField input in FindObjectsOfType<InputField>())
+            input.keyboardType = (TouchScreenKeyboardType)(-1);
+    }
+
     private void LateUpdate()
     {
         if (updates > 0)
         {
+            foreach (ContentSizeFitter fitter in FindObjectsOfType<ContentSizeFitter>())
+            {
+                fitter.SetLayoutVertical();
+                fitter.SetLayoutHorizontal();
+            }
+
             foreach (HorizontalOrVerticalLayoutGroup layout in FindObjectsOfType<HorizontalOrVerticalLayoutGroup>())
             {
                 layout.SetLayoutVertical();
                 layout.SetLayoutHorizontal();
             }
 
+            foreach (ContentSizeFitter fitter in FindObjectsOfType<ContentSizeFitter>())
+            {
+                fitter.SetLayoutVertical();
+                fitter.SetLayoutHorizontal();
+            }
+
             Canvas.ForceUpdateCanvases();
+
             updates--;
 
             if (updates == 0)
@@ -45,6 +66,7 @@ public class Utils : MonoBehaviour
 
     public void Load_Menu_Scene(string scene)
     {
+        Debug.Log("Click");
         Menu.Singleton.Load_Scene_Menu_Item(scene);
     }
 
@@ -77,6 +99,11 @@ public class Utils : MonoBehaviour
     public static string Get_String(DateTime date)
     {
         return date.ToString("dd.MM.yyyy | HH:mm") + "h";
+    }
+
+    public static string Get_String_SQL(DateTime date)
+    {
+        return date.ToString("yyyy-MM-dd HH:mm");
     }
 
     /// <summary>
@@ -155,6 +182,17 @@ public class Utils : MonoBehaviour
     {
         yield return null;
         function();
+    }
+
+    public static void Unload_Time(int idx, float seconds)
+    {
+        Singleton.StartCoroutine(_Unload_Time(idx, seconds));
+    }
+
+    static IEnumerator _Unload_Time(int idx, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.UnloadSceneAsync(idx);
     }
 
     /// <summary>
@@ -251,5 +289,26 @@ public class Utils : MonoBehaviour
             target.gameObject.SetActive(true);
             Loading_Screen.Set_Active(false);
         });
+    }
+
+    public static string ToString(float data)
+    {
+        return data.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    public class EnumOrder<TEnum> where TEnum : struct
+    {
+        private static readonly TEnum[] Values;
+
+        static EnumOrder()
+        {
+            var fields = Values.GetType().GetFields(BindingFlags.Static | BindingFlags.Public);
+            Values = Array.ConvertAll(fields, x => (TEnum)x.GetValue(null));
+        }
+
+        public static int IndexOf(TEnum value)
+        {
+            return Array.IndexOf(Values, value);
+        }
     }
 }

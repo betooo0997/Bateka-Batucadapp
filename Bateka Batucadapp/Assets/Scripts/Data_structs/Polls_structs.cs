@@ -12,7 +12,7 @@ public class Poll : Votable
     public DateTime Creation_Time;
     public string Author;
 
-    public Poll()
+    public Poll() : base()
     {
         Creation_Time = DateTime.Now;
     }

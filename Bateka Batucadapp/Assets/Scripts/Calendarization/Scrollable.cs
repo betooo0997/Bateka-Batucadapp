@@ -27,8 +27,7 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
 
     public Action<int> OnFinish;
 
-    [SerializeField]
-    bool limited;
+    bool calendar;
 
     public static List<Calendar_Event> Shown_Events;
     Calendar_Events_UI_summarized[] shown_events_UI;
@@ -37,7 +36,9 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
 
     private void Awake()
     {
-        if (!limited)
+        calendar = GetComponent<Calendar_Handler>() != null;
+
+        if (!calendar)
             shown_events_UI = GetComponentsInChildren<Calendar_Events_UI_summarized>(true);
     }
 
@@ -53,11 +54,14 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
             Shown_Events.Add((Calendar_Event)data[x]);
         }
 
-        if (!limited && Shown_Events.Count > 0)
+        if (!calendar && Shown_Events.Count > 0)
         {
-            for (int x = 0; x < shown_events_UI.Length; x++)
+            shown_events_UI[0].Set_Data(Shown_Events[Shown_Events.Count - 1]);
+            shown_events_UI[0].gameObject.SetActive(true);
+
+            for (int x = 1; x < shown_events_UI.Length; x++)
             {
-                int idx = x;
+                int idx = x - 1;
 
                 if (idx >= Shown_Events.Count)
                     idx -= Shown_Events.Count;
@@ -88,7 +92,7 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
 
             if (change_value != 0)
             {
-                if (limited)
+                if (calendar)
                     Calendar_Handler.Singleton.OnFinish(change_value);
                 else
                 {
@@ -104,10 +108,13 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
 
                     for (int x = 0; x < shown_events_UI.Length; x++)
                     {
-                        int idx = x + current_idx;
+                        int idx = x + current_idx - 1;
 
                         if (idx >= Shown_Events.Count)
                             idx -= Shown_Events.Count;
+
+                        if (idx < 0)
+                            idx += Shown_Events.Count;
 
                         shown_events_UI[x].Set_Data(Shown_Events[idx]);
                     }

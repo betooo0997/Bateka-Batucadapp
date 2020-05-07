@@ -282,6 +282,9 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Load_Rhythm()
     {
+        User.User_Info.Username = "beto";
+        User.Psswd = "1234567891011121";
+
         string[] field_names = { "REQUEST_TYPE" };
         string[] field_values = { "get_rhythms" };
         Http_Client.Send_Post(field_names, field_values, Handle_Data_Response);
@@ -289,87 +292,80 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void Handle_Data_Response(string response, Handler_Type type)
     {
-        string data = Utils.Split(response, '|')[1];
+        string data = Utils.Split(response, '~')[1];
 
-        foreach (string rhythm in Utils.Split(data, "_DBEND_"))
+        foreach (string rhythm in Utils.Split(data, "%"))
         {
             Rhythm new_rhythm = new Rhythm();
+            string[] rhythm_data = Utils.Split(rhythm, '#');
 
-            foreach (string element in Utils.Split(rhythm, '#'))
+            new_rhythm.Id = uint.Parse(rhythm_data[0]);
+            new_rhythm.Title = rhythm_data[1];
+            new_rhythm.Description = rhythm_data[2];
+            new_rhythm.Creation = Utils.Get_DateTime(rhythm_data[3]);
+            new_rhythm.Last_Update = Utils.Get_DateTime(rhythm_data[4]);
+            new_rhythm.Author_id = uint.Parse(rhythm_data[5]);
+
+            SimpleJSON.JSONNode raw = SimpleJSON.JSON.Parse(rhythm_data[6]);
+
+            Rhythm.Sound parse_sound(Rhythm.Sound.Sound_Type sound_type)
             {
-                string[] tokens = Utils.Split(element, '$');
+                Rhythm.Sound new_sound = new Rhythm.Sound();
+                new_sound.Type = sound_type;
 
-                if (tokens.Length < 2) continue;
-                switch (tokens[0])
+                foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][0])
                 {
-                    case "id":
-                        new_rhythm.Id = uint.Parse(tokens[1]);
-                        break;
+                    string[] tokens = Utils.Split(element, '*');
 
-                    case "last_modification_date":
-                        new_rhythm.Last_Modification_Date = Utils.Get_DateTime(tokens[1]);
-                        break;
+                    new_sound.Instances.Add(new Rhythm.Sound.Instance
+                    {
+                        Fire_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
+                        Volume = float.Parse(tokens[1], CultureInfo.InvariantCulture),
+                        Note = tokens[2]
+                    });
+                }
 
-                    case "sound":
-                        Rhythm.Sound sound = new Rhythm.Sound();
+                foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][1])
+                {
+                    string[] tokens = Utils.Split(element, '*');
 
-                        foreach (string sound_element in Utils.Split(tokens[1], '~'))
-                        {
-                            string[] sound_tokens = Utils.Split(sound_element, '*');
+                    new_sound.Loops.Add(new Rhythm.Sound.Loop
+                    {
+                        Start_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
+                        End_Time = float.Parse(tokens[1], CultureInfo.InvariantCulture),
+                        Repetitions = uint.Parse(tokens[2])
+                    });
+                }
 
-                            switch (sound_tokens[0])
-                            {
-                                case "type":
-                                    if (!Enum.TryParse(sound_tokens[1].ToUpper()[0] + sound_tokens[1].Substring(1), out sound.Type))
-                                        Debug.LogError("Sound Type could not be parsed.");
-                                    break;
+                return new_sound;
+            }
 
-                                case "inst":
-                                    string[] instance_parts = Utils.Split(sound_tokens[1], 'd');
-                                    Rhythm.Sound.Instance sound_instance = new Rhythm.Sound.Instance
-                                    {
-                                        Fire_Time = Round_To_Existing_Key_Floor(float.Parse(instance_parts[0], CultureInfo.InvariantCulture)),
-                                        Volume = Round_To_Existing_Key_Floor(float.Parse(instance_parts[1], CultureInfo.InvariantCulture)),
-                                        Note = instance_parts[2]
-                                    };
-                                    sound.Instances.Add(sound_instance);
-                                    break;
+            foreach (Rhythm.Sound.Sound_Type sound_type in (Rhythm.Sound.Sound_Type[])Enum.GetValues(typeof(Rhythm.Sound.Sound_Type)))
+            {
+                if (sound_type == Rhythm.Sound.Sound_Type.None)
+                    continue;
 
-                                case "loop":
-                                    string[] loop_parts = Utils.Split(sound_tokens[1], 't');
-                                    Rhythm.Sound.Loop loop = new Rhythm.Sound.Loop
-                                    {
-                                        Start_Time = float.Parse(loop_parts[0], CultureInfo.InvariantCulture),
-                                        End_Time = float.Parse(loop_parts[1], CultureInfo.InvariantCulture),
-                                        Repetitions = uint.Parse(loop_parts[2])
-                                    };
-                                    sound.Loops.Add(loop);
-                                    break;
-                            }
-                        }
+                Rhythm.Sound new_sound = parse_sound(sound_type);
+                new_rhythm.Sounds.Add(new_sound);
 
-                        if (!Sound.Sounds.Exists(a => a.Sound_Type == sound.Type))
-                            break;
+                if (!Sound.Sounds.Exists(a => a.Sound_Type == new_sound.Type))
+                    continue;
 
-                        Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == sound.Type);
+                Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == new_sound.Type);
 
-                        foreach (Rhythm.Sound.Instance instance in sound.Instances)
-                            sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
+                foreach (Rhythm.Sound.Instance instance in new_sound.Instances)
+                    sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
 
-                        foreach (Rhythm.Sound.Loop loop in sound.Loops)
-                        {
-                            int sibling_index = sound_mono.Instances[loop.Start_Time].transform.GetSiblingIndex();
+                foreach (Rhythm.Sound.Loop loop in new_sound.Loops)
+                {
+                    int sibling_index = sound_mono.Instances[loop.Start_Time].transform.GetSiblingIndex();
 
-                            Rhythm_Loop rhythm_loop = Instantiate(loop_prefab, sound_mono.transform).GetComponent<Rhythm_Loop>();
-                            rhythm_loop.Data = loop;
-                            rhythm_loop.Sound = sound_mono;
-                            rhythm_loop.Sound.Loops.Add(rhythm_loop);
-                            rhythm_loop.Update_Core();
-                            rhythm_loop.Update_Periphery();
-                        }
-
-                        new_rhythm.Sounds.Add(sound);
-                        break;
+                    Rhythm_Loop rhythm_loop = Instantiate(loop_prefab, sound_mono.transform).GetComponent<Rhythm_Loop>();
+                    rhythm_loop.Data = loop;
+                    rhythm_loop.Sound = sound_mono;
+                    rhythm_loop.Sound.Loops.Add(rhythm_loop);
+                    rhythm_loop.Update_Core();
+                    rhythm_loop.Update_Periphery();
                 }
             }
 
@@ -386,6 +382,37 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Save_Rhythm()
     {
+        User.User_Info.Username = "beto";
+        User.Psswd = "1234567891011121";
 
+        Rhythm rhythm = Rhythms[0];
+
+        string[] field_names = { "REQUEST_TYPE",
+            "rhythm_id",
+            "rhythm_name",
+            "rhythm_details",
+            "rhythm_date_update",
+            "rhythm_date_creation",
+            "rhythm_author_id",
+            "rhythm_data" };
+
+        string[] field_values = { "set_rhythms",
+            rhythm.Id.ToString(),
+            rhythm.Title,
+            rhythm.Description,
+            Utils.Get_String_SQL(rhythm.Last_Update),
+            Utils.Get_String_SQL(rhythm.Creation),
+            rhythm.Author_id.ToString(),
+            rhythm.Get_Sounds_Json() };
+
+        Http_Client.Send_Post(field_names, field_values, Handle_Save_Response);
+    }
+
+    void Handle_Save_Response(string response, Handler_Type type)
+    {
+        if (response.Contains("VERIFIED"))
+            Message.ShowMessage("Ritmo guardado con éxito");
+        else
+            Message.ShowMessage("Error al guradar el ritmo");
     }
 }

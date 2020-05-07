@@ -207,9 +207,10 @@ MonoBehaviour:
     Id: 0
     Title: 
     Details: 
-    Subtitle: 
-    Content_URLs: []
-    Img_URLs: []
+    Author_Id: 0
+    Privacy: 0
+    Urls: []
+    Imgs: []
   details: {fileID: 1274588032}
   image_prefab: {fileID: 8844343350768167266, guid: 4a0987aa36232944e99ed44e32a5c795,
     type: 3}
@@ -954,8 +955,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 245, y: 0}
-  m_SizeDelta: {x: 490, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1274588031
 MonoBehaviour:

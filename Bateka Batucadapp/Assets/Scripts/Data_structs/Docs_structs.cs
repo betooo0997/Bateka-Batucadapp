@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Doc : Data_struct
 {
-    public Doc()
+    public Doc() : base()
     {
         Imgs = new List<string>();
         Urls = new List<string>();

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Calendar_Handler : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class Calendar_Handler : MonoBehaviour
 {
     public static Calendar_Handler Singleton;
 
@@ -69,6 +69,10 @@ public class Calendar_Handler : MonoBehaviour, IInitializePotentialDragHandler, 
         // Get first of month.
         month_to_show = DateTime.Now.AddDays(-DateTime.Now.Day + 1); 
         Initialize();
+
+        float canvas_scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
+        RectTransform rect = GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(Screen.width * 3 / canvas_scale, rect.sizeDelta.y);
     }
 
     public void OnFinish(int change_value)
@@ -100,72 +104,5 @@ public class Calendar_Handler : MonoBehaviour, IInitializePotentialDragHandler, 
         }
 
         late_update = true;
-    }
-
-
-
-    // ______________________________________
-    //
-    // 4. DRAG HANDLING.
-    // ______________________________________
-    //
-
-
-    void DoForParents<T>(Action<T> action) where T : IEventSystemHandler
-    {
-        Transform parent = transform.parent;
-        while (parent != null)
-        {
-            foreach (var component in parent.GetComponents<Component>())
-            {
-                if (component is T)
-                    action((T)(IEventSystemHandler)component);
-            }
-            parent = parent.parent;
-        }
-    }
-
-    void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
-    {
-        DoForParents<IInitializePotentialDragHandler>((parent) => { parent.OnInitializePotentialDrag(eventData); });
-    }
-
-    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
-    {
-        // Taking in account that the Calendar_Handler works as a horizontal scrollview
-        if (Math.Abs(eventData.delta.x) < Math.Abs(eventData.delta.y))
-        {
-            routeToParent = true;
-            DoForParents<IBeginDragHandler>((parent) => { parent.OnBeginDrag(eventData); });
-        }
-        else
-            routeToParent = false;
-
-        if (!update)
-            previous_mouse_pos = eventData.pressPosition;
-    }
-
-    void IDragHandler.OnDrag(PointerEventData eventData)
-    {
-        if (!update && !routeToParent)
-        {
-            transform.localPosition += new Vector3((eventData.position - previous_mouse_pos).x, 0);
-            previous_mouse_pos = eventData.position;
-        }
-
-        else if (routeToParent)
-            DoForParents<IDragHandler>((parent) => { parent.OnDrag(eventData); });
-    }
-
-    void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-    {
-        if (routeToParent)
-            DoForParents<IEndDragHandler>((parent) => { parent.OnEndDrag(eventData); });
-        else
-        {
-            current_month_element = (int)Math.Round(transform.localPosition.x / month_element.sizeDelta.x, 0);
-            update = true;
-        }
-        routeToParent = false;
     }
 }

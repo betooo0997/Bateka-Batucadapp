@@ -10,9 +10,6 @@ public class Calendar_Events : Database_Handler
 
     public GameObject Data_Section_UI_Prefab;
 
-    [SerializeField]
-    Transform Spacer;
-
     protected override void Awake()
     {
         base.Awake();
@@ -91,8 +88,5 @@ public class Calendar_Events : Database_Handler
         base.Spawn_UI_Elements();
         transform.localPosition = new Vector3(transform.localPosition.x, GetComponent<RectTransform>().sizeDelta.y, transform.localPosition.z);
         FindObjectOfType<ScrollRect>().velocity = new Vector2();
-
-        if (Spacer != null)
-            Spacer.SetAsLastSibling();
     }
 }

@@ -12,19 +12,21 @@ public abstract class Votable : Data_struct
     public DateTime Date_Deadline;
     public List<Comment> Comments;
 
-    public Votable()
+    public Votable() : base()
     {
         Vote_Voters = new List<List<User.User_Information>>();
         Vote_Types = new List<string>();
         Date_Deadline = new DateTime();
         Comments = new List<Comment>();
+
+        editable.Add("Date_Deadline");
     }
 }
 
 public enum Votable_Type
 {
-    Yes_No = Menu.Menu_item.Poll_details_yes_no,
-    Other = Menu.Menu_item.Poll_details_other
+    Other = Menu.Menu_item.Poll_details_other,
+    Yes_No = Menu.Menu_item.Poll_details_yes_no
 }
 
 [System.Serializable]

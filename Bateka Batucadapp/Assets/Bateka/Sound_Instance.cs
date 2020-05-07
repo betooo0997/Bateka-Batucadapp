@@ -15,7 +15,10 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public Button Button;
 
     [System.NonSerialized]
-    public float Fire_Time;
+    public float Fire_Time, Volume;
+
+    [System.NonSerialized]
+    public string Note;
 
     [System.NonSerialized]
     public Sound sound;
@@ -76,6 +79,16 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         image.enabled = Enabled;
         Toggling?.Invoke(this, null);
         Rhythm_Player.Singleton.Reset_Events();
+
+        List<Rhythm.Sound.Instance> instances = Rhythm_Player.Singleton.Rhythms[0].Sounds.Find(a => a.Type == sound.Sound_Type).Instances;
+
+        if (Enabled)
+            instances.Remove(instances.Find(a => a.Fire_Time == Fire_Time));
+        else
+            instances.Add(new Rhythm.Sound.Instance() { Fire_Time = Fire_Time, Volume = Volume, Note = Note });
+
+
+
     }
 
     public void Set_Enabled(bool enabled)

@@ -47,11 +47,56 @@ public class Rhythm
     }
 
     public uint Id;
-    public DateTime Last_Modification_Date;
+    public string Title;
+    public string Description;
+    public uint Author_id;
+    public DateTime Last_Update;
+    public DateTime Creation;
+
     public List<Sound> Sounds;
 
     public  Rhythm()
     {
         Sounds = new List<Sound>();
     }
+
+    public string Get_Sounds_Json()
+    {
+        string result = "{";
+
+        foreach (Sound.Sound_Type sound_type in (Sound.Sound_Type[])Enum.GetValues(typeof(Sound.Sound_Type)))
+        {
+            if (sound_type == Rhythm.Sound.Sound_Type.None)
+                continue;
+
+            Sound sound = Sounds.Find(a => a.Type == sound_type);
+            result += "\"" + sound_type.ToString() + "\":[[";
+
+            foreach (Sound.Instance instance in sound.Instances)
+                result += "\"" + Utils.ToString(instance.Fire_Time) + "*" + Utils.ToString(instance.Volume) + "*" + instance.Note + "\",";
+
+            if(sound.Instances.Count > 0)
+                result = result.Substring(0, result.Length - 1);
+
+            result += "],[";
+
+            foreach (Sound.Loop loop in sound.Loops)
+                result += "\"" + Utils.ToString(loop.Start_Time) + "*" + Utils.ToString(loop.End_Time) + "*" + loop.Repetitions + "\",";
+
+            if (sound.Loops.Count > 0)
+                result = result.Substring(0, result.Length - 1);
+
+            result += "]],";
+        }
+
+        return result.Substring(0, result.Length - 1) + "}";
+    }
+}
+
+public class Sound_Raw
+{
+    public string[][] Surdo_20;
+    public string[][] Surdo_18;
+    public string[][] Surdo_16;
+    public string[][] Tabal;
 }
