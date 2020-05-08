@@ -25,6 +25,8 @@ public class Initializer : MonoBehaviour
         {
             Debug.Log("Loading from cache");
             User.Psswd = PlayerPrefs.GetString("user_psswd");
+            User.User_Info.Username = PlayerPrefs.GetString("user_username");
+            Login.Singleton.Set_Input_Fields();
             User.Parse_User_Data(PlayerPrefs.GetString("user_database"));
             Database_Handler.Load_Data_Cache(Handler_Type.news);
             Database_Handler.Load_Data_Cache(Handler_Type.events);

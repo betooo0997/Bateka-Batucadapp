@@ -179,7 +179,8 @@ public class User : MonoBehaviour
             if (save)
             {
                 DataSaver.Save_Database("user_database", response);
-                PlayerPrefs.SetString("user_psswd", User.Psswd);
+                PlayerPrefs.SetString("user_username", User_Info.Username);
+                PlayerPrefs.SetString("user_psswd", Psswd);
             }
 
             On_Success_temp?.Invoke();

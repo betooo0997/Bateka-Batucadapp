@@ -61,6 +61,18 @@ public class Login : MonoBehaviour
         }
     }
 
+    public void Set_Input_Fields()
+    {
+        user.text = User.User_Info.Username;
+        string psswd = "";
+
+        for (int x = 0; x < User.Psswd.Length; x++)
+            psswd += "*";
+
+        password.text = psswd;
+        Login_Button.interactable = false;
+    }
+
     void Reset_Login_Button()
     {
         login_reponse.color = new Color(1, 1, 1, 0);

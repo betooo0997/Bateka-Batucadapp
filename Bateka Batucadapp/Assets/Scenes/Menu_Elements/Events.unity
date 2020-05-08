@@ -686,7 +686,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 20
+    m_Top: 25
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
@@ -788,7 +788,7 @@ PrefabInstance:
     - target: {fileID: 1351459637188728521, guid: 575fd859dc2669b469437f5e0ecbf7c0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 1351459637188728521, guid: 575fd859dc2669b469437f5e0ecbf7c0,
         type: 3}
