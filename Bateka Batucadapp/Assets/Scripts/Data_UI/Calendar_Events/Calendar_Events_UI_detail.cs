@@ -13,16 +13,24 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
     [SerializeField]
     Text date_event, transportation, cash, food, detail, date_deadline;
 
+    Sprite affired_default, rejected_default;
+
     bool initialized;
 
     Button[] buttons;
 
     int temp_vote;
 
+    private void Awake()
+    {
+        buttons = GetComponentsInChildren<Button>();
+        affired_default = affirme.sprite;
+        rejected_default = reject.sprite;
+    }
+
     protected void Start()
     {
         calendar_event = (Calendar_Event)Calendar_Events.Selected_Data;
-        buttons = GetComponentsInChildren<Button>();
         Initialize();
     }
 
@@ -44,11 +52,11 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
         switch (calendar_event.Status)
         {
             case "affirmation":
-                affirme.color = color_affirmed(1);
+                affirme.sprite = Helper.Singleton.Sprite_Event_Button_Affirmed;
                 break;
 
             case "rejection":
-                reject.color = color_rejected(1);
+                reject.sprite = Helper.Singleton.Sprite_Event_Button_Rejected;
                 break;
         }
 

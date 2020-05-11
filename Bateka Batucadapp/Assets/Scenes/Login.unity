@@ -922,6 +922,10 @@ MonoBehaviour:
   Sprite_Login_Failure: {fileID: 21300000, guid: c8e7a15381a9f694db345c39db1789f2,
     type: 3}
   Sprite_Arrow_Seen: {fileID: 21300000, guid: 9f7936bf8c9764740854c0a9d4d4ed5b, type: 3}
+  Sprite_Event_Button_Affirmed: {fileID: 21300000, guid: 8a7eb960fbd62b542877ee6e582f2ccd,
+    type: 3}
+  Sprite_Event_Button_Rejected: {fileID: 21300000, guid: 64213879475b9894281c59b1f73b4126,
+    type: 3}
 --- !u!4 &765342821
 Transform:
   m_ObjectHideFlags: 0

@@ -33,7 +33,7 @@ public class Initializer : MonoBehaviour
             Database_Handler.Load_Data_Cache(Handler_Type.polls);
             Database_Handler.Load_Data_Cache(Handler_Type.docs);
 
-            User.Update_Data();
+            User.Update_Data("", "", false);
         }
     }
 }

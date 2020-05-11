@@ -51,7 +51,7 @@ function set_news_entry_seen($con)
 	$object = mysqli_fetch_object($result);
 	$news_data = $object->polls_data;
 
-	$elements = explode("|", $polls_data);
+	$elements = preg_split('/|/', $polls_data, -1, PREG_SPLIT_NO_EMPTY);
 	$present = false;
 
 	for ($x = 0; $x < sizeof($elements); $x++)

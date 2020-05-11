@@ -82,16 +82,17 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
         int change_value = -(current_month_element + 1);
 
         float target = (current_month_element) * month_element.sizeDelta.x;
-        float timer = Time.deltaTime;
 
-        if (timer >= 0.05f)
-            timer = 0.05f;
-    
-        float movement = timer * (target - transform.localPosition.x) * 8 - change_value;
+        bool signed = target - transform.localPosition.x < 0;
 
-        transform.localPosition += new Vector3(movement, 0);
+        if (!signed)
+            transform.localPosition += new Vector3(Time.deltaTime * 750, 0);
+        else
+            transform.localPosition += new Vector3(Time.deltaTime * -750, 0);
 
-        if (Math.Abs(transform.localPosition.x - target) < 2)
+        if (Math.Abs(transform.localPosition.x - target) < 1 || 
+            (transform.localPosition.x - target) < 0 && signed ||
+            (transform.localPosition.x - target) > 0 && !signed)
         {
             transform.localPosition = new Vector3(-month_element.sizeDelta.x, transform.localPosition.y);
             update = false;
