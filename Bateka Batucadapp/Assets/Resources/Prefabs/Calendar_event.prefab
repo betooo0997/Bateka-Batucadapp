@@ -322,8 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Title: {fileID: 544436492621594824}
-  Location: {fileID: 544436493485148318}
-  Meeting_Location: {fileID: 544436494030506888}
+  Location_event: {fileID: 544436493485148318}
+  Meeting: {fileID: 544436494030506888}
   day: {fileID: 544436494280137087}
   month: {fileID: 544436492730259524}
   background: {fileID: 544436494526136915}

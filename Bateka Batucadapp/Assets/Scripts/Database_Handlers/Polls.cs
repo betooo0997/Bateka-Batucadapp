@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class Polls : Database_Handler
 {
+    [SerializeField]
+    Transform parent_not_answered;
+
+    [SerializeField]
+    Transform parent_answered;
+
     // ______________________________________
     //
     // 1. LOAD DATA.
@@ -118,5 +124,30 @@ public class Polls : Database_Handler
 
         List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
         return Sorted_List;
+    }
+
+    protected override void Spawn_UI_Elements()
+    {
+        foreach (Transform transform in Data_UI_Parent.GetComponentsInChildren<Transform>())
+            if (transform.name == GetType().ToString() + "_element" || transform.name.Contains(GetType().ToString() + "_section"))
+                Destroy(transform.gameObject);
+
+        foreach (Data_struct element in Data_List_Get(GetType()))
+        {
+            GameObject element_obj = Instantiate(data_UI_prefab, Data_UI_Parent);
+            element_obj.name = GetType().ToString() + "_element";
+            element_obj.GetComponent<Data_UI>().Set_Data(element);
+
+            if (!Utils.Is_Sooner(((Poll)element).Date_Deadline, DateTime.Now))
+            {
+                if (((Poll)element).Status == "")
+                    element_obj.transform.SetSiblingIndex(parent_not_answered.GetSiblingIndex() + 1);
+                else
+                    element_obj.transform.SetSiblingIndex(parent_answered.GetSiblingIndex() + 1);
+            }
+        }
+
+        Utils.Update_UI = true;
+        enabled = false;
     }
 }

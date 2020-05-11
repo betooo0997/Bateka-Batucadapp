@@ -52,6 +52,9 @@ function handleRequest()
 			case 'set_news':
 				return set_news_entry($con);
 
+			case 'set_news_seen':
+				return set_news_entry_seen($con);
+
 			// Docs
 			case 'get_docs':
 				return get_data($con, "docs");
@@ -68,7 +71,7 @@ function handleRequest()
 
 			// Other
 			case 'get_version':
-				echo "1.1";
+				echo "0.3";
 				return 'NONE';
 
 			default:

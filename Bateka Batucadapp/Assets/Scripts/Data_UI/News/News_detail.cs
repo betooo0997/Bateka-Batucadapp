@@ -30,6 +30,19 @@ public class News_detail : News_UI
 
         Canvas.ForceUpdateCanvases();
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
+
+        if (!news_entry.Seen)
+        {
+            string[] field_names = { "REQUEST_TYPE", "news_id" };
+            string[] field_values = { "set_news_seen", news_entry.Id.ToString() };
+            Http_Client.Send_Post(field_names, field_values, Handle_Response, Handler_Type.none);
+            news_entry.Seen = true;
+            User.User_Info.News_Data.Add(news_entry.Id);
+        }
+    }
+
+    void Handle_Response(string response, Handler_Type type)
+    {
     }
 
     void Handle_Img_Response(Transform parent, Texture2D texture)

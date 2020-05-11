@@ -270,9 +270,6 @@ public abstract class Database_Handler : MonoBehaviour
             element_obj.GetComponent<Data_UI>().Set_Data(element);
         }
 
-        if (GetType() == typeof(Calendar_Events))
-            Utils.InvokeNextFrame(Calendar_Events_section.Spawn_Sections);
-
         enabled = false;
     }
 }

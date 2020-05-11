@@ -7,16 +7,11 @@ using UnityEngine.UI;
 
 public class Calendar_Events_UI_detail : Calendar_Events_UI
 {
-    public Text Detail;
+    [SerializeField]
+    Image affirme, reject;
 
     [SerializeField]
-    Text confirm_deadline;
-
-    [SerializeField]
-    Image affirme;
-
-    [SerializeField]
-    Image reject;
+    Text date_event, transportation, cash, food, detail, date_deadline;
 
     bool initialized;
 
@@ -36,11 +31,15 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
         if (Utils.Is_Sooner(calendar_event.Date_Deadline, DateTime.Now))
             Set_Interactable(false);
 
-        Title.text = calendar_event.Title;
-        Meeting_Location.text = calendar_event.Location_Meeting + ", " + Utils.Get_String(calendar_event.Date_Meeting);
-        Location.text = calendar_event.Location_Event + ", " + Utils.Get_String(calendar_event.Date_Event);
-        Detail.text = calendar_event.Details;
-        confirm_deadline.text = "Fecha de cierre de encuesta: " + Utils.Get_String(calendar_event.Date_Deadline);
+        Title.text              = calendar_event.Title;
+        date_event.text         = Utils.Get_String(calendar_event.Date_Event);
+        Location_event.text     = calendar_event.Location_Event;
+        Meeting.text            = Utils.Get_String(calendar_event.Date_Meeting) + ", " + calendar_event.Location_Meeting;
+        transportation.text     = calendar_event.Transportation;
+        cash.text               = calendar_event.Cash;
+        food.text               = calendar_event.Food;
+        detail.text             = calendar_event.Details;
+        date_deadline.text      = Utils.Get_String(calendar_event.Date_Deadline);
 
         switch (calendar_event.Status)
         {
@@ -96,7 +95,10 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
             return;
         }
 
-        User.User_Info.Events_Data.Find(x => x.id == calendar_event.Id).response = temp_vote;
+        if (User.User_Info.Events_Data.Exists(x => x.id == calendar_event.Id))
+            User.User_Info.Events_Data.Find(x => x.id == calendar_event.Id).response = temp_vote;
+        else
+            User.User_Info.Events_Data.Add(new User.Vote_Data() { id = calendar_event.Id, response = temp_vote });
 
         calendar_event.Status = calendar_event.Vote_Types[temp_vote];
         List<Data_struct> calendar_events = Calendar_Events.Data_List_Get(typeof(Calendar_Events));

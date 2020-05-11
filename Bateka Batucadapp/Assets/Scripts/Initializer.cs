@@ -21,7 +21,7 @@ public class Initializer : MonoBehaviour
 
     static void Load_Data_Cache()
     {
-        if (PlayerPrefs.HasKey("user_database"))
+        if (PlayerPrefs.HasKey("user_database") && PlayerPrefs.HasKey("version") && PlayerPrefs.GetString("version") == App_Updater.VERSION.ToString())
         {
             Debug.Log("Loading from cache");
             User.Psswd = PlayerPrefs.GetString("user_psswd");
@@ -32,6 +32,8 @@ public class Initializer : MonoBehaviour
             Database_Handler.Load_Data_Cache(Handler_Type.events);
             Database_Handler.Load_Data_Cache(Handler_Type.polls);
             Database_Handler.Load_Data_Cache(Handler_Type.docs);
+
+            User.Update_Data();
         }
     }
 }

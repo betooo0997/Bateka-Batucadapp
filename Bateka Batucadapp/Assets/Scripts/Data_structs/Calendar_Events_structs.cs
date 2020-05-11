@@ -11,6 +11,9 @@ public class Calendar_Event : Votable
     public DateTime Date_Event;
     public DateTime Date_Meeting;
     public string Location_Meeting;
+    public string Transportation;
+    public string Cash;
+    public string Food;
 
     public Calendar_Event() : base()
     {

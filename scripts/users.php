@@ -4,7 +4,7 @@ function get_user_data($con)
 {
 	function query($changer)
 	{
-		return "SELECT id, username, name, surname, role, telephone, email, polls_data, events_data 
+		return "SELECT id, username, name, surname, role, telephone, email, polls_data, events_data, news_data
 				FROM users 
 				WHERE id " . $changer . "= '" . $_POST['id'] . "';";
 	}

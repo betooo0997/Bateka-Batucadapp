@@ -12,11 +12,7 @@ public class Message : MonoBehaviour
     static string content;
     static bool active;
 
-    float alpha = 1;
-    float alpha_rate = 4f;
-
     float timer;
-    float timer_limit = 1.5f;
 
     bool shown;
 
@@ -38,7 +34,7 @@ public class Message : MonoBehaviour
                 transform.localPosition = new Vector3(0, -75 - 43);
                 timer += Time.deltaTime;
 
-                if (timer > timer_limit)
+                if (timer > 1.5f)
                     shown = true;
             }
         }

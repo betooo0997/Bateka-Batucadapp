@@ -44,4 +44,38 @@ function set_news_entry($con)
 		return "Error updating news: " . mysqli_error($con);
 }
 
+function set_news_entry_seen($con)
+{
+	$query = "SELECT news_data FROM users WHERE id = '" . $_POST['id'] . "';";
+	$result = mysqli_query($con, $query);
+	$object = mysqli_fetch_object($result);
+	$news_data = $object->polls_data;
+
+	$elements = explode("|", $polls_data);
+	$present = false;
+
+	for ($x = 0; $x < sizeof($elements); $x++)
+	{
+		if($elements == $_POST['news_id'])
+		{
+			$present = true;
+			break;
+		}
+	}
+
+	if(!$present)
+	{
+		$elements[] = $_POST['news_id'];
+		$data = implode("|", $elements);
+		$query = "UPDATE users SET news_data = '" . $data . "' WHERE id = '" . $_POST['id'] . "';";
+
+		if (mysqli_query($con, $query))
+			return "NONE";
+		else
+			return "Error updating news_entry: " . mysqli_error($con);
+	}
+
+	return "NONE";
+}
+
 ?>

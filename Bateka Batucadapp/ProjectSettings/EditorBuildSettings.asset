@@ -30,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Elements/Config.unity
     guid: 8a5d518fd55b4ec4bab9fbe36b44cfc3
   - enabled: 1
-    path: Assets/Scenes/Menu_Elements/Users_own.unity
+    path: Assets/Scenes/Menu_Elements/Users_details.unity
     guid: 04273f7e65313fd42ba6439349bd335a
   - enabled: 1
     path: Assets/Scenes/Menu_Elements/News.unity

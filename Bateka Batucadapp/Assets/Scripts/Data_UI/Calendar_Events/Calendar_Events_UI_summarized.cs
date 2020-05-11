@@ -27,8 +27,8 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
         day.text = this.calendar_event.Date_Event.Day.ToString();
         Title.text = this.calendar_event.Title;
         month.text = this.calendar_event.Date_Event.ToString("MMMM").Substring(0, 3);
-        Meeting_Location.text = this.calendar_event.Location_Meeting + ", " + Utils.Get_String(this.calendar_event.Date_Meeting);
-        Location.text = this.calendar_event.Location_Event + ", " + Utils.Get_String(this.calendar_event.Date_Event);
+        Meeting.text = this.calendar_event.Location_Meeting + ", " + Utils.Get_String(this.calendar_event.Date_Meeting);
+        Location_event.text = this.calendar_event.Location_Event + ", " + Utils.Get_String(this.calendar_event.Date_Event);
         Update_Color(background);
     }
 

@@ -29,5 +29,6 @@ public class User_UI : MonoBehaviour
         surname.text = User_Shown.Surname;
         email.text = User_Shown.Email;
         tel.text = User_Shown.Tel;
+        Utils.Update_UI = true;
     }
 }

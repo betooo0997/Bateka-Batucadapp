@@ -6,17 +6,6 @@ using UnityEngine.UI;
 
 public class User : MonoBehaviour
 {
-    [SerializeField]
-    GameObject users_Prefab;
-
-    [SerializeField]
-    Transform user_parent;
-
-    [SerializeField]
-    Button user_own;
-
-    public static string Psswd;
-
     public enum User_Role
     {
         default_,
@@ -35,12 +24,13 @@ public class User : MonoBehaviour
         public string Tel;
         public List<Vote_Data> Events_Data;
         public List<Vote_Data> Polls_Data;
+        public List<uint> News_Data;
     }
 
     [System.Serializable]
     public class Vote_Data
     {
-        public int id;
+        public uint id;
         public int response;
 
         public static List<Vote_Data> Parse_Data(string data)
@@ -56,7 +46,7 @@ public class User : MonoBehaviour
             {
                 string[] pair = Utils.Split(element, "-");
                 Vote_Data vote_data = new Vote_Data();
-                vote_data.id = int.Parse(pair[0]);
+                vote_data.id = uint.Parse(pair[0]);
                 vote_data.response = int.Parse(pair[1]);
                 result.Add(vote_data);
             }
@@ -67,6 +57,21 @@ public class User : MonoBehaviour
 
     public static User_Information User_Info;
     public static List<User_Information> Users_Info;
+    public static string Psswd;
+
+    [SerializeField]
+    GameObject users_Prefab;
+
+    [SerializeField]
+    Transform user_parent;
+
+    [SerializeField]
+    Button user_own;
+
+    static Action On_Success_temp;
+    static Action OnFailure_temp;
+    static bool save_temp;
+    static bool load_temp;
 
     void Start()
     {
@@ -93,15 +98,20 @@ public class User : MonoBehaviour
         {
             string[] data = Utils.Split(user, '#');
             User_Information new_User = new User_Information();
-            new_User.Id         = uint.Parse(data[0]);
-            new_User.Username   = data[1];
-            System.Enum.TryParse(data[2], out new_User.Role);
-            new_User.Name       = data[3];
-            new_User.Surname    = data[4];
-            new_User.Email      = data[5];
-            new_User.Tel        = data[6];
-            new_User.Polls_Data = Vote_Data.Parse_Data(data[7]);
-            new_User.Events_Data = Vote_Data.Parse_Data(data[8]);
+            new_User.Id             = uint.Parse(data[0]);
+            new_User.Username       = data[1];
+            new_User.Name           = data[2];
+            new_User.Surname        = data[3];
+            System.Enum.TryParse(data[4], out new_User.Role);
+            new_User.Tel            = data[5];
+            new_User.Email          = data[6];
+            new_User.Polls_Data     = Vote_Data.Parse_Data(data[7]);
+            new_User.Events_Data    = Vote_Data.Parse_Data(data[8]);
+            new_User.News_Data      = new List<uint>();
+
+            if(!data[9].Contains("empty"))
+                foreach (string element in Utils.Split(data[9], '|'))
+                    new_User.News_Data.Add(uint.Parse(element));
 
             if (User_Info.Username == "") User_Info = new_User;
             else if (User_Info.Username != new_User.Username) Users_Info.Add(new_User);
@@ -111,7 +121,7 @@ public class User : MonoBehaviour
     public void Show_Add_User_Info(string user_to_show)
     {
         User_UI.User_Shown = Get_User(user_to_show);
-        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Users_own);
+        Menu.Singleton.Load_Scene_Menu_Item(Menu.Menu_item.Users_details);
     }
 
     public static User_Information Get_User(string username)
@@ -138,13 +148,16 @@ public class User : MonoBehaviour
         return new User_Information();
     }
 
-    static Action On_Success_temp;
-    static Action OnFailure_temp;
-    static bool save_temp;
-    static bool load_temp;
-
-    public static void Update_Data(string user, string psswd, bool load = true, bool save = false, Action On_Success = null, Action OnFailure = null)
+    public static void Update_Data(string user = "", string psswd = "", bool load = true, bool save = false, Action On_Success = null, Action OnFailure = null)
     {
+        Scroll_Updater.User_Loaded = 0;
+
+        if (user == "")
+        {
+            user = User_Info.Username;
+            psswd = Psswd;
+        }
+
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_user_data", user, psswd };
         Psswd = psswd;
@@ -158,6 +171,7 @@ public class User : MonoBehaviour
 
     static void Handle_User_Response(string response, Handler_Type type)
     {
+        Scroll_Updater.User_Loaded = 2;
         Parse_User_Data(response, load_temp, save_temp);
     }
 

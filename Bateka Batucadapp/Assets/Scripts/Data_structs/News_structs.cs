@@ -11,4 +11,5 @@ public class News_Entry : Data_struct
 
     public DateTime Creation_time;
     public List<string> Imgs;
+    public bool Seen;
 }

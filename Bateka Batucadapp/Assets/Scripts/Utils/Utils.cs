@@ -19,12 +19,6 @@ public class Utils : MonoBehaviour
         Singleton = this;
     }
 
-    private void Start()
-    {
-        foreach (InputField input in FindObjectsOfType<InputField>())
-            input.keyboardType = (TouchScreenKeyboardType)(-1);
-    }
-
     private void LateUpdate()
     {
         if (updates > 0)
@@ -216,7 +210,7 @@ public class Utils : MonoBehaviour
     public static string Clear_Response(string response)
     {
         if (response.Contains("~"))
-            response = Split(response, '|')[1];
+            response = Split(response, '~')[1];
 
         return response;
     }

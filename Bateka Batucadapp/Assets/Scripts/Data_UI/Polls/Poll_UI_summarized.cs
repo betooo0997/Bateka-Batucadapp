@@ -5,15 +5,27 @@ using UnityEngine.UI;
 public class Poll_UI_summarized : Poll_UI
 {
     [SerializeField]
-    Image background;
+    Image arrow;
 
     public override void Set_Data(Data_struct poll)
     {
         this.poll = (Poll)poll;
-        title.text = this.poll.Title;
+        title.text = this.poll.Title.ToUpper();
 
-        expiration_date.text = this.poll.Date_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
-        Update_Color(background);
+        expiration_date.text = "FINALIZA " + this.poll.Date_Deadline.ToString("dd/MM/yyyy HH:mm") + "H";
+
+        //Update_Color(background);
+
+        if (this.poll.Status != "" || Utils.Is_Sooner(this.poll.Date_Deadline, DateTime.Now))
+        {
+            arrow.sprite = Helper.Singleton.Sprite_Arrow_Seen;
+
+            if(Utils.Is_Sooner(this.poll.Date_Deadline, DateTime.Now))
+            {
+                title.color = color_palette_gray(1);
+                expiration_date.color = color_palette_light_gray(1);
+            }
+        }
     }
 
     protected void Update_Color(Image image)

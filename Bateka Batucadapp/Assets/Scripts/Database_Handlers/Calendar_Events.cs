@@ -39,8 +39,11 @@ public class Calendar_Events : Database_Handler
         calendar_event.Date_Event           = Utils.Get_DateTime(data[5]);
         calendar_event.Date_Meeting         = Utils.Get_DateTime(data[6]);
         calendar_event.Date_Deadline        = Utils.Get_DateTime(data[7]);
-        calendar_event.Author_Id            = int.Parse(data[8]);
-        calendar_event.Privacy              = Utils.Parse_Privacy(data[9]);
+        calendar_event.Transportation       = data[8];
+        calendar_event.Cash                 = data[9];
+        calendar_event.Food                 = data[10];
+        calendar_event.Author_Id            = int.Parse(data[11]);
+        calendar_event.Privacy              = Utils.Parse_Privacy(data[12]);
 
         calendar_event.Vote_Types.Add("rejection");
         calendar_event.Vote_Types.Add("affirmation");
@@ -86,6 +89,7 @@ public class Calendar_Events : Database_Handler
     protected override void Spawn_UI_Elements()
     {
         base.Spawn_UI_Elements();
+        Utils.InvokeNextFrame(Calendar_Events_section.Spawn_Sections);
         transform.localPosition = new Vector3(transform.localPosition.x, GetComponent<RectTransform>().sizeDelta.y, transform.localPosition.z);
         FindObjectOfType<ScrollRect>().velocity = new Vector2();
     }

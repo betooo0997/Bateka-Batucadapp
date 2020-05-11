@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class App_Updater : MonoBehaviour
 {
-    public const string APK_PATH = "https://kinderlandshop.es/wp-content/asambleapp/batekapp/batekapp.apk";
-    public const float VERSION = 1.1f;
+    public const string APK_PATH = "https://kinderlandshop.es/wp-content/asambleapp/batekapp/tabalapp";
+    public const float VERSION = 0.3f;
 
     public void Update_App()
     {
@@ -42,6 +42,6 @@ public class App_Updater : MonoBehaviour
 
     void Open_In_Browser()
     {
-        Application.OpenURL(APK_PATH);
+        Application.OpenURL(APK_PATH + VERSION + ".apk");
     }
 }

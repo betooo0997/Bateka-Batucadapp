@@ -81,6 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: {fileID: 1978926467902089336}
   Creation_time: {fileID: 1978926468748894254}
+  image: {fileID: 8573287775552181356}
 --- !u!1 &1978926467574737638
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9f7936bf8c9764740854c0a9d4d4ed5b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 958369244de43bf40a96a5deeea56060, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

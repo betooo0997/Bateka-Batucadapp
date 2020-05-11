@@ -20,8 +20,8 @@ public abstract class Poll_UI_detail : Poll_UI
 
     protected virtual void Initialize()
     {
-        title.text = poll.Title;
-        expiration_date.text = poll.Date_Deadline.ToString("dd/MM/yyyy | HH:mm") + "h";
+        title.text = poll.Title.ToUpper();
+        expiration_date.text = poll.Date_Deadline.ToString("dd/MM/yyyy HH:mm") + "H";
         description.text = poll.Details;
 
         Canvas.ForceUpdateCanvases();
@@ -72,7 +72,10 @@ public abstract class Poll_UI_detail : Poll_UI
             return;
         }
 
-        User.User_Info.Polls_Data.Find(x => x.id == poll.Id).response = temp_vote;
+        if (User.User_Info.Polls_Data.Exists(x => x.id == poll.Id))
+            User.User_Info.Polls_Data.Find(x => x.id == poll.Id).response = temp_vote;
+        else
+            User.User_Info.Polls_Data.Add(new User.Vote_Data() { id = poll.Id, response = temp_vote });
 
         poll.Status = poll.Vote_Types[temp_vote];
         poll.Selected_Option_Idx = temp_vote;

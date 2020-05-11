@@ -12,6 +12,7 @@ public class Helper : MonoBehaviour
     public Sprite Sprite_Login;
     public Sprite Sprite_Login_Success;
     public Sprite Sprite_Login_Failure;
+    public Sprite Sprite_Arrow_Seen;
 
     private void Awake()
     {

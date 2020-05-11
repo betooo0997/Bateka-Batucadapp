@@ -17,6 +17,8 @@ public class Scroll_Updater : MonoBehaviour
     RectTransform scroll_view_content;
     RectTransform load_icon;
 
+    public static int User_Loaded = 1;
+
     public static void Initialize()
     {
         initialized = new Dictionary<Type, bool>();
@@ -36,12 +38,15 @@ public class Scroll_Updater : MonoBehaviour
 
     void Update()
     {
-        if (!initialized[typeof(Calendar_Events)] || Database_Handler.Singleton != null && !initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0))) // TODO: Add touch!!
+        if (!initialized[typeof(Calendar_Events)] || Database_Handler.Singleton != null && !initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0)))
         {
             if (Menu.Active_Item == Menu.Menu_item.Home)
                 Database_Handler.Load_Data_Server(Handler_Type.events);
-            else
+            else if (Menu.Active_Item != Menu.Menu_item.Users)
                 Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
+
+            if(initialized[typeof(Calendar_Events)])
+                User.Update_Data("", "", false, true);
 
             updating = true;
             load_icon.gameObject.SetActive(true);
@@ -59,7 +64,7 @@ public class Scroll_Updater : MonoBehaviour
             Canvas.ForceUpdateCanvases();
             FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
         }
-        else if (!updating && Singleton.load_icon.sizeDelta.y > 0)
+        else if (!updating && User_Loaded >= 1 && Singleton.load_icon.sizeDelta.y > 0)
         {
             Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, Singleton.load_icon.sizeDelta.y - Time.deltaTime * 250);
 

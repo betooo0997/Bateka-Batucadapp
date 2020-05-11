@@ -280,7 +280,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: defd8b13310eb274e8f3a400f8ed82d9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 79562e94bbc9f394c943707c2de22236, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -916,11 +916,12 @@ MonoBehaviour:
     type: 3}
   Sprite_Event_Rejected: {fileID: 21300000, guid: bacaebae861d6b848bb4266260ca7972,
     type: 3}
-  Sprite_Login: {fileID: 21300000, guid: defd8b13310eb274e8f3a400f8ed82d9, type: 3}
+  Sprite_Login: {fileID: 21300000, guid: 79562e94bbc9f394c943707c2de22236, type: 3}
   Sprite_Login_Success: {fileID: 21300000, guid: ef22cda849d12c440b8882ce447f6546,
     type: 3}
   Sprite_Login_Failure: {fileID: 21300000, guid: c8e7a15381a9f694db345c39db1789f2,
     type: 3}
+  Sprite_Arrow_Seen: {fileID: 21300000, guid: 9f7936bf8c9764740854c0a9d4d4ed5b, type: 3}
 --- !u!4 &765342821
 Transform:
   m_ObjectHideFlags: 0
@@ -1305,7 +1306,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 12.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1152, y: 2048}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1657494120
@@ -1321,7 +1322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9098039, g: 0.9254902, b: 0.95686275, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

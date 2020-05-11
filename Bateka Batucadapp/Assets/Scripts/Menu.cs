@@ -18,7 +18,7 @@ public class Menu : MonoBehaviour
         Docs,
         Users,
         Config,
-        Users_own,
+        Users_details,
         News,
         News_details,
         Docs_details,

@@ -45,7 +45,7 @@ public class Login : MonoBehaviour
             {
                 timer += Time.deltaTime;
 
-                if(timer > 2)
+                if(timer > 1.5f)
                 {
                     timer = 0;
                     login_loading.SetActive(false);
@@ -95,6 +95,7 @@ public class Login : MonoBehaviour
         response = true;
         success = true;
         login_reponse.sprite = Helper.Singleton.Sprite_Login_Success;
+        PlayerPrefs.SetString("version", App_Updater.VERSION.ToString());
     }
 
     public void On_Load_Failure()

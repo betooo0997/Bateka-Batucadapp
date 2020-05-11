@@ -26,6 +26,7 @@ public class News : Database_Handler
 
         news_entry.Author_Id        = int.Parse(data[5]);
         news_entry.Privacy          = Utils.Parse_Privacy(data[6]);
+        news_entry.Seen = User.User_Info.News_Data.Exists(a => a == news_entry.Id);
 
         return news_entry;
     }
