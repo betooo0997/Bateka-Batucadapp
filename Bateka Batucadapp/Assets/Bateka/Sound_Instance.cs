@@ -38,6 +38,9 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public Color Not_Repeated__Color;
 
     [System.NonSerialized]
+    public Color Repeated__Color;
+
+    [System.NonSerialized]
     public EventHandler Toggling;
 
     bool subscribed;
@@ -48,6 +51,7 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         Button = GetComponent<Button>();
         Default_Color = Background.color;
         Not_Repeated__Color = Default_Color;
+        Repeated__Color = new Color(0.2f, 0.2f, 0.2f);
     }
 
     private void Start()
@@ -106,7 +110,7 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         if (new_repeating_from != null)
         {
             Repeated = true;
-            Default_Color = new Color(0, 0, 0.1f, 0.33f);
+            Default_Color = Repeated__Color;
 
             Set_Enabled(new_repeating_from.Enabled);
             new_repeating_from.Toggling += Copying_Toggle;

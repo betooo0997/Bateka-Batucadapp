@@ -90,7 +90,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         Reset_Events();
-        Utils.Reactivate(FindObjectOfType<Canvas>().gameObject);
+        Utils.Update_UI = true;
     }
 
     void Update()

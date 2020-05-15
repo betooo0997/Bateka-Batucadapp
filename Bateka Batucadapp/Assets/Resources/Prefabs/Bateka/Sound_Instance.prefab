@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -142,7 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510984c4870118b459e10d70f634f55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  repeated: 0
+  Repeated: 0
+  Repeating_From: {fileID: 0}
   image: {fileID: 5412702146713672600}
   Enabled: 0
 --- !u!1 &2591075684779404982
