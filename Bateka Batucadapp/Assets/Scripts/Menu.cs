@@ -15,16 +15,19 @@ public class Menu : MonoBehaviour
         Home = 2,
         Polls,
         Events,
-        Docs,
+        Media,
         Users,
         Config,
         Users_details,
         News,
         News_details,
+        Docs,
         Docs_details,
         Events_details,
         Poll_details_other,
         Poll_details_yes_no,
+        Rhythms,
+        Construction
     }
 
     float alpha_selected;
@@ -36,12 +39,12 @@ public class Menu : MonoBehaviour
     public static Menu_item Prev_Item { get; private set; }
 
     [SerializeField]
-    GameObject button_home, button_news, button_polls, button_events, button_docs;
+    GameObject button_home, button_news, button_polls, button_events, button_media;
 
     [SerializeField]
-    Sprite sprite_selected_home, sprite_selected_news, sprite_selected_polls, sprite_selected_events, sprite_selected_docs;
+    Sprite sprite_selected_home, sprite_selected_news, sprite_selected_polls, sprite_selected_events, sprite_selected_media;
 
-    Sprite sprite_unselected_home, sprite_unselected_news, sprite_unselected_polls, sprite_unselected_events, sprite_unselected_docs;
+    Sprite sprite_unselected_home, sprite_unselected_news, sprite_unselected_polls, sprite_unselected_events, sprite_unselected_media;
 
     void Awake()
     {
@@ -52,7 +55,7 @@ public class Menu : MonoBehaviour
         sprite_unselected_news      = button_news.GetComponentInChildren<Image>().sprite;
         sprite_unselected_polls     = button_polls.GetComponentInChildren<Image>().sprite;
         sprite_unselected_events    = button_events.GetComponentInChildren<Image>().sprite;
-        sprite_unselected_docs      = button_docs.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_media      = button_media.GetComponentInChildren<Image>().sprite;
     }
 
     void Start()
@@ -79,11 +82,11 @@ public class Menu : MonoBehaviour
             scenes[x] = SceneManager.GetSceneAt(x);
 
         // Check if scene_name is a Menu_item.
-        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Poll_details_yes_no; x++)
+        for (int x = (int)Menu.Menu_item.Home; x <= (int)Menu.Menu_item.Construction; x++)
         {
             if (scene == (Menu.Menu_item)x)
             {
-                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Poll_details_yes_no; y++)
+                for (int y = (int)Menu.Menu_item.Home; y <= (int)Menu.Menu_item.Construction; y++)
                 {
                     if (y == x) continue;
 
@@ -141,8 +144,8 @@ public class Menu : MonoBehaviour
                 method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
-            case Menu_item.Docs:
-                method(button_docs, sprite_selected_docs, sprite_unselected_docs, selected);
+            case Menu_item.Media:
+                method(button_media, sprite_selected_media, sprite_unselected_media, selected);
                 break;
         }
     }

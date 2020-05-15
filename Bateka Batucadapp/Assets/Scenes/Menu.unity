@@ -516,7 +516,7 @@ MonoBehaviour:
   button_news: {fileID: 550805939}
   button_polls: {fileID: 1350894277}
   button_events: {fileID: 1765044}
-  button_docs: {fileID: 489381364}
+  button_media: {fileID: 489381364}
   sprite_selected_home: {fileID: 21300000, guid: 0b082f1c88f8106409e20a7f3dc93508,
     type: 3}
   sprite_selected_news: {fileID: 21300000, guid: 3232bbfa80927744b984f0ea97e463a6,
@@ -525,7 +525,7 @@ MonoBehaviour:
     type: 3}
   sprite_selected_events: {fileID: 21300000, guid: de9bd5b68e640c54b803ddd82f5c526a,
     type: 3}
-  sprite_selected_docs: {fileID: 21300000, guid: 3b6e138c3a8f08240abfe59f6b7cf7ca,
+  sprite_selected_media: {fileID: 21300000, guid: 3b6e138c3a8f08240abfe59f6b7cf7ca,
     type: 3}
 --- !u!1 &428966694
 GameObject:
@@ -613,7 +613,7 @@ GameObject:
   - component: {fileID: 489381368}
   - component: {fileID: 489381366}
   m_Layer: 5
-  m_Name: Docs_Button
+  m_Name: Media_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -690,7 +690,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Docs
+          m_StringArgument: Media
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!222 &489381368

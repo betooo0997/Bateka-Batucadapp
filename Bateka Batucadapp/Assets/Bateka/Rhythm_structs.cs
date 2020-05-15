@@ -25,8 +25,7 @@ public class Rhythm
             public string Note;
         }
 
-        [System.Serializable]
-        public struct Loop
+        public class Loop
         {
             public float Start_Time;
             public float End_Time;

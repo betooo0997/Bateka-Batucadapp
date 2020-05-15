@@ -14,7 +14,8 @@ public class Http_Client: MonoBehaviour
 
     void Awake()
     {
-        Singleton = this;
+        if(Singleton == null)
+            Singleton = this;
     }
 
     public static void Send_Post(string[] field_name, string[] field_value, Action<string, Handler_Type> concludingMethod, Handler_Type type = Handler_Type.none, bool add_user_credentials = true)

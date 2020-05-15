@@ -21,8 +21,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Elements/Events.unity
     guid: 7454c6a846564e445a5bdd2cf4ae6aac
   - enabled: 1
-    path: Assets/Scenes/Menu_Elements/Docs.unity
-    guid: d35e815f73b1c2349b8198e3c44a1ba1
+    path: Assets/Scenes/Menu_Elements/Media.unity
+    guid: 804af3453fc4dc24c8b7aa6901f3ee10
   - enabled: 1
     path: Assets/Scenes/Menu_Elements/Users.unity
     guid: bdbd0c6a6f2833a499051800f7de152a
@@ -39,6 +39,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Elements/News_details.unity
     guid: 8ad87ca1a0bfa054aac48522dd0f27f3
   - enabled: 1
+    path: Assets/Scenes/Menu_Elements/Docs.unity
+    guid: d35e815f73b1c2349b8198e3c44a1ba1
+  - enabled: 1
     path: Assets/Scenes/Menu_Elements/Docs_details.unity
     guid: d916d1f3ad5bbb14da429c1fc496c865
   - enabled: 1
@@ -51,12 +54,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Elements/Poll_details_yes_no.unity
     guid: aa32ed04018bedb479f0f3734093397c
   - enabled: 1
+    path: Assets/Bateka/Rhythms.unity
+    guid: 11ca32b8465a37a409d055aca8a29ac0
+  - enabled: 1
+    path: Assets/Scenes/Construction.unity
+    guid: 6ce98055174ea364183e25e4c04757f1
+  - enabled: 1
     path: Assets/Scenes/Message.unity
     guid: 37b9132af90c09e47a1669b38c699699
   - enabled: 1
     path: Assets/Scenes/Loading.unity
     guid: 0ccf18661a9ab744898f8be14dba4f1f
-  - enabled: 1
-    path: Assets/Bateka/Rhythms.unity
-    guid: 11ca32b8465a37a409d055aca8a29ac0
   m_configObjects: {}

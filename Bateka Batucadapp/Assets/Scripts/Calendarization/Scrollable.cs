@@ -34,9 +34,12 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
 
     int current_idx = 0;
 
+    RectTransform canvas_rect;
+
     private void Awake()
     {
         calendar = GetComponent<Calendar_Handler>() != null;
+        canvas_rect = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
 
         if (!calendar)
             shown_events_UI = GetComponentsInChildren<Calendar_Events_UI_summarized>(true);
@@ -187,7 +190,8 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
     {
         if (!update && !routeToParent)
         {
-            transform.localPosition += new Vector3((eventData.position - previous_mouse_pos).x, 0);
+            float canvas_scale = canvas_rect.localScale.x;
+            transform.localPosition += new Vector3((eventData.position - previous_mouse_pos).x / canvas_scale, 0);
             previous_mouse_pos = eventData.position;
         }
 

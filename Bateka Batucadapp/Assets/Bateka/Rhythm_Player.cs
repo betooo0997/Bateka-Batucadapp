@@ -51,21 +51,30 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // ______________________________________
     //
 
-
     void Awake()
     {
         Step = 0.125f;
         Singleton = this;
+        content_rect_transform = transform.parent.GetComponent<RectTransform>();
         Rhythms = new List<Rhythm>();
+    }
+
+    void Start()
+    {
+        Initialize();
+    }
+
+
+    void Initialize()
+    {
+        Load_Rhythm();
+
+
         total_cells_count = (int)Math.Round(Song_Length / Step, 0);
         event_handlers = new EventHandler[total_cells_count];
         cells_per_second = 1 / Step;
         Cell_Width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
-        content_rect_transform = transform.parent.GetComponent<RectTransform>();
-    }
 
-    private void Start()
-    {
         Loading_Screen.Set_Active(true, 1);
 
         Sound[] sounds = FindObjectsOfType<Sound>();
@@ -80,7 +89,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        Load_Rhythm();
+        Reset_Events();
+        Utils.Reactivate(FindObjectOfType<Canvas>().gameObject);
     }
 
     void Update()
@@ -317,24 +327,35 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     string[] tokens = Utils.Split(element, '*');
 
-                    new_sound.Instances.Add(new Rhythm.Sound.Instance
+                    string notes = "";
+
+                    if (tokens.Length >= 3)
+                        notes = tokens[2];
+
+                    Rhythm.Sound.Instance instance = new Rhythm.Sound.Instance
                     {
                         Fire_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
                         Volume = float.Parse(tokens[1], CultureInfo.InvariantCulture),
-                        Note = tokens[2]
-                    });
+                        Note = notes
+                    };
+
+                    if (!new_sound.Instances.Exists(a => a.Fire_Time == instance.Fire_Time))
+                        new_sound.Instances.Add(instance);
                 }
 
                 foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][1])
                 {
                     string[] tokens = Utils.Split(element, '*');
 
-                    new_sound.Loops.Add(new Rhythm.Sound.Loop
+                    Rhythm.Sound.Loop loop = new Rhythm.Sound.Loop
                     {
                         Start_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
                         End_Time = float.Parse(tokens[1], CultureInfo.InvariantCulture),
                         Repetitions = uint.Parse(tokens[2])
-                    });
+                    };
+
+                    if (!new_sound.Loops.Exists(a => a.Start_Time == loop.Start_Time || a.End_Time == loop.End_Time))
+                        new_sound.Loops.Add(loop);
                 }
 
                 return new_sound;
@@ -371,9 +392,6 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
             Rhythms.Add(new_rhythm);
         }
-
-        Reset_Events();
-        Utils.Reactivate(FindObjectOfType<Canvas>().gameObject);
 
         rhythm_title.text = Rhythms[0].Id.ToString();
         rhythm_speed.text = PPM.ToString();

@@ -82,13 +82,10 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         List<Rhythm.Sound.Instance> instances = Rhythm_Player.Singleton.Rhythms[0].Sounds.Find(a => a.Type == sound.Sound_Type).Instances;
 
-        if (Enabled)
+        if (!Enabled)
             instances.Remove(instances.Find(a => a.Fire_Time == Fire_Time));
-        else
+        else if (!instances.Exists(a => a.Fire_Time == Fire_Time))
             instances.Add(new Rhythm.Sound.Instance() { Fire_Time = Fire_Time, Volume = Volume, Note = Note });
-
-
-
     }
 
     public void Set_Enabled(bool enabled)
