@@ -56,13 +56,8 @@ public class Scroll_Updater : MonoBehaviour
             else if (Database_Handler.Singleton != null)
                 initialized[Database_Handler.Singleton.GetType()] = true;
 
-            Utils.InvokeNextFrame(() => load_icon.sizeDelta = new Vector3(load_icon.sizeDelta.x, 60));
-            Utils.InvokeNextFrame(() => FindObjectOfType<ContentSizeFitter>().SetLayoutVertical());
-            Utils.InvokeNextFrame(() => Canvas.ForceUpdateCanvases());
-            FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
-            FindObjectOfType<ContentSizeFitter>().SetLayoutVertical();
-            Canvas.ForceUpdateCanvases();
-            FindObjectOfType<VerticalLayoutGroup>().SetLayoutVertical();
+            load_icon.sizeDelta = new Vector3(load_icon.sizeDelta.x, 60);
+            Utils.Update_UI = true;
         }
         else if (!updating && User_Loaded >= 1 && Singleton.load_icon.sizeDelta.y > 0)
         {
@@ -71,15 +66,10 @@ public class Scroll_Updater : MonoBehaviour
             if (Singleton.load_icon.sizeDelta.y < 0)
             {
                 Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, 0);
-                Singleton.load_icon.sizeDelta = new Vector3(Singleton.load_icon.sizeDelta.x, 0);
                 Singleton.load_icon.gameObject.SetActive(false);
 
                 if (Menu.Active_Item == Menu.Menu_item.Home)
-                {
-                    Canvas.ForceUpdateCanvases();
-                    foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-                        vLayout.SetLayoutVertical();
-                }
+                    Utils.Update_UI = true;
             }
         }
     }

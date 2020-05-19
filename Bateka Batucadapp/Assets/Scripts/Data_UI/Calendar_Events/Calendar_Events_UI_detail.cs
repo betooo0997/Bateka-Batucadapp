@@ -95,8 +95,6 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
     /// </summary>
     protected void Handle_Event_Response(string response, Handler_Type type)
     {
-        Set_Interactable(true);
-
         if (response.Contains("500"))
         {
             Message.ShowMessage("Error interno del servidor.");
@@ -107,6 +105,12 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
             User.User_Info.Events_Data.Find(x => x.id == calendar_event.Id).response = temp_vote;
         else
             User.User_Info.Events_Data.Add(new User.Vote_Data() { id = calendar_event.Id, response = temp_vote });
+
+        for (int x = 0; x < calendar_event.Vote_Voters.Count; x++)
+            if (calendar_event.Vote_Voters[x].Exists(a => a.Id == User.User_Info.Id))
+                calendar_event.Vote_Voters[x].Remove(calendar_event.Vote_Voters[x].Find(a => a.Id == User.User_Info.Id));
+
+        calendar_event.Vote_Voters[temp_vote].Add(User.User_Info);
 
         calendar_event.Status = calendar_event.Vote_Types[temp_vote];
         List<Data_struct> calendar_events = Calendar_Events.Data_List_Get(typeof(Calendar_Events));
@@ -122,9 +126,13 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
         }
 
         DataSaver.Override_Database_entry(Handler_Type.events.ToString() + "_database", response, calendar_event.Id);
-
-        Show_Event_Details();
         Message.ShowMessage("Base de datos actualizada con éxito.");
+
+        if (this != null)
+        {
+            Show_Event_Details();
+            Set_Interactable(true);
+        }
     }
 
     protected void Set_Interactable(bool interactable)

@@ -9,9 +9,10 @@ using UnityEngine.UI;
 public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static Rhythm_Player Singleton;
-    public List<Rhythm> Rhythms;
+    public List<Rhythm_Data> Rhythms;
 
     public float Timer;
+    public float Timer_Key;
     public float Speed;
     public float Song_Length;
     public float Step { get; private set; }
@@ -56,7 +57,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Step = 0.125f;
         Singleton = this;
         content_rect_transform = transform.parent.GetComponent<RectTransform>();
-        Rhythms = new List<Rhythm>();
+        Rhythms = new List<Rhythm_Data>();
     }
 
     void Start()
@@ -75,15 +76,13 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         cells_per_second = 1 / Step;
         Cell_Width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
 
-        Loading_Screen.Set_Active(true, 1);
+        Sound_Type_Mono[] sounds = FindObjectsOfType<Sound_Type_Mono>();
 
-        Sound[] sounds = FindObjectsOfType<Sound>();
-
-        foreach (Sound sound in sounds)
+        foreach (Sound_Type_Mono sound in sounds)
         {
             for (float x = 0; x < total_cells_count; x++)
             {
-                Sound_Instance instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance>();
+                Sound_Instance_Mono instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance_Mono>();
                 instance.Fire_Time = x * Step;
                 instance.sound = sound;
             }
@@ -106,12 +105,12 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     Time_Events_Fired[x * Step] = false;
             }
 
-            float key = Round_To_Existing_Key_Floor(Timer);
+            Timer_Key = Round_To_Existing_Key_Floor(Timer);
 
-            if (!Time_Events_Fired[key])
+            if (!Time_Events_Fired[Timer_Key])
             {
-                Time_Events_Fired[key] = true;
-                Time_Events[key]?.Invoke(this, null);
+                Time_Events_Fired[Timer_Key] = true;
+                Time_Events[Timer_Key]?.Invoke(this, null);
             }
         }
 
@@ -145,7 +144,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             Time_Events_Fired.Add(x * Step, false);
         }
 
-        foreach (Sound_Instance instance in FindObjectsOfType<Sound_Instance>())
+        foreach (Sound_Instance_Mono instance in FindObjectsOfType<Sound_Instance_Mono>())
             instance.Load();
     }
 
@@ -156,8 +155,6 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void Change_Song_Length(string value_s)
     {
-        Loading_Screen.Set_Active(true);
-
         float value = float.Parse(value_s);
 
         float diff = value - Song_Length;
@@ -166,11 +163,11 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (diff > 0)
         {
-            foreach (Sound sound in FindObjectsOfType<Sound>())
+            foreach (Sound_Type_Mono sound in FindObjectsOfType<Sound_Type_Mono>())
             {
                 for (int x = total_cells_count; x < total_cells_count + diff * cells_per_second; x++)
                 {
-                    Sound_Instance instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance>();
+                    Sound_Instance_Mono instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance_Mono>();
                     instance.Fire_Time = x * Step;
                     instance.sound = sound;
                 }
@@ -178,7 +175,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
         else if (diff < 0)
         {
-            foreach (Sound sound in FindObjectsOfType<Sound>())
+            foreach (Sound_Type_Mono sound in FindObjectsOfType<Sound_Type_Mono>())
             {
                 for (int x = total_cells_count - 1; x > total_cells_count - 1 + diff * cells_per_second; x--)
                 {
@@ -300,84 +297,92 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Http_Client.Send_Post(field_names, field_values, Handle_Data_Response);
     }
 
+
+    /// <summary>
+    /// Parses JSON data to a Sound_Data class instance.
+    /// </summary>
+    Sound_Data Parse_Sound(Sound_Data.Sound_Type sound_type, string raw_sound_data)
+    {
+        SimpleJSON.JSONNode raw = SimpleJSON.JSON.Parse(raw_sound_data);
+        Sound_Data new_sound = new Sound_Data { Type = sound_type };
+
+        // Add Sound instances
+        foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][0])
+        {
+            string[] tokens = Utils.Split(element, '*');
+            string notes = "";
+
+            if (tokens.Length >= 3)
+                notes = tokens[2];
+
+            Sound_Data.Instance instance = new Sound_Data.Instance
+            {
+                Fire_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
+                Volume = float.Parse(tokens[1], CultureInfo.InvariantCulture),
+                Note = notes
+            };
+
+            if (!new_sound.Instances.Exists(a => a.Fire_Time == instance.Fire_Time))
+                new_sound.Instances.Add(instance);
+        }
+
+        // Add Loop instances
+        foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][1])
+        {
+            string[] tokens = Utils.Split(element, '*');
+
+            Sound_Data.Loop loop = new Sound_Data.Loop
+            {
+                Start_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
+                End_Time = float.Parse(tokens[1], CultureInfo.InvariantCulture),
+                Repetitions = uint.Parse(tokens[2])
+            };
+
+            if (!new_sound.Loops.Exists(a => a.Start_Time == loop.Start_Time || a.End_Time == loop.End_Time))
+                new_sound.Loops.Add(loop);
+        }
+
+        return new_sound;
+    }
+
+
     void Handle_Data_Response(string response, Handler_Type type)
     {
         string data = Utils.Split(response, '~')[1];
 
         foreach (string rhythm in Utils.Split(data, "%"))
         {
-            Rhythm new_rhythm = new Rhythm();
+            Rhythm_Data new_rhythm = new Rhythm_Data();
             string[] rhythm_data = Utils.Split(rhythm, '#');
 
-            new_rhythm.Id = uint.Parse(rhythm_data[0]);
-            new_rhythm.Title = rhythm_data[1];
-            new_rhythm.Description = rhythm_data[2];
-            new_rhythm.Creation = Utils.Get_DateTime(rhythm_data[3]);
-            new_rhythm.Last_Update = Utils.Get_DateTime(rhythm_data[4]);
-            new_rhythm.Author_id = uint.Parse(rhythm_data[5]);
+            new_rhythm.Id           = uint.Parse(rhythm_data[0]);
+            new_rhythm.Name        = rhythm_data[1];
+            new_rhythm.Description  = rhythm_data[2];
+            new_rhythm.PPM          = uint.Parse(rhythm_data[3]);
+            new_rhythm.Creation     = Utils.Get_DateTime(rhythm_data[4]);
+            new_rhythm.Last_Update  = Utils.Get_DateTime(rhythm_data[5]);
+            new_rhythm.Author_id    = uint.Parse(rhythm_data[6]);
 
-            SimpleJSON.JSONNode raw = SimpleJSON.JSON.Parse(rhythm_data[6]);
-
-            Rhythm.Sound parse_sound(Rhythm.Sound.Sound_Type sound_type)
+            foreach (Sound_Data.Sound_Type sound_type in (Sound_Data.Sound_Type[])Enum.GetValues(typeof(Sound_Data.Sound_Type)))
             {
-                Rhythm.Sound new_sound = new Rhythm.Sound();
-                new_sound.Type = sound_type;
-
-                foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][0])
-                {
-                    string[] tokens = Utils.Split(element, '*');
-
-                    string notes = "";
-
-                    if (tokens.Length >= 3)
-                        notes = tokens[2];
-
-                    Rhythm.Sound.Instance instance = new Rhythm.Sound.Instance
-                    {
-                        Fire_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
-                        Volume = float.Parse(tokens[1], CultureInfo.InvariantCulture),
-                        Note = notes
-                    };
-
-                    if (!new_sound.Instances.Exists(a => a.Fire_Time == instance.Fire_Time))
-                        new_sound.Instances.Add(instance);
-                }
-
-                foreach (SimpleJSON.JSONNode element in raw[sound_type.ToString()][1])
-                {
-                    string[] tokens = Utils.Split(element, '*');
-
-                    Rhythm.Sound.Loop loop = new Rhythm.Sound.Loop
-                    {
-                        Start_Time = float.Parse(tokens[0], CultureInfo.InvariantCulture),
-                        End_Time = float.Parse(tokens[1], CultureInfo.InvariantCulture),
-                        Repetitions = uint.Parse(tokens[2])
-                    };
-
-                    if (!new_sound.Loops.Exists(a => a.Start_Time == loop.Start_Time || a.End_Time == loop.End_Time))
-                        new_sound.Loops.Add(loop);
-                }
-
-                return new_sound;
-            }
-
-            foreach (Rhythm.Sound.Sound_Type sound_type in (Rhythm.Sound.Sound_Type[])Enum.GetValues(typeof(Rhythm.Sound.Sound_Type)))
-            {
-                if (sound_type == Rhythm.Sound.Sound_Type.None)
+                if (sound_type == Sound_Data.Sound_Type.None)
                     continue;
 
-                Rhythm.Sound new_sound = parse_sound(sound_type);
-                new_rhythm.Sounds.Add(new_sound);
+                Sound_Data new_sound = Parse_Sound(sound_type, rhythm_data[7]);
+                new_rhythm.Sounds_Data.Add(new_sound);
 
-                if (!Sound.Sounds.Exists(a => a.Sound_Type == new_sound.Type))
+                if (!Sound_Type_Mono.Sounds.Exists(a => a.Sound_Type == new_sound.Type))
                     continue;
 
-                Sound sound_mono = Sound.Sounds.Find(a => a.Sound_Type == new_sound.Type);
+                Sound_Type_Mono sound_mono = Sound_Type_Mono.Sounds.Find(a => a.Sound_Type == new_sound.Type);
 
-                foreach (Rhythm.Sound.Instance instance in new_sound.Instances)
+                foreach (Sound_Data.Instance instance in new_sound.Instances)
+                {
                     sound_mono.Instances[instance.Fire_Time].Set_Enabled(true);
+                    sound_mono.Instances[instance.Fire_Time].Instance = instance;
+                }
 
-                foreach (Rhythm.Sound.Loop loop in new_sound.Loops)
+                foreach (Sound_Data.Loop loop in new_sound.Loops)
                 {
                     int sibling_index = sound_mono.Instances[loop.Start_Time].transform.GetSiblingIndex();
 
@@ -393,7 +398,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             Rhythms.Add(new_rhythm);
         }
 
-        rhythm_title.text = Rhythms[0].Id.ToString();
+        rhythm_title.text = Rhythms[0].Name.ToString();
+        PPM = Rhythms[0].PPM;
         rhythm_speed.text = PPM.ToString();
         rhythm_length.text = Song_Length.ToString();
     }
@@ -403,12 +409,13 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         User.User_Info.Username = "beto";
         User.Psswd = "1234567891011121";
 
-        Rhythm rhythm = Rhythms[0];
+        Rhythm_Data rhythm = Rhythms[0];
 
         string[] field_names = { "REQUEST_TYPE",
             "rhythm_id",
             "rhythm_name",
             "rhythm_details",
+            "rhythm_ppm",
             "rhythm_date_update",
             "rhythm_date_creation",
             "rhythm_author_id",
@@ -416,8 +423,9 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         string[] field_values = { "set_rhythms",
             rhythm.Id.ToString(),
-            rhythm.Title,
+            rhythm.Name,
             rhythm.Description,
+            rhythm.PPM.ToString(),
             Utils.Get_String_SQL(rhythm.Last_Update),
             Utils.Get_String_SQL(rhythm.Creation),
             rhythm.Author_id.ToString(),

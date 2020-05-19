@@ -29,7 +29,12 @@ function set_event_vote($con)
 	if ($updated)
 		$events_data = implode("|", $elements);
 	else
-		$events_data .= "|" . $_POST['event_id'] . "-" . $_POST['event_response'];
+	{
+		if (strlen($events_data) > 0)
+			$events_data .= "|";
+
+		$events_data .= $_POST['event_id'] . "-" . $_POST['event_response'];
+	}
 
 	$query = "UPDATE users SET events_data = '" . $events_data . "' WHERE id = '" . $_POST['id'] . "';";
 

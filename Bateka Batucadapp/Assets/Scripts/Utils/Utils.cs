@@ -14,9 +14,16 @@ public class Utils : MonoBehaviour
     public static bool Update_UI { get { return update_UI; } set { update_UI = value; if (value) updates = 2; } }
     static int updates;
 
+    public static float Canvas_Scale;
+
     private void Awake()
     {
         Singleton = this;
+    }
+
+    private void Start()
+    {
+        Canvas_Scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
     }
 
     private void LateUpdate()
@@ -60,7 +67,6 @@ public class Utils : MonoBehaviour
 
     public void Load_Menu_Scene(string scene)
     {
-        Debug.Log("Click");
         Menu.Singleton.Load_Scene_Menu_Item(scene);
     }
 
@@ -131,7 +137,7 @@ public class Utils : MonoBehaviour
         return false;
     }
 
-    public static List<Data_struct> Bubble_Sort_DateTime(List<Data_struct> list, DateTime[] date_time_list)
+    public static List<Data_struct> Bubble_Sort_DateTime(List<Data_struct> list, DateTime[] date_time_list, bool inverted = false)
     {
         for (int x = 1; x < list.Count; x++)
         {
@@ -139,7 +145,7 @@ public class Utils : MonoBehaviour
 
             for (int y = 0; y < list.Count - x; y++)
             {
-                if (Is_Sooner(date_time_list[y + 1], date_time_list[y]))
+                if (Is_Sooner(date_time_list[y + 1], date_time_list[y]) == !inverted)
                 {
                     Data_struct temp = list[y];
                     DateTime dt_temp = date_time_list[y];

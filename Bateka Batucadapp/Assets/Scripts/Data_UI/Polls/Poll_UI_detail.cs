@@ -64,8 +64,6 @@ public abstract class Poll_UI_detail : Poll_UI
     /// </summary>
     protected void Handle_Vote_Response(string response, Handler_Type type)
     {
-        Set_Interactable(true);
-
         if (response.Contains("500"))
         {
             Message.ShowMessage("Error interno del servidor.");
@@ -76,6 +74,12 @@ public abstract class Poll_UI_detail : Poll_UI
             User.User_Info.Polls_Data.Find(x => x.id == poll.Id).response = temp_vote;
         else
             User.User_Info.Polls_Data.Add(new User.Vote_Data() { id = poll.Id, response = temp_vote });
+
+        for (int x = 0; x < poll.Vote_Voters.Count; x++)
+            if (poll.Vote_Voters[x].Exists(a => a.Id == User.User_Info.Id))
+                poll.Vote_Voters[x].Remove(poll.Vote_Voters[x].Find(a => a.Id == User.User_Info.Id));
+
+        poll.Vote_Voters[temp_vote].Add(User.User_Info);
 
         poll.Status = poll.Vote_Types[temp_vote];
         poll.Selected_Option_Idx = temp_vote;
@@ -92,8 +96,12 @@ public abstract class Poll_UI_detail : Poll_UI
         }
 
         DataSaver.Override_Database_entry(Handler_Type.polls.ToString() + "_database", response, poll.Id);
-
-        Show_Poll_Details();
         Message.ShowMessage("Base de datos actualizada con éxito.");
+
+        if (this != null)
+        {
+            Show_Poll_Details();
+            Set_Interactable(true);
+        }
     }
 }

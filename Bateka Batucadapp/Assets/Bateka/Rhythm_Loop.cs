@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class Rhythm_Loop : MonoBehaviour
 {
-    public List<Sound_Instance> Sound_Instances_Core;
-    public List<Sound_Instance> Sound_Instances_Peripheric;
-    public Rhythm.Sound.Loop Data;
-    public Sound Sound;
+    public List<Sound_Instance_Mono> Sound_Instances_Core;
+    public List<Sound_Instance_Mono> Sound_Instances_Peripheric;
+    public Sound_Data.Loop Data;
+    public Sound_Type_Mono Sound;
 
     public Rhythm_Loop_Border[] Borders;
 
@@ -25,8 +25,8 @@ public class Rhythm_Loop : MonoBehaviour
 
     private void Awake()
     {
-        Sound_Instances_Core = new List<Sound_Instance>();
-        Sound_Instances_Peripheric = new List<Sound_Instance>();
+        Sound_Instances_Core = new List<Sound_Instance_Mono>();
+        Sound_Instances_Peripheric = new List<Sound_Instance_Mono>();
         Borders = GetComponentsInChildren<Rhythm_Loop_Border>();
     }
 
@@ -70,14 +70,14 @@ public class Rhythm_Loop : MonoBehaviour
 
     public void Update_Core()
     {
-        Sound_Instance[] already_cores = new Sound_Instance[Sound_Instances_Core.Count];
+        Sound_Instance_Mono[] already_cores = new Sound_Instance_Mono[Sound_Instances_Core.Count];
         Sound_Instances_Core.CopyTo(already_cores);
-        Sound_Instances_Core = new List<Sound_Instance>();
+        Sound_Instances_Core = new List<Sound_Instance_Mono>();
 
         for (float y = Data.Start_Time; y <= Data.End_Time; y += 0.125f)
             Sound_Instances_Core.Add(Sound.Instances[y]);
 
-        foreach (Sound_Instance instance in Sound_Instances_Core)
+        foreach (Sound_Instance_Mono instance in Sound_Instances_Core)
             if (!already_cores.ToList().Exists(a => a == instance))
                 instance.Set_Repeated(null);
 
@@ -89,22 +89,22 @@ public class Rhythm_Loop : MonoBehaviour
 
     public void Update_Periphery()
     {
-        List<Sound_Instance> new_Peripheric = new List<Sound_Instance>();
+        List<Sound_Instance_Mono> new_Peripheric = new List<Sound_Instance_Mono>();
 
         for (float x = 1; x <= Data.Repetitions; x++)
         {
             for (float y = 0; y < Data.Length_Steps; y++)
             {
                 float key = y * 0.125f + Data.Start_Time + x * (Data.Length + 0.125f);
-                Sound_Instance core = Sound.Instances[Data.Start_Time + y * 0.125f];
-                Sound_Instance periphery = Sound.Instances[key];
+                Sound_Instance_Mono core = Sound.Instances[Data.Start_Time + y * 0.125f];
+                Sound_Instance_Mono periphery = Sound.Instances[key];
 
                 periphery.Set_Repeated(core);
                 new_Peripheric.Add(periphery);
             }
         }
 
-        foreach (Sound_Instance instance in Sound_Instances_Peripheric)
+        foreach (Sound_Instance_Mono instance in Sound_Instances_Peripheric)
             if(!new_Peripheric.Exists(a => a == instance))
                     instance.Set_Repeated(null);
 
@@ -113,8 +113,8 @@ public class Rhythm_Loop : MonoBehaviour
 
     public void Change_Repetitions_Amount(uint repetitions_target)
     {
-        List<Sound_Instance> cores = Sound_Instances_Core;
-        List<Sound_Instance> peripheries = Sound_Instances_Peripheric;
+        List<Sound_Instance_Mono> cores = Sound_Instances_Core;
+        List<Sound_Instance_Mono> peripheries = Sound_Instances_Peripheric;
         uint repetitions_current = Data.Repetitions;
 
         int loop_steps = Data.Length_Steps;
@@ -125,7 +125,7 @@ public class Rhythm_Loop : MonoBehaviour
             {
                 for (int y = loop_steps - 1; y >= 0; y--)
                 {
-                    Sound_Instance periphery = peripheries[(int)(x - 1) * loop_steps + y];
+                    Sound_Instance_Mono periphery = peripheries[(int)(x - 1) * loop_steps + y];
                     periphery.Set_Repeated(null);
                     peripheries.Remove(periphery);
                 }
@@ -137,8 +137,8 @@ public class Rhythm_Loop : MonoBehaviour
             {
                 for (int y = 0; y < loop_steps; y++)
                 {
-                    Sound_Instance periphery = Sound.Instances[((int)x * loop_steps + y) * Rhythm_Player.Singleton.Step];
-                    Sound_Instance core = cores[y];
+                    Sound_Instance_Mono periphery = Sound.Instances[((int)x * loop_steps + y) * Rhythm_Player.Singleton.Step];
+                    Sound_Instance_Mono core = cores[y];
 
                     if (!periphery.Repeated)
                     {

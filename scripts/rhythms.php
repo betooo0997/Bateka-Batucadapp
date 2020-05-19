@@ -15,11 +15,12 @@ function set_rhythm($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
-		$query = "INSERT INTO rhythms (id, name, details, date_creation, date_update, author_id, data)
+		$query = "INSERT INTO rhythms (id, name, details, ppm, date_creation, date_update, author_id, data)
 				  VALUES ('" . 
 						$_POST['rhythm_id'] . "', '" .
 						$_POST['rhythm_name'] . "', '" .
 						$_POST['rhythm_details'] . "', '" .
+						$_POST['rhythm_ppm'] . "', '" .
 						$_POST['rhythm_date_creation'] . "', '" .
 						$_POST['rhythm_date_update'] . "', '" .
 						$_POST['rhythm_author_id'] . "', '" .
@@ -31,6 +32,7 @@ function set_rhythm($con)
 		$query = "UPDATE rhythms SET
 				  name = '" .				$_POST['rhythm_name'] . "', 
 				  details = '" .			$_POST['rhythm_details'] . "', 
+				  ppm = '" .				$_POST['rhythm_ppm'] . "', 
 				  date_creation = '" .		$_POST['rhythm_date_creation'] . "', 
 				  date_update = '" .		$_POST['rhythm_date_update'] . "', 
 				  author_id = '" .			$_POST['rhythm_author_id'] . "', 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,5 +30,17 @@ public class News : Database_Handler
         news_entry.Seen = User.User_Info.News_Data.Exists(a => a == news_entry.Id);
 
         return news_entry;
+    }
+
+    public static List<Data_struct> Sort_List()
+    {
+        List<Data_struct> Unsorted_List = News.Data_List_Get(typeof(News));
+        DateTime[] date_Times = new DateTime[Unsorted_List.Count];
+
+        for (int x = 0; x < date_Times.Length; x++)
+            date_Times[x] = ((News_Entry)Unsorted_List[x]).Creation_time;
+
+        List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times, true);
+        return Sorted_List;
     }
 }

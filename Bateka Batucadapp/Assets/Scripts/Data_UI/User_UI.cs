@@ -27,8 +27,18 @@ public class User_UI : MonoBehaviour
         username.text = User_Shown.Username;
         real_name.text = User_Shown.Name;
         surname.text = User_Shown.Surname;
-        email.text = User_Shown.Email;
-        tel.text = User_Shown.Tel;
+
+        if (User.User_Info.Role > 0)
+        {
+            email.text = User_Shown.Email;
+            tel.text = User_Shown.Tel;
+        }
+        else
+        {
+            email.text = "altamenteconfidencial@notienesroldeadmin.com";
+            tel.text = "sorry pero parece que no puedes ver esto :(";
+        }
+
         Utils.Update_UI = true;
     }
 }

@@ -70,9 +70,8 @@ public class Calendar_Handler : MonoBehaviour
         month_to_show = DateTime.Now.AddDays(-DateTime.Now.Day + 1); 
         Initialize();
 
-        float canvas_scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
         RectTransform rect = GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(Screen.width * 3 / canvas_scale, rect.sizeDelta.y);
+        rect.sizeDelta = new Vector2(Screen.width * 3 / Utils.Canvas_Scale, rect.sizeDelta.y);
     }
 
     public void OnFinish(int change_value)

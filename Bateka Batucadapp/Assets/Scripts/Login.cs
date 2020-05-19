@@ -112,11 +112,9 @@ public class Login : MonoBehaviour
 
         RectTransform rect = background.GetComponent<RectTransform>();
 
-        float canvas_scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
-
         if (aspect_ratio_backgr < aspect_ratio_screen)
-            rect.sizeDelta = new Vector2(Screen.width, Screen.width / aspect_ratio_backgr) / canvas_scale;
+            rect.sizeDelta = new Vector2(Screen.width, Screen.width / aspect_ratio_backgr) / Utils.Canvas_Scale;
         else
-            rect.sizeDelta = new Vector2(Screen.height * aspect_ratio_backgr, Screen.height ) / canvas_scale;
+            rect.sizeDelta = new Vector2(Screen.height * aspect_ratio_backgr, Screen.height ) / Utils.Canvas_Scale;
     }
 }

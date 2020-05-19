@@ -152,6 +152,7 @@ public abstract class Database_Handler : MonoBehaviour
             case Handler_Type.news:
                 Parse_Data_Single = News.Parse_Single_Data;
                 type = typeof(News);
+                Sort_List = News.Sort_List;
                 break;
 
             case Handler_Type.polls:

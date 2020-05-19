@@ -29,9 +29,16 @@ function set_poll_vote($con)
 	if ($updated)
 		$polls_data = implode("|", $elements);
 	else
+	{
+		if (strlen($polls_data) > 0)
+			$polls_data .= "|";
+
 		$polls_data .= $_POST['poll_id'] . "-" . $_POST['poll_response'];
+	}
 
 	$query = "UPDATE users SET polls_data = '" . $polls_data . "' WHERE id = '" . $_POST['id'] . "';";
+
+	echo $polls_data;
 
 	if (mysqli_query($con, $query))
 		return "NONE";

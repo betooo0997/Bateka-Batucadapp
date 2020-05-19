@@ -48,8 +48,5 @@ public class Calendar_Events_UI_summarized : Calendar_Events_UI
                 image.sprite = Helper.Singleton.Sprite_Event_Not_Answered;
                 break;
         }
-
-        if (Utils.Is_Sooner(calendar_event.Date_Deadline, DateTime.Now))
-            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

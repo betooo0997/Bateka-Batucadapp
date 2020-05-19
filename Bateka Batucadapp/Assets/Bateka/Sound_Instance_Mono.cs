@@ -5,43 +5,40 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public bool Repeated;
+    public bool Enabled, Repeated;
 
-    public Sound_Instance Repeating_From;
+    public Sound_Instance_Mono Repeating_From;
+    public List<Sound_Instance_Mono> Copies;
+
+    [System.NonSerialized]
+    public Sound_Type_Mono sound;
+
+    [System.NonSerialized]
+    public Sound_Data.Instance Instance;
+
+    float fire_time, volume;
+    string note;
+
+    public float Fire_Time { get { return fire_time; } set { fire_time = value; if(Instance != null) Instance.Fire_Time = value; } }
+    public float Volume { get { return volume; } set { Update_Volume(value); } }
+    public string Note { get { return note; } set { note = value; if (Instance != null) Instance.Note = value; } }
 
     [System.NonSerialized]
     public Button Button;
 
     [System.NonSerialized]
-    public float Fire_Time, Volume;
-
-    [System.NonSerialized]
-    public string Note;
-
-    [System.NonSerialized]
-    public Sound sound;
-
-    [SerializeField]
-    Image image;
-
-    public bool Enabled;
-
-    [System.NonSerialized]
     public Image Background;
 
     [System.NonSerialized]
-    public Color Default_Color;
-
-    [System.NonSerialized]
-    public Color Not_Repeated__Color;
-
-    [System.NonSerialized]
-    public Color Repeated__Color;
+    public Color Default_Color, Not_Repeated__Color, Repeated__Color;
 
     [System.NonSerialized]
     public EventHandler Toggling;
+
+    [SerializeField]
+    Image image;
 
     bool subscribed;
 
@@ -49,6 +46,7 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         Background = GetComponent<Image>();
         Button = GetComponent<Button>();
+        Copies = new List<Sound_Instance_Mono>();
         Default_Color = Background.color;
         Not_Repeated__Color = Default_Color;
         Repeated__Color = new Color(0.2f, 0.2f, 0.2f);
@@ -70,9 +68,28 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         Fire_Time = Rhythm_Player.Round_To_Existing_Key_Floor(Fire_Time);
         Rhythm_Player.Singleton.Time_Events[Fire_Time] += On_Time;
 
+        if (Instance != null)
+            Volume = Instance.Volume;
+
         if (Enabled)
             Rhythm_Player.Singleton.Time_Events[Fire_Time] += sound.On_Time;           
     }
+
+    public void Update_Volume(float value = -1)
+    {
+        if(value != -1)
+            volume = value;
+
+        if (Instance != null)
+            Instance.Volume = volume;
+
+        float height = GetComponent<RectTransform>().sizeDelta.y;
+        height *= volume;
+
+        RectTransform image_rect = image.GetComponent<RectTransform>();
+        image_rect.sizeDelta = new Vector2(image_rect.sizeDelta.x, height);
+    }
+
 
     public void Toggle_Enable()
     {
@@ -84,12 +101,19 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         Toggling?.Invoke(this, null);
         Rhythm_Player.Singleton.Reset_Events();
 
-        List<Rhythm.Sound.Instance> instances = Rhythm_Player.Singleton.Rhythms[0].Sounds.Find(a => a.Type == sound.Sound_Type).Instances;
+        List<Sound_Data.Instance> instances = Rhythm_Player.Singleton.Rhythms[0].Sounds_Data.Find(a => a.Type == sound.Sound_Type).Instances;
 
         if (!Enabled)
-            instances.Remove(instances.Find(a => a.Fire_Time == Fire_Time));
-        else if (!instances.Exists(a => a.Fire_Time == Fire_Time))
-            instances.Add(new Rhythm.Sound.Instance() { Fire_Time = Fire_Time, Volume = Volume, Note = Note });
+        {
+            Volume = 1;
+            instances.Remove(Instance);
+            Instance = null;
+        }
+        else if (!instances.Exists(a => a == Instance))
+        {
+            Instance = new Sound_Data.Instance() { Fire_Time = fire_time, Volume = volume, Note = note };
+            instances.Add(Instance);
+        }
     }
 
     public void Set_Enabled(bool enabled)
@@ -99,7 +123,7 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         Rhythm_Player.Singleton.Reset_Events();
     }
 
-    public void Set_Repeated(Sound_Instance new_repeating_from)
+    public void Set_Repeated(Sound_Instance_Mono new_repeating_from)
     {
         if (subscribed)
         {
@@ -113,6 +137,8 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             Default_Color = Repeated__Color;
 
             Set_Enabled(new_repeating_from.Enabled);
+            Volume = new_repeating_from.Volume;
+            new_repeating_from.Copies.Add(this);
             new_repeating_from.Toggling += Copying_Toggle;
             subscribed = true;
         }
@@ -120,6 +146,9 @@ public class Sound_Instance : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             Repeated = false;
             Default_Color = Not_Repeated__Color;
+
+            if (Repeating_From != null && Repeating_From.Copies.Exists(a => a == this))
+                Repeating_From.Copies.Remove(this);
         }
 
         Repeating_From = new_repeating_from;

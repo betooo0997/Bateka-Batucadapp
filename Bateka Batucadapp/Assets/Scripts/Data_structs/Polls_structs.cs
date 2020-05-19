@@ -7,7 +7,7 @@ using UnityEngine;
 public class Poll : Votable
 {
     public string Status;
-    public int Selected_Option_Idx;
+    public int Selected_Option_Idx = -1;
     public string Subtitle;
     public DateTime Creation_Time;
     public string Author;
