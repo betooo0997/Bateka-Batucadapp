@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,8 +28,6 @@ public class Rhythm_Loop_Border : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     float start;
 
-    bool end_border;
-
     private void Awake()
     {
         loop = transform.parent.GetComponent<Rhythm_Loop>();
@@ -36,11 +36,6 @@ public class Rhythm_Loop_Border : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     private void Start()
     {
-        if (type == Border_Type.End)
-        {
-            end_border = true;
-        }
-
         foreach (Rhythm_Loop_Border border in transform.parent.GetComponentsInChildren<Rhythm_Loop_Border>())
             if (border.type == Border_Type.End)
                 end = border;
@@ -138,19 +133,5 @@ public class Rhythm_Loop_Border : MonoBehaviour, IBeginDragHandler, IDragHandler
         loop.Update_Core();
         loop.Update_Periphery();
         return;
-
-        Vector2 size = rect_Transform.sizeDelta;
-        float rounded_x = Mathf.RoundToInt((transform.localPosition.x + size.x / 2) / 50) * 50;
-
-        float time = Rhythm_Player.Round_To_Existing_Key(Rhythm_Player.Position_To_Timer(transform.localPosition.x, false));
-        time -= 0.125f;
-
-        transform.localPosition = new Vector3(rounded_x - size.x / 2, transform.localPosition.y);
-        Debug.Log("Time: " + time + ", Local X Position (rounded): " + transform.localPosition.x);
-
-        loop.Data.End_Time = time;
-
-        loop.Update_Core();
-        loop.Update_Periphery();
     }
 }

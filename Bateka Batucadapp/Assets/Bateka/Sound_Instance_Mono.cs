@@ -38,7 +38,7 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
     public EventHandler Toggling;
 
     [SerializeField]
-    Image image;
+    Image image = null;
 
     bool subscribed;
 

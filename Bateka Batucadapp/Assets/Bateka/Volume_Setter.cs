@@ -11,10 +11,10 @@ public class Volume_Setter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public static Sound_Instance_Mono Seting_Volume_Of;
 
     [SerializeField]
-    RectTransform image_rect;
+    RectTransform image_rect = null;
 
     [SerializeField]
-    RectTransform canvas;
+    RectTransform canvas = null;
 
     float volume;
     

@@ -16,7 +16,7 @@ public class Sound_Type_Mono : MonoBehaviour
     public List<Rhythm_Loop> Loops;
 
     [SerializeField]
-    Text title;
+    Text title = null;
 
     AudioSource source;
 
