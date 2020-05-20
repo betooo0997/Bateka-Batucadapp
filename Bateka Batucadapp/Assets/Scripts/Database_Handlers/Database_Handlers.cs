@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -196,8 +197,70 @@ public abstract class Database_Handler : MonoBehaviour
         if (Menu.Active_Item == Menu.Menu_item.Home)
             foreach (Scrollable scrollable in FindObjectsOfType<Scrollable>())
                 scrollable.Initialize();
+
+        Post_Parse(handler_type);
     }
 
+    static void Post_Parse(Handler_Type handler_type)
+    {
+        Type type = typeof(Docs);
+        switch (handler_type)
+        {
+            case Handler_Type.events:
+                type = typeof(Calendar_Events);
+                foreach (Data_struct data in Data_List_Get(type))
+                {
+                    if (((Calendar_Event)data).Status == "" && (Singleton == null || Singleton.GetType() != type))
+                    {
+                        Helper.Menu_Icon = () => {
+                            return Menu.Singleton.Button_Events.GetComponentInChildren<Image>();
+                        };
+                        Helper.Sprite_Red = () => {
+                            return Menu.Singleton.Sprite_Events_Red;
+                        };
+                        Helper.Singleton.StartCoroutine("Update_Button");
+                        break;
+                    }
+                }
+                break;
+            case Handler_Type.news:
+                type = typeof(News);
+                foreach (Data_struct data in Data_List_Get(type))
+                {
+                    if (!((News_Entry)data).Seen && (Singleton == null || Singleton.GetType() != type))
+                    {
+                        Helper.Menu_Icon = () => {
+                            return Menu.Singleton.Button_News.GetComponentInChildren<Image>();
+                        };
+                        Helper.Sprite_Red = () => {
+                            return Menu.Singleton.Sprite_News_Red;
+                        };
+                        Helper.Singleton.StartCoroutine("Update_Button");
+                        break;
+                    }
+                }
+                break;
+            case Handler_Type.polls:
+                type = typeof(Polls);
+                foreach (Data_struct data in Data_List_Get(type))
+                {
+                    if (((Poll)data).Status == "" && (Singleton == null || Singleton.GetType() != type))
+                    {
+                        Helper.Menu_Icon = () => {
+                            return Menu.Singleton.Button_Polls.GetComponentInChildren<Image>();
+                        };
+                        Helper.Sprite_Red = () => {
+                            return Menu.Singleton.Sprite_Polls_Red;
+                        };
+                        Helper.Singleton.StartCoroutine("Update_Button");
+                    }
+                    break;
+                }
+            break;
+        }
+
+        Scroll_Updater.Initialized[type] = true;
+    }
 
 
     // ______________________________________

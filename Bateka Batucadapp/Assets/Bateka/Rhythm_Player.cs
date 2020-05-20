@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static Rhythm_Player Singleton;
+    public static float Cell_Width;
     public List<Rhythm_Data> Rhythms;
 
     public float Timer;
@@ -21,26 +22,28 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Dictionary<float, bool> Time_Events_Fired;
 
     [SerializeField]
-    GameObject sound_instance_prefab;
+    GameObject sound_instance_prefab, loop_prefab, separator_prefab, separator_dark_prefab, numeration_prefab;
 
     [SerializeField]
-    GameObject loop_prefab;
+    Transform numeration_parent;
 
     [SerializeField]
-    InputField rhythm_title;
+    InputField rhythm_title, rhythm_speed, rhythm_length;
 
     [SerializeField]
-    InputField rhythm_speed;
+    Dropdown time_signature;
 
-    [SerializeField]
-    InputField rhythm_length;
+    static float cells_per_second;
+
+    static List<List<Image>> separators;
+    static List<RectTransform> numerations;
+    static Color color_separator_dark;
+    static Color color_separator_light;
 
     float PPM { get { return Speed * 60; } set { Speed = value / 60; } }
 
     EventHandler[] event_handlers;
     int total_cells_count;
-    static float cells_per_second;
-    public static float Cell_Width;
     bool playing;
     bool dragging;
     RectTransform content_rect_transform;
@@ -58,6 +61,10 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Singleton = this;
         content_rect_transform = transform.parent.GetComponent<RectTransform>();
         Rhythms = new List<Rhythm_Data>();
+        separators = new List<List<Image>>();
+        numerations = new List<RectTransform>();
+        color_separator_dark = separator_dark_prefab.GetComponent<Image>().color;
+        color_separator_light = separator_prefab.GetComponent<Image>().color;
     }
 
     void Start()
@@ -65,30 +72,30 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Initialize();
     }
 
-
     void Initialize()
     {
-        Load_Rhythm();
-
-
         total_cells_count = (int)Math.Round(Song_Length / Step, 0);
         event_handlers = new EventHandler[total_cells_count];
         cells_per_second = 1 / Step;
         Cell_Width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
+        Load_Rhythm();
 
-        Sound_Type_Mono[] sounds = FindObjectsOfType<Sound_Type_Mono>();
-
-        foreach (Sound_Type_Mono sound in sounds)
+        foreach (Sound_Type_Mono sound in FindObjectsOfType<Sound_Type_Mono>())
         {
+            List<Image> sep = new List<Image>();
+
             for (float x = 0; x < total_cells_count; x++)
             {
                 Sound_Instance_Mono instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance_Mono>();
                 instance.Fire_Time = x * Step;
                 instance.sound = sound;
+
+                sep.Add(Instantiate(separator_prefab, sound.transform).GetComponent<Image>());
             }
+
+            separators.Add(sep);
         }
 
-        Reset_Events();
         Utils.Update_UI = true;
     }
 
@@ -355,20 +362,21 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             Rhythm_Data new_rhythm = new Rhythm_Data();
             string[] rhythm_data = Utils.Split(rhythm, '#');
 
-            new_rhythm.Id           = uint.Parse(rhythm_data[0]);
-            new_rhythm.Name        = rhythm_data[1];
-            new_rhythm.Description  = rhythm_data[2];
-            new_rhythm.PPM          = uint.Parse(rhythm_data[3]);
-            new_rhythm.Creation     = Utils.Get_DateTime(rhythm_data[4]);
-            new_rhythm.Last_Update  = Utils.Get_DateTime(rhythm_data[5]);
-            new_rhythm.Author_id    = uint.Parse(rhythm_data[6]);
+            new_rhythm.Id               = uint.Parse(rhythm_data[0]);
+            new_rhythm.Name             = rhythm_data[1];
+            new_rhythm.Description      = rhythm_data[2];
+            new_rhythm.PPM              = uint.Parse(rhythm_data[3]);
+            new_rhythm.Time_Signature   = (Rhythm_Data.Time_Signature_Type)Enum.Parse(typeof(Rhythm_Data.Time_Signature_Type), rhythm_data[4]);
+            new_rhythm.Creation         = Utils.Get_DateTime(rhythm_data[5]);
+            new_rhythm.Last_Update      = Utils.Get_DateTime(rhythm_data[6]);
+            new_rhythm.Author_id        = uint.Parse(rhythm_data[7]);
 
             foreach (Sound_Data.Sound_Type sound_type in (Sound_Data.Sound_Type[])Enum.GetValues(typeof(Sound_Data.Sound_Type)))
             {
                 if (sound_type == Sound_Data.Sound_Type.None)
                     continue;
 
-                Sound_Data new_sound = Parse_Sound(sound_type, rhythm_data[7]);
+                Sound_Data new_sound = Parse_Sound(sound_type, rhythm_data[8]);
                 new_rhythm.Sounds_Data.Add(new_sound);
 
                 if (!Sound_Type_Mono.Sounds.Exists(a => a.Sound_Type == new_sound.Type))
@@ -402,6 +410,50 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PPM = Rhythms[0].PPM;
         rhythm_speed.text = PPM.ToString();
         rhythm_length.text = Song_Length.ToString();
+        time_signature.value = (int)Rhythms[0].Time_Signature;
+        time_signature.onValueChanged.AddListener((int value) => 
+        {
+            Rhythms[0].Time_Signature = (Rhythm_Data.Time_Signature_Type)value;
+            Update_Separators();
+        });
+
+        for (int x = 1; x <= Song_Length; x++)
+        {
+            Text text = Instantiate(numeration_prefab, numeration_parent).GetComponentInChildren<Text>();
+            text.text = x.ToString();
+            RectTransform rect = text.transform.parent.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2((Cell_Width + 2) / Step * Rhythms[0].Get_Time_Modifier() - 2, rect.sizeDelta.y);
+            numerations.Add(rect);
+        }
+
+        Update_Separators();
+
+        Reset_Events();
+        Utils.Update_UI = true;
+    }
+
+    void Update_Separators()
+    {
+        for (int x = 0; x < separators.Count; x++)
+        {
+            for (int y = 0; y < separators[x].Count; y++)
+            {
+                int beats_per_compass = Rhythms[0].Get_Beats_Per_Compass();
+
+                if ((y + 1) % beats_per_compass == 0 && beats_per_compass == 4)
+                    separators[x][y].color = color_separator_dark;
+                else
+                    separators[x][y].color = color_separator_light;
+            }
+        }
+
+        float width = (Cell_Width + 2) / Step * Rhythms[0].Get_Time_Modifier() - 2;
+
+        foreach (RectTransform rect in numerations)
+            rect.sizeDelta = new Vector2(width, rect.sizeDelta.y);
+
+        // TODO: Adjust Song_Length (Amount of compases) to changing time signatures and add / remove numerations accordingly.
+        // TODO: Add Scroll to cells.
     }
 
     public void Save_Rhythm()

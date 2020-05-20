@@ -20,7 +20,7 @@ public class Rhythm_Loop : MonoBehaviour
 
     public float Get_Width_Core()
     {
-        return Sound_Instances_Core.Count * Rhythm_Player.Cell_Width;
+        return Sound_Instances_Core.Count * (Rhythm_Player.Cell_Width + 2);
     }
 
     private void Awake()

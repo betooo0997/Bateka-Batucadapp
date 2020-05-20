@@ -8,7 +8,7 @@ public class Scroll_Updater : MonoBehaviour
 {
     public static Scroll_Updater Singleton;
 
-    static Dictionary<Type, bool> initialized;
+    public static Dictionary<Type, bool> Initialized;
 
     bool updating;
 
@@ -19,13 +19,15 @@ public class Scroll_Updater : MonoBehaviour
 
     public static int User_Loaded = 1;
 
+    static bool download_all;
+
     public static void Initialize()
     {
-        initialized = new Dictionary<Type, bool>();
-        initialized.Add(typeof(News), false);
-        initialized.Add(typeof(Polls), false);
-        initialized.Add(typeof(Calendar_Events), false);
-        initialized.Add(typeof(Docs), false);
+        Initialized = new Dictionary<Type, bool>();
+        Initialized.Add(typeof(News), false);
+        Initialized.Add(typeof(Polls), false);
+        Initialized.Add(typeof(Calendar_Events), false);
+        Initialized.Add(typeof(Docs), false);
     }
 
     private void Awake()
@@ -38,24 +40,29 @@ public class Scroll_Updater : MonoBehaviour
 
     void Update()
     {
-        if (!initialized[typeof(Calendar_Events)] || Database_Handler.Singleton != null && !initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0)))
+        if (!download_all || Database_Handler.Singleton != null && !Initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0)))
         {
-            if (Menu.Active_Item == Menu.Menu_item.Home)
+            if (!download_all)
+            {
                 Database_Handler.Load_Data_Server(Handler_Type.events);
-            else if (Menu.Active_Item != Menu.Menu_item.Users)
-                Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
+                Database_Handler.Load_Data_Server(Handler_Type.news);
+                Database_Handler.Load_Data_Server(Handler_Type.polls);
+                Database_Handler.Load_Data_Server(Handler_Type.docs);
+                download_all = true;
+            }
+            else
+            {
+                if (Menu.Active_Item == Menu.Menu_item.Home)
+                    Database_Handler.Load_Data_Server(Handler_Type.events);
+                else if (Menu.Active_Item != Menu.Menu_item.Users)
+                    Database_Handler.Load_Data_Server((Handler_Type)Menu.Active_Item);
 
-            if(initialized[typeof(Calendar_Events)])
-                User.Update_Data("", "", false, true);
+                if (Initialized[typeof(Calendar_Events)])
+                    User.Update_Data("", "", false, true);
+            }
 
             updating = true;
             load_icon.gameObject.SetActive(true);
-
-            if (!initialized[typeof(Calendar_Events)])
-                initialized[typeof(Calendar_Events)] = true;
-            else if (Database_Handler.Singleton != null)
-                initialized[Database_Handler.Singleton.GetType()] = true;
-
             load_icon.sizeDelta = new Vector3(load_icon.sizeDelta.x, 60);
             Utils.Update_UI = true;
         }

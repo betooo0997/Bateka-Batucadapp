@@ -9,6 +9,9 @@ public class Menu : MonoBehaviour
 {
     public static Menu Singleton;
 
+    public static Menu_item Active_Item { get; private set; }
+    public static Menu_item Prev_Item { get; private set; }
+
     public enum Menu_item
     {
         None,
@@ -30,19 +33,16 @@ public class Menu : MonoBehaviour
         Construction
     }
 
-    float alpha_selected;
+    public GameObject Button_Home, Button_News, Button_Polls, Button_Events, Button_Media;
 
-    [SerializeField]
-    float alpha_unselected;
-
-    public static Menu_item Active_Item { get; private set; }
-    public static Menu_item Prev_Item { get; private set; }
-
-    [SerializeField]
-    GameObject button_home, button_news, button_polls, button_events, button_media;
+    public Sprite Sprite_News_Red, Sprite_Polls_Red, Sprite_Events_Red, Sprite_Media_Red;
 
     [SerializeField]
     Sprite sprite_selected_home, sprite_selected_news, sprite_selected_polls, sprite_selected_events, sprite_selected_media;
+
+    [SerializeField]
+    float alpha_unselected;
+    float alpha_selected;
 
     Sprite sprite_unselected_home, sprite_unselected_news, sprite_unselected_polls, sprite_unselected_events, sprite_unselected_media;
 
@@ -51,11 +51,11 @@ public class Menu : MonoBehaviour
         Singleton = this;
         //alpha_unselected = home_Button.GetComponent<Image>().color.a;
 
-        sprite_unselected_home      = button_home.GetComponentInChildren<Image>().sprite;
-        sprite_unselected_news      = button_news.GetComponentInChildren<Image>().sprite;
-        sprite_unselected_polls     = button_polls.GetComponentInChildren<Image>().sprite;
-        sprite_unselected_events    = button_events.GetComponentInChildren<Image>().sprite;
-        sprite_unselected_media      = button_media.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_home      = Button_Home.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_news      = Button_News.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_polls     = Button_Polls.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_events    = Button_Events.GetComponentInChildren<Image>().sprite;
+        sprite_unselected_media      = Button_Media.GetComponentInChildren<Image>().sprite;
     }
 
     void Start()
@@ -98,7 +98,6 @@ public class Menu : MonoBehaviour
             }
         }
 
-        SceneManager.LoadSceneAsync(scene.ToString(), LoadSceneMode.Additive);
         Prev_Item = Active_Item;
         Active_Item = scene;
 
@@ -106,6 +105,8 @@ public class Menu : MonoBehaviour
             modify_Buttons(Prev_Item, change_alpha, false);
 
         modify_Buttons(Active_Item, change_alpha, true);
+
+        SceneManager.LoadSceneAsync(scene.ToString(), LoadSceneMode.Additive);
     }
 
     void modify_Buttons(Menu_item menu_item, Action<GameObject, Sprite, Sprite, bool> method, bool selected)
@@ -113,39 +114,68 @@ public class Menu : MonoBehaviour
         switch (menu_item)
         {
             case Menu_item.Home:
-                method(button_home, sprite_selected_home, sprite_unselected_home, selected);
+                Title_Handler.Singleton.Set_Title();
+                method(Button_Home, sprite_selected_home, sprite_unselected_home, selected);
                 break;
 
             case Menu_item.News:
-                method(button_news, sprite_selected_news, sprite_unselected_news, selected);
+                Title_Handler.Singleton.Set_Title("Noticias");
+                method(Button_News, sprite_selected_news, sprite_unselected_news, selected);
                 break;
 
             case Menu_item.News_details:
-                method(button_news, sprite_selected_news, sprite_unselected_news, selected);
+                Title_Handler.Singleton.Set_Title("Noticias", () => Load_Scene_Menu_Item(Menu_item.News));
+                method(Button_News, sprite_selected_news, sprite_unselected_news, selected);
                 break;
 
             case Menu_item.Events:
-                method(button_events, sprite_selected_events, sprite_unselected_events, selected);
+                Title_Handler.Singleton.Set_Title("Eventos");
+                method(Button_Events, sprite_selected_events, sprite_unselected_events, selected);
                 break;
 
             case Menu_item.Events_details:
-                method(button_events, sprite_selected_events, sprite_unselected_events, selected);
+                Title_Handler.Singleton.Set_Title("Eventos", () => Load_Scene_Menu_Item(Menu_item.Events));
+                method(Button_Events, sprite_selected_events, sprite_unselected_events, selected);
                 break;
 
             case Menu_item.Polls:
-                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
+                Title_Handler.Singleton.Set_Title("Encuestas");
+                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Poll_details_yes_no:
-                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
+                Title_Handler.Singleton.Set_Title("Encuestas", () => Load_Scene_Menu_Item(Menu_item.Polls));
+                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Poll_details_other:
-                method(button_polls, sprite_selected_polls, sprite_unselected_polls, selected);
+                Title_Handler.Singleton.Set_Title("Encuestas", () => Load_Scene_Menu_Item(Menu_item.Polls));
+                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
             case Menu_item.Media:
-                method(button_media, sprite_selected_media, sprite_unselected_media, selected);
+                Title_Handler.Singleton.Set_Title("Otros");
+                method(Button_Media, sprite_selected_media, sprite_unselected_media, selected);
+                break;
+
+            case Menu_item.Users:
+                Title_Handler.Singleton.Set_Title("Usuarios", () => Load_Scene_Menu_Item(Menu_item.Home));
+                break;
+
+            case Menu_item.Users_details:
+                Title_Handler.Singleton.Set_Title("Usuarios", () => Load_Scene_Menu_Item(Menu_item.Users));
+                break;
+
+            case Menu_item.Rhythms:
+                Title_Handler.Singleton.Set_Title("Ritmos", () => Load_Scene_Menu_Item(Menu_item.Media));
+                break;
+
+            case Menu_item.Config:
+                Title_Handler.Singleton.Set_Title("Opciones", () => Load_Scene_Menu_Item(Menu_item.Home));
+                break;
+
+            case Menu_item.Construction:
+                Title_Handler.Singleton.Set_Title("Hide");
                 break;
         }
     }

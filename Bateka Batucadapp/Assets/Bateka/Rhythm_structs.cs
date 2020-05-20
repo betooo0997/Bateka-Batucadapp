@@ -5,10 +5,17 @@ using UnityEngine;
 [System.Serializable]
 public class Rhythm_Data
 {
+    public enum Time_Signature_Type
+    {
+        Three_Four,
+        Four_Four
+    }
+
     public uint Id;
     public string Name;
     public string Description;
     public uint PPM;
+    public Time_Signature_Type Time_Signature;
     public uint Author_id;
     public DateTime Last_Update;
     public DateTime Creation;
@@ -18,6 +25,28 @@ public class Rhythm_Data
     public  Rhythm_Data()
     {
         Sounds_Data = new List<Sound_Data>();
+    }
+
+    public float Get_Time_Modifier()
+    {
+        switch (Time_Signature)
+        {
+            case Time_Signature_Type.Three_Four:
+                return 0.75f;
+            default:
+                return 1;
+        }
+    }
+
+    public int Get_Beats_Per_Compass()
+    {
+        switch (Time_Signature)
+        {
+            case Time_Signature_Type.Three_Four:
+                return 3;
+            default:
+                return 4;
+        }
     }
 
     public string Get_Sounds_Json()

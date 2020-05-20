@@ -89,8 +89,6 @@ public class Calendar_Events : Database_Handler
     protected override void Spawn_UI_Elements()
     {
         base.Spawn_UI_Elements();
-        Utils.InvokeNextFrame(Calendar_Events_section.Spawn_Sections);
-        transform.localPosition = new Vector3(transform.localPosition.x, GetComponent<RectTransform>().sizeDelta.y, transform.localPosition.z);
-        FindObjectOfType<ScrollRect>().velocity = new Vector2();
+        Calendar_Events_section.Spawn_Sections();
     }
 }

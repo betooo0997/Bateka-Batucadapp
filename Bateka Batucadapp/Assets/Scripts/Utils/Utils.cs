@@ -42,11 +42,11 @@ public class Utils : MonoBehaviour
                 layout.SetLayoutHorizontal();
             }
 
-            foreach (ContentSizeFitter fitter in FindObjectsOfType<ContentSizeFitter>())
+            /*foreach (ContentSizeFitter fitter in FindObjectsOfType<ContentSizeFitter>())
             {
                 fitter.SetLayoutVertical();
                 fitter.SetLayoutHorizontal();
-            }
+            }*/
 
             Canvas.ForceUpdateCanvases();
 

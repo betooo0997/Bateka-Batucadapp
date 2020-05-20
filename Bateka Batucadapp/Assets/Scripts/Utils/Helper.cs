@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Helper : MonoBehaviour
 {
@@ -19,5 +21,23 @@ public class Helper : MonoBehaviour
     private void Awake()
     {
         Singleton = this;
+    }
+
+    private void Start()
+    {
+        TouchScreenKeyboard.hideInput = true;
+    }
+
+    public static Func<Image> Menu_Icon;
+    public static Func<Sprite> Sprite_Red;
+
+    public IEnumerator Update_Button()
+    {
+        while (Menu.Singleton == null)
+            yield return null;
+
+        Menu_Icon().sprite = Sprite_Red();
+
+        yield return null;
     }
 }
