@@ -6,7 +6,7 @@ using UnityEngine;
 public class App_Updater : MonoBehaviour
 {
     public const string APK_PATH = "https://kinderlandshop.es/wp-content/asambleapp/batekapp/tabalapp";
-    public const float VERSION = 0.43f;
+    public const float VERSION = 0.44f;
 
     public void Update_App()
     {

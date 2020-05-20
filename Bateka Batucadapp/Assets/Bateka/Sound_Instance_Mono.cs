@@ -93,9 +93,10 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void Toggle_Enable()
     {
-        if (Repeated)
+        if (Repeated || dragging)
             return;
 
+        Update_Volume(1);
         Enabled = !Enabled;
         image.enabled = Enabled;
         Toggling?.Invoke(this, null);
@@ -105,7 +106,6 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         if (!Enabled)
         {
-            Volume = 1;
             instances.Remove(Instance);
             Instance = null;
         }
@@ -169,6 +169,7 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
     public void Copying_Toggle(object sender, EventArgs e)
     {
         Enabled = Repeating_From.Enabled;
+        Update_Volume(Repeating_From.volume);
         image.enabled = Enabled;
     }
 
@@ -179,9 +180,28 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
                 action((T)(IEventSystemHandler)component);
     }
 
+    private void DoForHorizontalScrollview<T>(Action<T> action) where T : IEventSystemHandler
+    {
+        foreach (var component in Rhythm_Player.Singleton.Sound_Instances_Root_Parent.GetComponents<Component>())
+            if (component is T)
+                action((T)(IEventSystemHandler)component);
+    }
+
+    bool route_to_horizontal;
+    bool dragging;
+
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
     {
-        if (Button.interactable)
+        route_to_horizontal = false;
+        dragging = true;
+
+        // Taking in account that the Calendar_Handler works as a horizontal scrollview
+        if (Math.Abs(eventData.delta.x) > Math.Abs(eventData.delta.y) || !Button.interactable)
+        {
+            route_to_horizontal = true;
+            DoForHorizontalScrollview<IBeginDragHandler>((parent) => { parent.OnBeginDrag(eventData); });
+        }
+        else if (!Repeated)
         {
             Volume_Setter.Seting_Volume_Of = this;
             DoForVolumeSetter<IBeginDragHandler>((volume_setter) => { volume_setter.OnBeginDrag(eventData); });
@@ -190,13 +210,19 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     void IDragHandler.OnDrag(PointerEventData eventData)
     {
-        if (Button.interactable)
+        if (route_to_horizontal)
+            DoForHorizontalScrollview<IDragHandler>((parent) => { parent.OnDrag(eventData); });
+        else if (!Repeated)
             DoForVolumeSetter<IDragHandler>((volume_setter) => { volume_setter.OnDrag(eventData); });
     }
 
     void IEndDragHandler.OnEndDrag(PointerEventData eventData)
     {
-        if (Button.interactable)
+        if(route_to_horizontal)
+            DoForHorizontalScrollview<IEndDragHandler>((parent) => { parent.OnEndDrag(eventData); });
+        else if (!Repeated)
             DoForVolumeSetter<IEndDragHandler>((volume_setter) => { volume_setter.OnEndDrag(eventData); });
+
+        Utils.InvokeNextFrame(() => { dragging = false; });
     }
 }

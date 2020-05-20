@@ -4780,6 +4780,7 @@ MonoBehaviour:
   Timer_Key: 0
   Speed: 1
   Song_Length: 3
+  Sound_Instances_Root_Parent: {fileID: 864880981}
   sound_instance_prefab: {fileID: 2278924221390956679, guid: d9cbc74169b5568439fd87de637853f9,
     type: 3}
   loop_prefab: {fileID: 6110713487715623939, guid: 252d79f9c68b2504e9dfe7ea6919f15e,

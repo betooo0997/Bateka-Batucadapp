@@ -59,7 +59,8 @@ public class Votable_Stats : MonoBehaviour
         float rotation = 0;
 
         List<User.User_Information> not_voted = new List<User.User_Information>(User.Users_Info);
-        
+        not_voted.Add(User.User_Info);
+
         for (int x = 0; x < votable.Vote_Types.Count; x++)
         {
             foreach (User.User_Information user in votable.Vote_Voters[x])

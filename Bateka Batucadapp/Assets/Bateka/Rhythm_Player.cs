@@ -21,6 +21,8 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Dictionary<float, EventHandler> Time_Events;
     public Dictionary<float, bool> Time_Events_Fired;
 
+    public GameObject Sound_Instances_Root_Parent;
+
     [SerializeField]
     GameObject sound_instance_prefab, loop_prefab, separator_prefab, separator_dark_prefab, numeration_prefab;
 
@@ -453,7 +455,6 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             rect.sizeDelta = new Vector2(width, rect.sizeDelta.y);
 
         // TODO: Adjust Song_Length (Amount of compases) to changing time signatures and add / remove numerations accordingly.
-        // TODO: Add Scroll to cells.
     }
 
     public void Save_Rhythm()

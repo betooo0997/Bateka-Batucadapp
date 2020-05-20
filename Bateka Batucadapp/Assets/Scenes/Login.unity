@@ -1482,6 +1482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Login_Button: {fileID: 313271339}
+  googleAnalytics: {fileID: 1971341267}
   user: {fileID: 454649844}
   password: {fileID: 2100933024}
   background: {fileID: 1657494120}
@@ -1509,6 +1510,105 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be33df666d75c824680899390cab025f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &1971341266
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 197732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_Name
+      value: GAv4
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: productName
+      value: Tabalapp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: bundleIdentifier
+      value: com.Beto.Tabalapp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: bundleVersion
+      value: 1.0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: logLevel
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: otherTrackingCode
+      value: 1925485522
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: androidTrackingCode
+      value: 1925485522
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}
+--- !u!114 &1971341267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+    type: 3}
+  m_PrefabInstance: {fileID: 1971341266}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9613b8deaaf38422ba6dd4031a2a94e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2068888076

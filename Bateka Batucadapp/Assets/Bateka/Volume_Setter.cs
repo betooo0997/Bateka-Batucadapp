@@ -61,5 +61,7 @@ public class Volume_Setter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if(!Seting_Volume_Of.Enabled)
             Seting_Volume_Of.Set_Enabled(true);
+
+        Seting_Volume_Of.Toggling?.Invoke(Seting_Volume_Of, null);
     }
 }
