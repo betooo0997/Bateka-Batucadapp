@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -38,7 +39,7 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
     public EventHandler Toggling;
 
     [SerializeField]
-    Image image = null;
+    Image image;
 
     bool subscribed;
 
@@ -49,7 +50,7 @@ public class Sound_Instance_Mono : MonoBehaviour, IBeginDragHandler, IDragHandle
         Copies = new List<Sound_Instance_Mono>();
         Default_Color = Background.color;
         Not_Repeated__Color = Default_Color;
-        Repeated__Color = new Color(0.2f, 0.2f, 0.2f);
+        Repeated__Color = new Color(0.35f, 0.35f, 0.35f);
     }
 
     private void Start()

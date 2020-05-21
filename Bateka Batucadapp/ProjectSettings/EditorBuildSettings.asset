@@ -51,9 +51,6 @@ EditorBuildSettings:
     path: Assets/Scenes/2-secondary/Poll_details_other.unity
     guid: 13cd1f1ac81baaa4dbd174e93356a4f7
   - enabled: 1
-    path: Assets/Scenes/2-secondary/Poll_details_yes_no.unity
-    guid: aa32ed04018bedb479f0f3734093397c
-  - enabled: 1
     path: Assets/Bateka/Rhythms.unity
     guid: 11ca32b8465a37a409d055aca8a29ac0
   - enabled: 1

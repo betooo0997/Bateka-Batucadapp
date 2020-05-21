@@ -1,12 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿#pragma warning disable 0649
+
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class App_Updater : MonoBehaviour
 {
     public const string APK_PATH = "https://kinderlandshop.es/wp-content/asambleapp/batekapp/tabalapp";
-    public const float VERSION = 0.441f;
+    public const float VERSION = 0.443f;
+
+    [SerializeField]
+    Text version;
+
+    void Start()
+    {
+        version.text = "Tabalapp v" + VERSION.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
+    }
 
     public void Update_App()
     {

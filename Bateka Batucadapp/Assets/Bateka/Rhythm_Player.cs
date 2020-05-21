@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 0649
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
@@ -457,6 +456,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             rect.sizeDelta = new Vector2(width, rect.sizeDelta.y);
 
         // TODO: Adjust Song_Length (Amount of compases) to changing time signatures and add / remove numerations accordingly.
+        // FIXME: Error on reloading Rhythm.
     }
 
     public void Save_Rhythm()

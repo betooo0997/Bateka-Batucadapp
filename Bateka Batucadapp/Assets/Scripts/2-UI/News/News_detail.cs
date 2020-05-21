@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿#pragma warning disable 0649
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +8,7 @@ public class News_detail : News_UI
     public Text Detail;
 
     [SerializeField]
-    GameObject image_prefab = null;
+    GameObject image_prefab;
 
     protected void Start()
     {
@@ -50,9 +49,13 @@ public class News_detail : News_UI
         raw_Image.texture = texture;
         float ratio = (float)texture.height / (float)texture.width;
 
-        Vector2 result = new Vector2(rectTransform.sizeDelta.x, (int)(rectTransform.sizeDelta.x * ratio));
-        rectTransform.sizeDelta = result;
+        Utils.InvokeNextFrame(() =>
+        {
+            Vector2 result = new Vector2(rectTransform.sizeDelta.x, (int)(rectTransform.sizeDelta.x * ratio));
+            rectTransform.sizeDelta = result;
 
+            Utils.Update_UI = true;
+        });
         Utils.Update_UI = true;
     }
 }
