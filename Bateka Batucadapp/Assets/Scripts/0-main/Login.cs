@@ -101,11 +101,6 @@ public class Login : MonoBehaviour
         success = true;
         login_reponse.sprite = Helper.Singleton.Sprite_Login_Success;
         PlayerPrefs.SetString("version", App_Updater.VERSION.ToString());
-
-        googleAnalytics.LogScreen("Login_S");
-        googleAnalytics.LogEvent("Category_Example", "Event_Action", "Event_Label", 1);
-        googleAnalytics.DispatchHits();
-        Debug.Log("Logged");
     }
 
     public void On_Load_Failure()

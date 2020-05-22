@@ -3,6 +3,7 @@
 public class Initializer : MonoBehaviour
 {
     public static Initializer Singleton;
+    Firebase.FirebaseApp app;
 
     void Awake()
     {
@@ -13,7 +14,29 @@ public class Initializer : MonoBehaviour
 
     void Start()
     {
-        Load_Data_Cache();
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            {
+                // Create and hold a reference to your FirebaseApp,
+                // where app is a Firebase.FirebaseApp property of your application class.
+                app = Firebase.FirebaseApp.DefaultInstance;
+                // Set a flag here to indicate whether Firebase is ready to use by your app.
+                Firebase.Analytics.FirebaseAnalytics.SetUserProperty("Prueba", "2");
+                Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
+                Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
+                Debug.Log("Firebase initialized successfully");
+            }
+            else
+            {
+                UnityEngine.Debug.LogError(System.String.Format(
+                  "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
+                // Firebase Unity SDK is not safe to use here.
+            }
+
+            Load_Data_Cache();
+        });
+
         TouchScreenKeyboard.hideInput = true;
     }
 
@@ -33,5 +56,15 @@ public class Initializer : MonoBehaviour
 
             User.Update_Data("", "", false);
         }
+    }
+
+    public void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token)
+    {
+        Debug.Log("Received Registration Token: " + token.Token);
+    }
+
+    public void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e)
+    {
+        Debug.Log("Received a new message from: " + e.Message.From);
     }
 }

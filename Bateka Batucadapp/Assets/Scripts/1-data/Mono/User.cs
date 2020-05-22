@@ -200,6 +200,11 @@ public class User : MonoBehaviour
             }
 
             On_Success_temp?.Invoke();
+
+            Login.Singleton.googleAnalytics.LogScreen("Login_S");
+            Login.Singleton.googleAnalytics.LogEvent("Category_Example", "Event_Action", "Event_Label", 1);
+            Login.Singleton.googleAnalytics.LogEvent(new EventHitBuilder().SetEventCategory("Achievement").SetEventAction("Unlocked"));
+            Debug.Log("Logged");
         }
         else
         {
