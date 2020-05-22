@@ -1580,7 +1580,7 @@ PrefabInstance:
     - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
         type: 3}
       propertyPath: bundleVersion
-      value: 1.0
+      value: 0.444
       objectReference: {fileID: 0}
     - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
         type: 3}
@@ -1596,6 +1596,11 @@ PrefabInstance:
         type: 3}
       propertyPath: androidTrackingCode
       value: 1925485522
+      objectReference: {fileID: 0}
+    - target: {fileID: 114531908067335576, guid: bbc182e4479ba4d21ad61ccd1ffc0944,
+        type: 3}
+      propertyPath: sendLaunchEvent
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbc182e4479ba4d21ad61ccd1ffc0944, type: 3}

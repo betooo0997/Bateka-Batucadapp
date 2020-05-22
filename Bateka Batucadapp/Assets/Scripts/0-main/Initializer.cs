@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Initializer : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Initializer : MonoBehaviour
                 app = Firebase.FirebaseApp.DefaultInstance;
                 // Set a flag here to indicate whether Firebase is ready to use by your app.
                 Firebase.Analytics.FirebaseAnalytics.SetUserProperty("Prueba", "2");
+                Firebase.Analytics.FirebaseAnalytics.SetUserProperty("2", "Prueba");
                 Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
                 Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
                 Debug.Log("Firebase initialized successfully");
@@ -66,5 +68,12 @@ public class Initializer : MonoBehaviour
     public void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e)
     {
         Debug.Log("Received a new message from: " + e.Message.From);
+        Debug.Log("Data count: " + e.Message.Data.Count.ToString());
+
+        foreach (KeyValuePair<string, string> entry in e.Message.Data)
+        {
+            // do something with entry.Value or entry.Key
+            Debug.Log("Key: " + entry.Key + ", Value: " + entry.Value);
+        }
     }
 }
