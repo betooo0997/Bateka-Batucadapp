@@ -4,7 +4,6 @@ using UnityEngine;
 public class Initializer : MonoBehaviour
 {
     public static Initializer Singleton;
-    Firebase.FirebaseApp app;
 
     void Awake()
     {
@@ -15,25 +14,23 @@ public class Initializer : MonoBehaviour
 
     void Start()
     {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => 
+        {
             var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            Firebase_Handler.Init_Success = (dependencyStatus == Firebase.DependencyStatus.Available);
+
+            if (Firebase_Handler.Init_Success)
             {
-                // Create and hold a reference to your FirebaseApp,
-                // where app is a Firebase.FirebaseApp property of your application class.
-                app = Firebase.FirebaseApp.DefaultInstance;
-                // Set a flag here to indicate whether Firebase is ready to use by your app.
-                Firebase.Analytics.FirebaseAnalytics.SetUserProperty("Prueba", "2");
-                Firebase.Analytics.FirebaseAnalytics.SetUserProperty("2", "Prueba");
-                Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
-                Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
+                Firebase_Handler.App = Firebase.FirebaseApp.DefaultInstance;
+
+                Firebase.Messaging.FirebaseMessaging.TokenReceived += Firebase_Handler.OnTokenReceived;
+                Firebase.Messaging.FirebaseMessaging.MessageReceived += Firebase_Handler.OnMessageReceived;
                 Debug.Log("Firebase initialized successfully");
             }
             else
             {
-                UnityEngine.Debug.LogError(System.String.Format(
+                Debug.LogError(System.String.Format(
                   "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-                // Firebase Unity SDK is not safe to use here.
             }
 
             Load_Data_Cache();
@@ -57,23 +54,6 @@ public class Initializer : MonoBehaviour
             Database_Handler.Load_Data_Cache(Handler_Type.docs);
 
             User.Update_Data("", "", false);
-        }
-    }
-
-    public void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token)
-    {
-        Debug.Log("Received Registration Token: " + token.Token);
-    }
-
-    public void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e)
-    {
-        Debug.Log("Received a new message from: " + e.Message.From);
-        Debug.Log("Data count: " + e.Message.Data.Count.ToString());
-
-        foreach (KeyValuePair<string, string> entry in e.Message.Data)
-        {
-            // do something with entry.Value or entry.Key
-            Debug.Log("Key: " + entry.Key + ", Value: " + entry.Value);
         }
     }
 }

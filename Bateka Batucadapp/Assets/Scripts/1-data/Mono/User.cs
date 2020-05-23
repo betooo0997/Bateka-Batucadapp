@@ -118,6 +118,12 @@ public class User : MonoBehaviour
             if (User_Info.Username == "") User_Info = new_User;
             else if (User_Info.Username != new_User.Username) Users_Info.Add(new_User);
         }
+
+        Firebase_Handler.Set_User_Property("user_id", User_Info.Id.ToString());
+        Firebase_Handler.Set_User_Property("8", "user_id");
+        Firebase_Handler.Check_Device_Group();
+        Firebase_Handler.Set_Device_Group();
+        Firebase_Handler.Send_Notification();
     }
 
     public void Show_Add_User_Info(string user_to_show)

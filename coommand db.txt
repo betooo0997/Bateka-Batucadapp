@@ -1,1 +1,3 @@
+adb -s emulator-5554 logcat -s Unity -v color
 adb -s localhost:5555 logcat -s Unity
+adb logcat -s Unity ActivityManager PackageManager dalvikvm DEBUG

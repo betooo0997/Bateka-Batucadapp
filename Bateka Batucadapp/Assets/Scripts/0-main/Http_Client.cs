@@ -12,6 +12,12 @@ public class Http_Client: MonoBehaviour
     public const string API_URL = "https://kinderlandshop.es/bateka-api-8420b25f4c1ad7ac906364ee943a7bef";
     static Http_Client Singleton;
 
+    public enum Request_Type
+    {
+        GET,
+        POST
+    }
+
     void Awake()
     {
         if(Singleton == null)
@@ -95,5 +101,93 @@ public class Http_Client: MonoBehaviour
         }
         else
             concludingMethod(transform, ((DownloadHandlerTexture)request.downloadHandler).texture);
+    }
+
+    public static void Send_HTTP_Request(string url, Request_Type type, Dictionary<string, string> header, Action<string, string> concluding_method, string body = "")
+    {
+        switch(type)
+        {
+            case Request_Type.GET:
+                Singleton.StartCoroutine(Singleton.Send_HTTP_GET_Request_Coroutine(url, header, concluding_method));
+                break;
+
+            case Request_Type.POST:
+                if (body != "")
+                    Singleton.StartCoroutine(Singleton.Send_HTTP_POST_Request_Coroutine(url, header, body, concluding_method));
+                else
+                    Debug.LogError("Body of HTTP POST Request cannot be empty!");
+                break;
+        }
+
+        Debug.Log("Sending custom HTTP " + type.ToString() + " request");
+    }
+
+    IEnumerator Send_HTTP_GET_Request_Coroutine(string url, Dictionary<string,string> header, Action<string, string> concluding_method)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            foreach (KeyValuePair<string, string> entry in header)
+                www.SetRequestHeader(entry.Key, entry.Value);
+
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+                On_Error(www);
+            else
+                On_Success(www, concluding_method);
+        }
+    }
+
+    IEnumerator Send_HTTP_POST_Request_Coroutine(string url, Dictionary<string, string> header, string body, Action<string, string> concluding_method)
+    {
+        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        {
+            foreach (KeyValuePair<string, string> entry in header)
+                www.SetRequestHeader(entry.Key, entry.Value);
+
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
+
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+                On_Error(www);
+            else
+                On_Success(www, concluding_method);
+        }
+
+        yield return null;
+    }
+
+    void On_Error(UnityWebRequest www)
+    {
+        string error = www.error;
+
+        if (error == "Cannot resolve destination host")
+            error = "No estás conectad@ a internet.";
+
+        Message.ShowMessage(error);
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (KeyValuePair<string, string> dict in www.GetResponseHeaders())
+            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+
+        Debug.LogError("HTTP Response: " + error + "\nHeader:\n" + sb.ToString() + "\nContent:\n" + www.downloadHandler.text);
+    }
+
+    void On_Success(UnityWebRequest www, Action<string, string> concluding_method)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        foreach (KeyValuePair<string, string> dict in www.GetResponseHeaders())
+            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+
+        string response_header = sb.ToString();
+        string response_content = www.downloadHandler.text;
+
+        Debug.Log("HTTP Response:\nHeader:\n" + response_header + "\nContent:\n" + response_content);
+        concluding_method(response_header, response_content);
     }
 }
