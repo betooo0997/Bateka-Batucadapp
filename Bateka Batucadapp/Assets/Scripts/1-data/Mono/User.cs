@@ -104,7 +104,7 @@ public class User : MonoBehaviour
             new_User.Username       = data[1];
             new_User.Name           = data[2];
             new_User.Surname        = data[3];
-            System.Enum.TryParse(data[4], out new_User.Role);
+            Enum.TryParse(data[4], out new_User.Role);
             new_User.Tel            = data[5];
             new_User.Email          = data[6];
             new_User.Polls_Data     = Vote_Data.Parse_Data(data[7]);
@@ -120,10 +120,36 @@ public class User : MonoBehaviour
         }
 
         Firebase_Handler.Set_User_Property("user_id", User_Info.Id.ToString());
-        Firebase_Handler.Set_User_Property("8", "user_id");
-        Firebase_Handler.Check_Device_Group();
-        Firebase_Handler.Set_Device_Group();
-        Firebase_Handler.Send_Notification();
+
+        Firebase_Handler.Create_Notification_Key("", "", (object[] data_create) =>
+        {
+            Response_Status status_create = Http_Client.Parse_Status(data_create[0]);
+
+            // Get notification_key if it already exists.
+            if (status_create == Response_Status.HTTP_Error && (string)data_create[1] == "notification_key already exists")
+            {
+                Debug.LogWarning("Notification_key already exists!");
+
+                Firebase_Handler.Get_Notification_Key("", (object[] data_get) =>
+                {
+                    Response_Status status_get = Http_Client.Parse_Status(data_get[0]);
+
+                    // Add registartion token to list of notification_key.
+                    if (status_get == Response_Status.Ok)
+                    {
+                        Firebase_Handler.Modify_Registration_Token(Firebase_Handler.Operation.add, (string)data_get[1], "", "", (object[] data_modify) =>
+                        {
+                            Response_Status status_modify = Http_Client.Parse_Status(data_modify[0]);
+
+                            if (status_modify == Response_Status.Ok)
+                                Debug.Log("SUCCESS!");
+                        });
+                    }
+                    else
+                        Debug.LogError("Errooor!");
+                });
+            }
+        });
     }
 
     public void Show_Add_User_Info(string user_to_show)
@@ -207,10 +233,10 @@ public class User : MonoBehaviour
 
             On_Success_temp?.Invoke();
 
-            Login.Singleton.googleAnalytics.LogScreen("Login_S");
-            Login.Singleton.googleAnalytics.LogEvent("Category_Example", "Event_Action", "Event_Label", 1);
-            Login.Singleton.googleAnalytics.LogEvent(new EventHitBuilder().SetEventCategory("Achievement").SetEventAction("Unlocked"));
-            Debug.Log("Logged");
+            Firebase_Handler.Singleton.GoogleAnalytics.LogScreen("Login_S");
+            Firebase_Handler.Singleton.GoogleAnalytics.LogEvent("Category_Example", "Event_Action", "Event_Label", 1);
+            Firebase_Handler.Singleton.GoogleAnalytics.LogEvent(new EventHitBuilder().SetEventCategory("login").SetEventAction("login"));
+            Firebase_Handler.Singleton.GoogleAnalytics.DispatchHits();
         }
         else
         {

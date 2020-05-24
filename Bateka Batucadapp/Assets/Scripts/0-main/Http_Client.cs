@@ -7,6 +7,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+public enum Response_Status
+{
+    Ok,
+    HTTP_Error,
+    Network_Error
+}
+
 public class Http_Client: MonoBehaviour
 {
     public const string API_URL = "https://kinderlandshop.es/bateka-api-8420b25f4c1ad7ac906364ee943a7bef";
@@ -103,26 +110,31 @@ public class Http_Client: MonoBehaviour
             concludingMethod(transform, ((DownloadHandlerTexture)request.downloadHandler).texture);
     }
 
-    public static void Send_HTTP_Request(string url, Request_Type type, Dictionary<string, string> header, Action<string, string> concluding_method, string body = "")
+    public static void Send_HTTP_Request(string url, Request_Type type, Dictionary<string, string> header, Action<object[], Action<object[]>> processing_method, Action<object[]> concluding_method, string body = "")
     {
         switch(type)
         {
             case Request_Type.GET:
-                Singleton.StartCoroutine(Singleton.Send_HTTP_GET_Request_Coroutine(url, header, concluding_method));
+                Singleton.StartCoroutine(Singleton.Send_HTTP_GET_Request_Coroutine(url, header, processing_method, concluding_method));
                 break;
 
             case Request_Type.POST:
                 if (body != "")
-                    Singleton.StartCoroutine(Singleton.Send_HTTP_POST_Request_Coroutine(url, header, body, concluding_method));
+                    Singleton.StartCoroutine(Singleton.Send_HTTP_POST_Request_Coroutine(url, header, body, processing_method, concluding_method));
                 else
                     Debug.LogError("Body of HTTP POST Request cannot be empty!");
                 break;
         }
 
-        Debug.Log("Sending custom HTTP " + type.ToString() + " request");
+        StringBuilder sb = new StringBuilder();
+
+        foreach (KeyValuePair<string, string> dict in header)
+            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+
+        Debug.Log("Sending custom HTTP " + type.ToString() + " request to " + url + ":\nHeader:\n" + sb.ToString() + "\nBody:\n" + body);
     }
 
-    IEnumerator Send_HTTP_GET_Request_Coroutine(string url, Dictionary<string,string> header, Action<string, string> concluding_method)
+    IEnumerator Send_HTTP_GET_Request_Coroutine(string url, Dictionary<string,string> header, Action<object[], Action<object[]>> processing_method, Action<object[]> concluding_method)
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
@@ -131,14 +143,11 @@ public class Http_Client: MonoBehaviour
 
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
-                On_Error(www);
-            else
-                On_Success(www, concluding_method);
+            Handle_Response(www, processing_method, concluding_method);
         }
     }
 
-    IEnumerator Send_HTTP_POST_Request_Coroutine(string url, Dictionary<string, string> header, string body, Action<string, string> concluding_method)
+    IEnumerator Send_HTTP_POST_Request_Coroutine(string url, Dictionary<string, string> header, string body, Action<object[], Action<object[]>> processing_method, Action<object[]> concluding_method)
     {
         using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
         {
@@ -151,43 +160,50 @@ public class Http_Client: MonoBehaviour
 
             yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
-                On_Error(www);
-            else
-                On_Success(www, concluding_method);
+            Handle_Response(www, processing_method, concluding_method);
         }
 
         yield return null;
     }
 
-    void On_Error(UnityWebRequest www)
+    void Handle_Response(UnityWebRequest www, Action<object[], Action<object[]>> processing_method, Action<object[]> concluding_method)
     {
-        string error = www.error;
-
-        if (error == "Cannot resolve destination host")
-            error = "No estás conectad@ a internet.";
-
-        Message.ShowMessage(error);
-
-        StringBuilder sb = new StringBuilder();
+        StringBuilder header = new StringBuilder();
+        Response_Status status = Response_Status.Ok;
 
         foreach (KeyValuePair<string, string> dict in www.GetResponseHeaders())
-            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+            header.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
 
-        Debug.LogError("HTTP Response: " + error + "\nHeader:\n" + sb.ToString() + "\nContent:\n" + www.downloadHandler.text);
+        if (www.isNetworkError)
+            status = Response_Status.Network_Error;
+        else if (www.isHttpError)
+            status = Response_Status.HTTP_Error;
+
+        if (status != Response_Status.Ok)
+        {
+            if (www.error == "Cannot resolve destination host")
+                Message.ShowMessage("No estás conectad@ a internet.");
+            else
+                Message.ShowMessage(www.error);
+
+            Debug.LogError("HTTP Response: " + www.error + "\nHeader:\n" + header.ToString() + "\nContent:\n" + www.downloadHandler.text + "\nConcluding Method: " + processing_method.Method.Name);
+        }
+        else
+            Debug.Log("HTTP Response:\nHeader:\n" + header.ToString() + "\nContent:\n" + www.downloadHandler.text + "\nConcluding method: " + processing_method.Method.Name);
+
+        processing_method(
+            new object[] 
+            {
+                status,
+                header.ToString(),
+                www.downloadHandler.text
+            }, 
+            concluding_method
+            );
     }
 
-    void On_Success(UnityWebRequest www, Action<string, string> concluding_method)
+    public static Response_Status Parse_Status(object status)
     {
-        StringBuilder sb = new StringBuilder();
-
-        foreach (KeyValuePair<string, string> dict in www.GetResponseHeaders())
-            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
-
-        string response_header = sb.ToString();
-        string response_content = www.downloadHandler.text;
-
-        Debug.Log("HTTP Response:\nHeader:\n" + response_header + "\nContent:\n" + response_content);
-        concluding_method(response_header, response_content);
+        return (Response_Status)Enum.Parse(typeof(Response_Status), status.ToString());
     }
 }

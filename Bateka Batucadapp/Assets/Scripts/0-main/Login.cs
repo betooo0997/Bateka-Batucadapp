@@ -12,8 +12,6 @@ public class Login : MonoBehaviour
 
     public Button Login_Button;
 
-    public GoogleAnalyticsV4 googleAnalytics;
-
     [SerializeField]
     InputField user, password = null;
 
@@ -37,7 +35,6 @@ public class Login : MonoBehaviour
     void Start()
     {
         Adapt_Background();
-        googleAnalytics.StartSession();
     }
 
     void Update()
