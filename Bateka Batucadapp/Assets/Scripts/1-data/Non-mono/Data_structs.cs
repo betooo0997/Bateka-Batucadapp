@@ -10,7 +10,7 @@ public abstract class Data_struct
     public uint Id;
     public string Title;
     public string Details;
-    public int Author_Id;
+    public uint Author_Id;
     public Privacy Privacy;
 
     public Data_struct()
@@ -21,6 +21,7 @@ public abstract class Data_struct
 
         editable.Add("Title");
         editable.Add("Details");
+        editable.Add("Privacy");
     }
 
     public bool Is_Editable(FieldInfo info)

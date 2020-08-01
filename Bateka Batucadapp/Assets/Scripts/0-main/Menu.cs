@@ -29,8 +29,11 @@ public class Menu : MonoBehaviour
         Docs,
         Docs_details,
         Events_details,
-        Poll_details_other,
+        Poll_details_single,
+        Poll_details_multi,
         Rhythms,
+        Send_Notification,
+        Edit,
         Construction
     }
 
@@ -77,7 +80,7 @@ public class Menu : MonoBehaviour
 
         Enum.TryParse(scene_name, out Menu_item scene);
 
-        if (scene == Active_Item && Active_Item != Menu_item.Poll_details_other && Active_Item != Menu_item.Events_details) return;
+        if (scene == Active_Item && Active_Item != Menu_item.Poll_details_single && Active_Item != Menu_item.Events_details) return;
 
         for (int x = 0; x < SceneManager.sceneCount; x++)
             scenes[x] = SceneManager.GetSceneAt(x);
@@ -144,7 +147,7 @@ public class Menu : MonoBehaviour
                 method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
 
-            case Menu_item.Poll_details_other:
+            case Menu_item.Poll_details_single:
                 Title_Handler.Singleton.Set_Title("Encuestas", () => Load_Scene_Menu_Item(Menu_item.Polls));
                 method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
                 break;
@@ -168,6 +171,14 @@ public class Menu : MonoBehaviour
 
             case Menu_item.Config:
                 Title_Handler.Singleton.Set_Title("Opciones", () => Load_Scene_Menu_Item(Menu_item.Home));
+                break;
+
+            case Menu_item.Send_Notification:
+                Title_Handler.Singleton.Set_Title("Notificaciones", () => Load_Scene_Menu_Item(Menu_item.Users));
+                break;
+
+            case Menu_item.Edit:
+                Title_Handler.Singleton.Set_Title("Editor", () => Load_Scene_Menu_Item(Prev_Item));
                 break;
 
             case Menu_item.Construction:

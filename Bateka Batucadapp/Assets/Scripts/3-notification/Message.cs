@@ -57,6 +57,8 @@ public class Message : MonoBehaviour
 
     public static void ShowMessage(string message)
     {
+        Debug.Log("Showing message: " + message);
+
         if (active)
             Initializer.Singleton.StartCoroutine(ShowMessageDelayed(message));
         else

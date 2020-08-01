@@ -73,7 +73,7 @@ public class Http_Client: MonoBehaviour
                 Message.ShowMessage(error);
                 Debug.LogWarning(error);
                 Scroll_Updater.Disable();
-                Login.Singleton.Login_Button.interactable = true;
+                Login.Singleton.On_Load_Failure();
             }
             else
             {
@@ -128,8 +128,9 @@ public class Http_Client: MonoBehaviour
 
         StringBuilder sb = new StringBuilder();
 
-        foreach (KeyValuePair<string, string> dict in header)
-            sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
+        if(header != null)
+            foreach (KeyValuePair<string, string> dict in header)
+                sb.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
 
         Debug.Log("Sending custom HTTP " + type.ToString() + " request to " + url + ":\nHeader:\n" + sb.ToString() + "\nBody:\n" + body);
     }
@@ -138,8 +139,9 @@ public class Http_Client: MonoBehaviour
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
-            foreach (KeyValuePair<string, string> entry in header)
-                www.SetRequestHeader(entry.Key, entry.Value);
+            if(header != null)
+                foreach (KeyValuePair<string, string> entry in header)
+                    www.SetRequestHeader(entry.Key, entry.Value);
 
             yield return www.SendWebRequest();
 
@@ -175,18 +177,20 @@ public class Http_Client: MonoBehaviour
             header.Append(dict.Key).Append(": \t[").Append(dict.Value).Append("]\n");
 
         if (www.isNetworkError)
-            status = Response_Status.Network_Error;
-        else if (www.isHttpError)
-            status = Response_Status.HTTP_Error;
-
-        if (status != Response_Status.Ok)
         {
+            status = Response_Status.Network_Error;
+
             if (www.error == "Cannot resolve destination host")
                 Message.ShowMessage("No estás conectad@ a internet.");
             else
                 Message.ShowMessage(www.error);
 
             Debug.LogError("HTTP Response: " + www.error + "\nHeader:\n" + header.ToString() + "\nContent:\n" + www.downloadHandler.text + "\nConcluding Method: " + processing_method.Method.Name);
+        }
+        else if (www.isHttpError)
+        {
+            status = Response_Status.HTTP_Error;
+            Debug.LogWarning("HTTP Response: " + www.error + "\nHeader:\n" + header.ToString() + "\nContent:\n" + www.downloadHandler.text + "\nConcluding Method: " + processing_method.Method.Name);
         }
         else
             Debug.Log("HTTP Response:\nHeader:\n" + header.ToString() + "\nContent:\n" + www.downloadHandler.text + "\nConcluding method: " + processing_method.Method.Name);

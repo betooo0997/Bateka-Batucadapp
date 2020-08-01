@@ -93,13 +93,20 @@ public abstract class Database_Handler : MonoBehaviour
     //
 
 
+    public static bool Is_Clean(string response)
+    {
+        return response.Contains("VERIFIED.");
+    }
+
     /// <summary>
     /// Loads and parses a database from the device's cache, if existent.
     /// </summary>
     /// <param name="type">The child class type of Database_Handler that should load and parse its database.</param>
     public static void Load_Data_Cache(Handler_Type type)
     {
-        if (PlayerPrefs.HasKey(type.ToString() + "_database"))
+        string name = type.ToString() + "_database";
+
+        if (PlayerPrefs.HasKey(name) && Is_Clean(name))
             Parse_Data(PlayerPrefs.GetString(type.ToString() + "_database"), false, type);
     }
 

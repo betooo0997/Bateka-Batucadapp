@@ -28,6 +28,7 @@ public class Scroll_Updater : MonoBehaviour
         Initialized.Add(typeof(Polls), false);
         Initialized.Add(typeof(Calendar_Events), false);
         Initialized.Add(typeof(Docs), false);
+        download_all = false;
     }
 
     private void Awake()

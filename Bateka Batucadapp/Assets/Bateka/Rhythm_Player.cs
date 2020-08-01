@@ -36,7 +36,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField]
     Dropdown time_signature;
 
-    static float cells_per_second;
+    static float cells_per_step;
 
     static List<List<Image>> separators;
     static List<RectTransform> numerations;
@@ -60,14 +60,17 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     void Awake()
     {
-        Step = 0.125f;
-        Singleton = this;
-        content_rect_transform = transform.parent.GetComponent<RectTransform>();
-        Rhythms = new List<Rhythm_Data>();
-        separators = new List<List<Image>>();
-        numerations = new List<RectTransform>();
-        color_separator_dark = separator_dark_prefab.GetComponent<Image>().color;
-        color_separator_light = separator_prefab.GetComponent<Image>().color;
+        Singleton               = this;
+        Rhythms                 = new List<Rhythm_Data>();
+        separators              = new List<List<Image>>();
+        numerations             = new List<RectTransform>();
+        Sound_Type_Mono.Sounds  = new List<Sound_Type_Mono>();
+        Sound_Type_Mono.Selected_Sound  = null;
+        Rhythm_Loop.Selected    = null;
+        Step                    = 0.125f;
+        content_rect_transform  = transform.parent.GetComponent<RectTransform>();
+        color_separator_dark    = separator_dark_prefab.GetComponent<Image>().color;
+        color_separator_light   = separator_prefab.GetComponent<Image>().color;
     }
 
     void Start()
@@ -79,7 +82,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         total_cells_count = (int)Math.Round(Song_Length / Step, 0);
         event_handlers = new EventHandler[total_cells_count];
-        cells_per_second = 1 / Step;
+        cells_per_step = 1 / Step;
         Cell_Width = sound_instance_prefab.GetComponent<RectTransform>().sizeDelta.x;
         Load_Rhythm();
 
@@ -173,32 +176,49 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (diff > 0)
         {
+            int y = 0;
             foreach (Sound_Type_Mono sound in FindObjectsOfType<Sound_Type_Mono>())
             {
-                for (int x = total_cells_count; x < total_cells_count + diff * cells_per_second; x++)
+                for (int x = total_cells_count; x < total_cells_count + diff * cells_per_step; x++)
                 {
                     Sound_Instance_Mono instance = Instantiate(sound_instance_prefab, sound.transform).GetComponent<Sound_Instance_Mono>();
                     instance.Fire_Time = x * Step;
                     instance.sound = sound;
+
+                    separators[y].Add(Instantiate(separator_prefab, sound.transform).GetComponent<Image>());
                 }
+
+                y++;
             }
+
         }
         else if (diff < 0)
         {
             foreach (Sound_Type_Mono sound in FindObjectsOfType<Sound_Type_Mono>())
-            {
-                for (int x = total_cells_count - 1; x > total_cells_count - 1 + diff * cells_per_second; x--)
-                {
+                for (int x = total_cells_count - 1; x > total_cells_count - 1 + diff * cells_per_step; x--)
                     Destroy(sound.Instances[x * Step].gameObject);
+
+            foreach (List<Image> sep_row in separators)
+            {
+                for (int x = 0; x < Math.Abs(diff) * cells_per_step; x++)
+                {
+                    Image image = sep_row[sep_row.Count - 1];
+                    sep_row.Remove(image);
+                    Destroy(image.gameObject);
                 }
             }
         }
 
         total_cells_count = (int)Math.Round(Song_Length / Step, 0);
-        Reset_Events();
+        Update_Numerators();
 
-        Utils.InvokeNextFrame(() => Utils.Reactivate(FindObjectOfType<Canvas>().gameObject));
-        rhythm_length.text = Song_Length.ToString();
+        Utils.InvokeNextFrame(() => 
+        {
+            Reset_Events();
+            rhythm_length.text = Song_Length.ToString();
+            Utils.Update_UI = true;
+            Utils.Reactivate(FindObjectOfType<Canvas>().gameObject);
+        });
     }
 
     public void Increase_Song_Length()
@@ -218,14 +238,14 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public static float Round_To_Existing_Key_Floor(float number)
     {
         float rest = number % 1;
-        rest = (float)Math.Floor(rest * cells_per_second) / cells_per_second;
+        rest = (float)Math.Floor(rest * cells_per_step) / cells_per_step;
         return (float)Math.Floor(number) + rest;
     }
 
     public static float Round_To_Existing_Key(float number)
     {
         float rest = number % 1;
-        rest = (float)Math.Round(rest * cells_per_second, 0) / cells_per_second;
+        rest = (float)Math.Round(rest * cells_per_step, 0) / cells_per_step;
 
         float no_rest = (float)Math.Floor(number);
 
@@ -242,7 +262,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (!rect)
             rect_f = 0;
 
-        return (position + rect_f) / Cell_Width / cells_per_second;
+        return (position + rect_f) / Cell_Width / cells_per_step;
     }
 
     public static float Timer_To_Position(float timer, bool rect = true)
@@ -252,7 +272,7 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (!rect)
             rect_f = 0;
 
-        return -rect_f + timer * Cell_Width * cells_per_second;
+        return -rect_f + timer * (Cell_Width + 2) * cells_per_step;
     }
 
 
@@ -420,6 +440,20 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             Update_Separators();
         });
 
+        Update_Numerators();
+        Update_Separators();
+
+        Reset_Events();
+        Utils.Update_UI = true;
+    }
+
+    void Update_Numerators()
+    {
+        foreach (RectTransform rect in numerations)
+            Destroy(rect.gameObject);
+
+        numerations = new List<RectTransform>();
+
         for (int x = 1; x <= Song_Length; x++)
         {
             Text text = Instantiate(numeration_prefab, numeration_parent).GetComponentInChildren<Text>();
@@ -428,11 +462,6 @@ public class Rhythm_Player : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             rect.sizeDelta = new Vector2((Cell_Width + 2) / Step * Rhythms[0].Get_Time_Modifier() - 2, rect.sizeDelta.y);
             numerations.Add(rect);
         }
-
-        Update_Separators();
-
-        Reset_Events();
-        Utils.Update_UI = true;
     }
 
     void Update_Separators()

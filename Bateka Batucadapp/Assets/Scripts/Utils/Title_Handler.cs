@@ -14,7 +14,7 @@ public class Title_Handler : MonoBehaviour
     Button back_button;
 
     [SerializeField]
-    GameObject home_title, other_title;
+    GameObject home_title, other_title, notification_button, edit_button;
 
     [SerializeField]
     Text Title;
@@ -30,26 +30,29 @@ public class Title_Handler : MonoBehaviour
         {
             home_title.SetActive(true);
             other_title.SetActive(false);
+            return;
         }
-        else if(title == "Hide")
+
+        if(title == "Hide")
         {
             home_title.SetActive(false);
             other_title.SetActive(false);
+            return;
         }
-        else
+
+        other_title.SetActive(true);
+        home_title.SetActive(false);
+        notification_button.SetActive(title == "Usuarios" && User.User_Info.Role == User.User_Role.admin);
+        edit_button.SetActive((title == "Encuestas" || title == "Eventos") && User.User_Info.Role == User.User_Role.admin);
+
+        Title.text = title;
+
+        back_button.gameObject.SetActive(action != null);
+
+        if (action != null)
         {
-            home_title.SetActive(false);
-            other_title.SetActive(true);
-
-            Title.text = title;
-
-            back_button.gameObject.SetActive(action != null);
-
-            if (action != null)
-            {
-                back_button.onClick.RemoveAllListeners();
-                back_button.onClick.AddListener(action);
-            }
+            back_button.onClick.RemoveAllListeners();
+            back_button.onClick.AddListener(action);
         }
     }
 }

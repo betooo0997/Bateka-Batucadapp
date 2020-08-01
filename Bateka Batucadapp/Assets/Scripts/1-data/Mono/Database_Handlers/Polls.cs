@@ -37,7 +37,7 @@ public class Polls : Database_Handler
         newPoll.Details         = data[2];
         newPoll.Creation_Time   = Utils.Get_DateTime(data[3]);
         newPoll.Date_Deadline   = Utils.Get_DateTime(data[4]);
-        newPoll.Author          = data[5];
+        newPoll.Author_Id       = uint.Parse(data[5]);
         newPoll.Privacy         = Utils.Parse_Privacy(data[6]);
 
         foreach (string element in Utils.Split(data[7], "|"))
@@ -56,7 +56,7 @@ public class Polls : Database_Handler
                 newPoll.Vote_Voters[vote_data.response].Add(User.User_Info);
 
         // Set Poll Type and Poll Status.
-        newPoll.Votable_Type = Votable_Type.Multiple;
+        newPoll.Votable_Type = Votable_Type.Multiple_Single_Select;
         newPoll.Status = "";
 
         for (int y = 0; y < newPoll.Vote_Voters.Count; y++)
@@ -81,26 +81,6 @@ public class Polls : Database_Handler
             Debug.LogError("No options detected.");
 
         return newPoll;
-    }
-
-
-    // ______________________________________
-    //
-    // 2. UPDATE (OR CREATE) POLLS BY ADMIN.
-    // ______________________________________
-    //
-
-
-    public void Update_Poll(Poll poll)
-    {
-        Debug.Log("Updating Poll");
-        string[] field_names = { "REQUEST_TYPE", "poll_id", "poll_data" };
-        string[] field_values = { "set_poll", poll.Id.ToString(), poll.Convert_To_String() };
-        Http_Client.Send_Post(field_names, field_values, Handle_Poll_Update_Response);
-    }
-
-    void Handle_Poll_Update_Response(string response, Handler_Type type)
-    {
     }
 
 
@@ -136,7 +116,7 @@ public class Polls : Database_Handler
             element_obj.name = GetType().ToString() + "_element";
             element_obj.GetComponent<Data_UI>().Set_Data(element);
 
-            if (!Utils.Is_Sooner(((Poll)element).Date_Deadline, DateTime.Now))
+            if (!((Poll)element).Is_Past_Deadline())
             {
                 if (((Poll)element).Status == "")
                     element_obj.transform.SetSiblingIndex(parent_not_answered.GetSiblingIndex() + 1);

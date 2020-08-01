@@ -26,7 +26,6 @@ public class Calendar_Day : Data_UI
     private void Awake()
     {
         day = GetComponentInChildren<Text>();
-        GetComponent<Button>().enabled = false;
     }
 
     public void Set_Event(List<Data_struct> data_struct)

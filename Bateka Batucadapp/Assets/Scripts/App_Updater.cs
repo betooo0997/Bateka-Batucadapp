@@ -7,14 +7,13 @@ using UnityEngine.UI;
 public class App_Updater : MonoBehaviour
 {
     public const string APK_PATH = "https://kinderlandshop.es/wp-content/asambleapp/batekapp/tabalapp";
-    public const float VERSION = 0.444f;
 
     [SerializeField]
     Text version;
 
     void Start()
     {
-        version.text = "Tabalapp v" + VERSION.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
+        version.text = "Tabalapp v" + Application.version.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
     }
 
     public void Update_App()
@@ -32,11 +31,11 @@ public class App_Updater : MonoBehaviour
 
         if (success)
         {
-            if (response == VERSION.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." }))
+            if (response == Application.version.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." }))
                 Message.ShowMessage("No hay ninguna actualización disponible en este momento.");
             else
             {
-                Debug.Log(response + VERSION.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." }));
+                Debug.Log(response + Application.version.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." }));
                 Message.ShowMessage("¡Hay nuevas actualizaciones disponibles!");
                 Message.ShowMessage("Abriendo enlace en tu navegador");
                 Invoke("Open_In_Browser", 4);
@@ -51,6 +50,6 @@ public class App_Updater : MonoBehaviour
 
     void Open_In_Browser()
     {
-        Application.OpenURL(APK_PATH + VERSION + ".apk");
+        Application.OpenURL(APK_PATH + Application.version + ".apk");
     }
 }

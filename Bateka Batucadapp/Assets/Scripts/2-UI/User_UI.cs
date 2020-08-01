@@ -25,8 +25,8 @@ public class User_UI : MonoBehaviour
         }
         else
         {
-            email.text = "altamenteconfidencial@notienesroldeadmin.com";
-            tel.text = "sorry pero parece que no puedes ver esto :(";
+            email.text = "-";
+            tel.text = "-";
         }
 
         Utils.Update_UI = true;

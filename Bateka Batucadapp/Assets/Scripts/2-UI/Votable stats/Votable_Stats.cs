@@ -10,11 +10,13 @@ public class Votable_Stats : MonoBehaviour
     Transform pie_part_parent, pie_part_description_parent, voter_list_parent;
 
     [SerializeField]
-    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab;
+    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab, send_notification_button;
 
     Votable votable;
 
     static List<Color> colors;
+
+    List<User.User_Information> not_voted;
 
     void Start()
     {
@@ -44,7 +46,7 @@ public class Votable_Stats : MonoBehaviour
                 };
                 break;
 
-            case Votable_Type.Multiple:
+            case Votable_Type.Multiple_Single_Select:
                 colors = new List<Color>
                 {
                     Data_UI.color_alternative_0(1),
@@ -59,7 +61,7 @@ public class Votable_Stats : MonoBehaviour
 
         float rotation = 0;
 
-        List<User.User_Information> not_voted = new List<User.User_Information>(User.Users_Info);
+        not_voted = new List<User.User_Information>(User.Users_Info);
         not_voted.Add(User.User_Info);
 
         for (int x = 0; x < votable.Vote_Types.Count; x++)
@@ -98,6 +100,12 @@ public class Votable_Stats : MonoBehaviour
             rotation -= 360 * percentage;
         }
 
+        if (not_voted.Count > 0 && User.User_Info.Role == User.User_Role.admin)
+        {
+            send_notification_button.SetActive(true);
+            Utils.Update_UI = true;
+        }
+
         Text pie_info_no_vote = Instantiate(bold_text_prefab, pie_part_description_parent).GetComponent<Text>();
         pie_info_no_vote.text = "Sin contestar: " + not_voted.Count.ToString();
         pie_info_no_vote.color = Data_UI.color_not_answered(1);
@@ -105,16 +113,43 @@ public class Votable_Stats : MonoBehaviour
 
         if(not_voted.Count > 0 && votable.Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin)
         {
-            Text no_vote_list = Instantiate(bold_text_prefab, voter_list_parent).GetComponent<Text>();
-            no_vote_list.color = Data_UI.color_not_answered(1);
-            no_vote_list.text = "Sin contestar:";
+            Text no_vote_list_text = Instantiate(bold_text_prefab, voter_list_parent).GetComponent<Text>();
+            no_vote_list_text.color = Data_UI.color_not_answered(1);
+            no_vote_list_text.text = "Sin contestar:";
 
-            no_vote_list = Instantiate(semibold_text_prefab, voter_list_parent).GetComponent<Text>();
+            no_vote_list_text = Instantiate(semibold_text_prefab, voter_list_parent).GetComponent<Text>();
 
             foreach (User.User_Information user in not_voted)
-                no_vote_list.text += " " + user.Name + ",";
+                no_vote_list_text.text += " " + user.Name + ",";
 
-            no_vote_list.text = no_vote_list.text.Substring(0, no_vote_list.text.Length - 1);
+            no_vote_list_text.text = no_vote_list_text.text.Substring(0, no_vote_list_text.text.Length - 1);
+        }
+    }
+
+    public void Send_Notifications_To_Not_Answered()
+    {
+        if(not_voted != null)
+        {
+            Send(User.User_Info);
+
+            foreach (User.User_Information user in not_voted)
+                Send(user);
+
+            void Send(User.User_Information user)
+            {
+                Firebase_Handler.Send_Notification(new Firebase_Handler.FCM_Params()
+                {
+                    User_Id = user.Id,
+                    Title = "",
+                    Body = "¡Hola " + user.Name + "! \n" +
+                        "Aún no hemos registrado ningun voto tuyo a la encuesta \"" + votable.Title + "\". " +
+                        "Éste es un recordatorio cordial por parte de tod@s de que votes en cuanto puedas. ¡Un saludo!",
+                    Data_Pairs = new Dictionary<string, string>() {
+                        { "Load_type", Database_Handler.Singleton.GetType().ToString() },
+                        { "Load_id", votable.Id.ToString() }
+                    }
+                });
+            }
         }
     }
 }

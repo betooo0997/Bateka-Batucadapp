@@ -38,7 +38,7 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
 
     protected virtual void Initialize()
     {
-        if (Utils.Is_Sooner(calendar_event.Date_Deadline, DateTime.Now))
+        if (calendar_event.Is_Past_Deadline())
             Set_Interactable(false);
 
         Title.text              = calendar_event.Title;

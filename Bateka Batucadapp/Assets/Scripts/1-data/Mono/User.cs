@@ -11,6 +11,7 @@ public class User : MonoBehaviour
     public enum User_Role
     {
         default_,
+        moderator,
         admin
     }
 
@@ -60,6 +61,7 @@ public class User : MonoBehaviour
     public static User_Information User_Info;
     public static List<User_Information> Users_Info;
     public static string Psswd;
+    public static bool Initialized;
 
     [SerializeField]
     GameObject users_Prefab;
@@ -72,8 +74,6 @@ public class User : MonoBehaviour
 
     static Action On_Success_temp;
     static Action OnFailure_temp;
-    static bool save_temp;
-    static bool load_temp;
 
     void Start()
     {
@@ -100,56 +100,24 @@ public class User : MonoBehaviour
         {
             string[] data = Utils.Split(user, '#');
             User_Information new_User = new User_Information();
-            new_User.Id             = uint.Parse(data[0]);
-            new_User.Username       = data[1];
-            new_User.Name           = data[2];
-            new_User.Surname        = data[3];
+            new_User.Id = uint.Parse(data[0]);
+            new_User.Username = data[1];
+            new_User.Name = data[2];
+            new_User.Surname = data[3];
             Enum.TryParse(data[4], out new_User.Role);
-            new_User.Tel            = data[5];
-            new_User.Email          = data[6];
-            new_User.Polls_Data     = Vote_Data.Parse_Data(data[7]);
-            new_User.Events_Data    = Vote_Data.Parse_Data(data[8]);
-            new_User.News_Data      = new List<uint>();
+            new_User.Tel = data[5];
+            new_User.Email = data[6];
+            new_User.Polls_Data = Vote_Data.Parse_Data(data[7]);
+            new_User.Events_Data = Vote_Data.Parse_Data(data[8]);
+            new_User.News_Data = new List<uint>();
 
-            if(!data[9].Contains("empty"))
+            if (!data[9].Contains("empty"))
                 foreach (string element in Utils.Split(data[9], '|'))
                     new_User.News_Data.Add(uint.Parse(element));
 
             if (User_Info.Username == "") User_Info = new_User;
             else if (User_Info.Username != new_User.Username) Users_Info.Add(new_User);
         }
-
-        Firebase_Handler.Set_User_Property("user_id", User_Info.Id.ToString());
-
-        Firebase_Handler.Create_Notification_Key("", "", (object[] data_create) =>
-        {
-            Response_Status status_create = Http_Client.Parse_Status(data_create[0]);
-
-            // Get notification_key if it already exists.
-            if (status_create == Response_Status.HTTP_Error && (string)data_create[1] == "notification_key already exists")
-            {
-                Debug.LogWarning("Notification_key already exists!");
-
-                Firebase_Handler.Get_Notification_Key("", (object[] data_get) =>
-                {
-                    Response_Status status_get = Http_Client.Parse_Status(data_get[0]);
-
-                    // Add registartion token to list of notification_key.
-                    if (status_get == Response_Status.Ok)
-                    {
-                        Firebase_Handler.Modify_Registration_Token(Firebase_Handler.Operation.add, (string)data_get[1], "", "", (object[] data_modify) =>
-                        {
-                            Response_Status status_modify = Http_Client.Parse_Status(data_modify[0]);
-
-                            if (status_modify == Response_Status.Ok)
-                                Debug.Log("SUCCESS!");
-                        });
-                    }
-                    else
-                        Debug.LogError("Errooor!");
-                });
-            }
-        });
     }
 
     public void Show_Add_User_Info(string user_to_show)
@@ -163,7 +131,7 @@ public class User : MonoBehaviour
         if (User_Info.Username == username)
             return User_Info;
 
-        foreach(User_Information user_info in Users_Info)
+        foreach (User_Information user_info in Users_Info)
             if (user_info.Username == username)
                 return user_info;
 
@@ -195,18 +163,21 @@ public class User : MonoBehaviour
         string[] field_names = { "REQUEST_TYPE", "username", "psswd" };
         string[] field_values = { "get_user_data", user, psswd };
         Psswd = psswd;
-        Http_Client.Send_Post(field_names, field_values, Handle_User_Response, Handler_Type.none, false);
+
+        Http_Client.Send_Post(
+            field_names,
+            field_values,
+            (string response, Handler_Type type) =>
+            {
+                Scroll_Updater.User_Loaded = 2;
+                Parse_User_Data(response, load, save);
+            },
+            Handler_Type.none,
+            false
+            );
 
         On_Success_temp = On_Success;
         OnFailure_temp = OnFailure;
-        save_temp = save;
-        load_temp = load;
-    }
-
-    static void Handle_User_Response(string response, Handler_Type type)
-    {
-        Scroll_Updater.User_Loaded = 2;
-        Parse_User_Data(response, load_temp, save_temp);
     }
 
     public static void Parse_User_Data(string response, bool load = true, bool save = false)
@@ -226,17 +197,15 @@ public class User : MonoBehaviour
 
             if (save)
             {
+                Debug.Log("Saving user database.");
                 Database_Handler.Save_Database("user_database", response);
                 PlayerPrefs.SetString("user_username", User_Info.Username);
                 PlayerPrefs.SetString("user_psswd", Psswd);
+                PlayerPrefs.SetString("version", Application.version.ToString());
             }
 
+            Initialized = true;
             On_Success_temp?.Invoke();
-
-            Firebase_Handler.Singleton.GoogleAnalytics.LogScreen("Login_S");
-            Firebase_Handler.Singleton.GoogleAnalytics.LogEvent("Category_Example", "Event_Action", "Event_Label", 1);
-            Firebase_Handler.Singleton.GoogleAnalytics.LogEvent(new EventHitBuilder().SetEventCategory("login").SetEventAction("login"));
-            Firebase_Handler.Singleton.GoogleAnalytics.DispatchHits();
         }
         else
         {

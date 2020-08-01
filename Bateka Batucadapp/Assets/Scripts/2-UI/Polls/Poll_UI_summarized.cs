@@ -16,13 +16,11 @@ public class Poll_UI_summarized : Poll_UI
 
         expiration_date.text = "FINALIZA " + this.poll.Date_Deadline.ToString("dd/MM/yyyy HH:mm") + "H";
 
-        //Update_Color(background);
-
-        if (this.poll.Status != "" || Utils.Is_Sooner(this.poll.Date_Deadline, DateTime.Now))
+        if (this.poll.Status != "" || this.poll.Is_Past_Deadline())
         {
             arrow.sprite = Helper.Singleton.Sprite_Arrow_Seen;
 
-            if(Utils.Is_Sooner(this.poll.Date_Deadline, DateTime.Now))
+            if(this.poll.Is_Past_Deadline())
             {
                 title.color = color_palette_gray(1);
                 expiration_date.color = color_palette_light_gray(1);
@@ -51,7 +49,7 @@ public class Poll_UI_summarized : Poll_UI
                 break;
         }
 
-        if (Utils.Is_Sooner(poll.Date_Deadline, DateTime.Now))
+        if (poll.Is_Past_Deadline())
             image.color = new Color(image.color.r, image.color.g, image.color.b, 0.25f);
     }
 }

@@ -91,7 +91,8 @@ public class Sound_Data
         Surdo_20,
         Surdo_18,
         Surdo_16,
-        Tabal
+        Tabal,
+        Caja
     }
 
     [System.Serializable]

@@ -42,7 +42,7 @@ public class Calendar_Events : Database_Handler
         calendar_event.Transportation       = data[8];
         calendar_event.Cash                 = data[9];
         calendar_event.Food                 = data[10];
-        calendar_event.Author_Id            = int.Parse(data[11]);
+        calendar_event.Author_Id            = uint.Parse(data[11]);
         calendar_event.Privacy              = Utils.Parse_Privacy(data[12]);
 
         calendar_event.Vote_Types.Add("rejection");

@@ -19,29 +19,24 @@ public class Initializer : MonoBehaviour
             var dependencyStatus = task.Result;
             Firebase_Handler.Init_Success = (dependencyStatus == Firebase.DependencyStatus.Available);
 
-            if (Firebase_Handler.Init_Success)
-            {
-                Firebase_Handler.App = Firebase.FirebaseApp.DefaultInstance;
-
-                Firebase.Messaging.FirebaseMessaging.TokenReceived += Firebase_Handler.OnTokenReceived;
-                Firebase.Messaging.FirebaseMessaging.MessageReceived += Firebase_Handler.OnMessageReceived;
-                Debug.Log("Firebase initialized successfully");
-            }
-            else
+            if (!Firebase_Handler.Init_Success)
             {
                 Debug.LogError(System.String.Format(
                   "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
             }
-
-            Load_Data_Cache();
         });
 
         TouchScreenKeyboard.hideInput = true;
+        Load_Data_Cache();
     }
 
     static void Load_Data_Cache()
     {
-        if (PlayerPrefs.HasKey("user_database") && PlayerPrefs.HasKey("version") && PlayerPrefs.GetString("version") == App_Updater.VERSION.ToString())
+        bool asd = PlayerPrefs.HasKey("user_database");
+        bool dsd = PlayerPrefs.HasKey("version");
+        string dqwd = PlayerPrefs.GetString("version");
+
+        if (PlayerPrefs.HasKey("user_database") && PlayerPrefs.HasKey("version") && PlayerPrefs.GetString("version") == Application.version.ToString() && Database_Handler.Is_Clean(PlayerPrefs.GetString("user_database")))
         {
             Debug.Log("Loading from cache");
             User.Psswd = PlayerPrefs.GetString("user_psswd");

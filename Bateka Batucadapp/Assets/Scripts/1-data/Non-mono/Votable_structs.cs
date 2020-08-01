@@ -12,18 +12,26 @@ public abstract class Votable : Data_struct
 
     public Votable() : base()
     {
-        Vote_Voters = new List<List<User.User_Information>>();
-        Vote_Types = new List<string>();
-        Date_Deadline = new DateTime();
-        Comments = new List<Comment>();
+        Vote_Voters     = new List<List<User.User_Information>>();
+        Vote_Types      = new List<string>();
+        Date_Deadline   = new DateTime();
+        Comments        = new List<Comment>();
 
+        editable.Add("Votable_Type");
+        editable.Add("Vote_Types");
         editable.Add("Date_Deadline");
+    }
+
+    public bool Is_Past_Deadline()
+    {
+        return Utils.Is_Sooner(Date_Deadline, DateTime.Now);
     }
 }
 
 public enum Votable_Type
 {
-    Multiple = Menu.Menu_item.Poll_details_other,
+    Multiple_Single_Select = Menu.Menu_item.Poll_details_single,
+    Multiple_Multi_Select = Menu.Menu_item.Poll_details_multi,
     Binary
 }
 

@@ -19,9 +19,8 @@ public class Edit_Field_Enum : Edit_Field
         int x = 0;
         foreach (Enum state in Enum.GetValues(Info.FieldType))
         {
-            if (state == Info.GetValue(Edit_Handler.Data))
+            if (state.Equals(Info.GetValue(Edit_Handler.Data)))
                 break;
-
             x++;
         }
 
@@ -37,12 +36,10 @@ public class Edit_Field_Enum : Edit_Field
         if (initialized)
         {
             int x = 0;
-
             foreach (Enum state in Enum.GetValues(Info.FieldType))
             {
                 if (data == x)
                     break;
-
                 x++;
             }
 

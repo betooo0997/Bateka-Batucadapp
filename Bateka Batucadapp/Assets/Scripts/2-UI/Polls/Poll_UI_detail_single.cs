@@ -3,7 +3,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 
-public class Poll_UI_detail_other : Poll_UI_detail
+public class Poll_UI_detail_single : Poll_UI_detail
 {
     Dropdown dropdown;
 

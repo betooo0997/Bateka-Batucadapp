@@ -71,7 +71,7 @@ function handleRequest()
 
 			// Other
 			case 'get_version':
-				echo "0.3";
+				echo "0.41";
 				return 'NONE';
 
 			default:

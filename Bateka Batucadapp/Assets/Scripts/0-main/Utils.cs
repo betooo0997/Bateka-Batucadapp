@@ -56,15 +56,39 @@ public class Utils : MonoBehaviour
 
     public void Logout()
     {
-        User.User_Info = new User.User_Information { Username = "" };
         Database_Handler.Initialize_Dictionaries();
         PlayerPrefs.DeleteAll();
-        Utils.Load_Scene_ST("Login", false);
+        Firebase_Handler.Modify_Registration_Token(Firebase_Handler.Operation.remove, new Firebase_Handler.FCM_Params()
+        {
+            Concluding_Method = (object[] data) =>
+            {
+                User.Initialized = false;
+                Firebase_Handler.Singleton.enabled = true;
+                Firebase_Handler.Own_Notification_Key = "";
+                Scroll_Updater.Initialize();
+
+                for(int x = 0; x < SceneManager.sceneCount; x++)
+                {
+                    Scene scene = SceneManager.GetSceneAt(x);
+
+                    if (scene.name != "Login")
+                        SceneManager.UnloadSceneAsync(scene);
+                }
+
+                User.User_Info = new User.User_Information { Username = "" };
+            }
+        });
     }
 
     public void Load_Menu_Scene(string scene)
     {
         Menu.Singleton.Load_Scene_Menu_Item(scene);
+    }
+
+    public void Set_Update_UI(bool active)
+    {
+        Update_UI = active;
+        updates = 3;
     }
 
     public static string[] Split(string to_split, string[] splitter)
@@ -126,12 +150,7 @@ public class Utils : MonoBehaviour
 
     public static bool Is_Sooner(DateTime a, DateTime b)
     {
-        int result = DateTime.Compare(a, b);
-
-        if (result < 0)
-            return true;
-
-        return false;
+        return DateTime.Compare(a, b) < 0;
     }
 
     public static List<Data_struct> Bubble_Sort_DateTime(List<Data_struct> list, DateTime[] date_time_list, bool inverted = false)
@@ -278,13 +297,11 @@ public class Utils : MonoBehaviour
 
     public static void Reactivate(GameObject target)
     {
-        Loading_Screen.Set_Active(true);
         target.SetActive(false);
 
         InvokeNextFrame(() =>
         {
             target.gameObject.SetActive(true);
-            Loading_Screen.Set_Active(false);
         });
     }
 
@@ -313,5 +330,18 @@ public class Utils : MonoBehaviour
     {
         if (additive) SceneManager.LoadScene(scene_name, LoadSceneMode.Additive);
         else SceneManager.LoadScene(scene_name, LoadSceneMode.Single);
+    }
+
+    public static string List_To_String(List<string> list)
+    {
+        string result = "";
+
+        foreach (string element in list)
+            result += element + "|";
+
+        if (list.Count >= 0)
+            result = result.Substring(0, result.Length - 1);
+
+        return result;
     }
 }

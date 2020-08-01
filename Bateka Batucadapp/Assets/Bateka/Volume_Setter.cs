@@ -30,7 +30,6 @@ public class Volume_Setter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         gameObject.SetActive(true);
         transform.position = Seting_Volume_Of.transform.position;
         volume = Seting_Volume_Of.Volume;
-        Debug.Log("V Drag Started");
     }
 
     void IDragHandler.OnDrag(PointerEventData eventData)
@@ -46,22 +45,18 @@ public class Volume_Setter : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image_rect.sizeDelta = new Vector2(image_rect.sizeDelta.x, height);
 
         volume = height / rect.sizeDelta.y;
-
-        Debug.Log("V Draggin:" + volume);
     }
 
     void IEndDragHandler.OnEndDrag(PointerEventData eventData)
     {
         gameObject.SetActive(false);
-        Debug.Log("V Drag Ended");
         Seting_Volume_Of.Volume = volume;
 
-        foreach (Sound_Instance_Mono instance in Seting_Volume_Of.Copies)
-            instance.Volume = volume;
 
         if(!Seting_Volume_Of.Enabled)
             Seting_Volume_Of.Set_Enabled(true);
 
         Seting_Volume_Of.Toggling?.Invoke(Seting_Volume_Of, null);
+        Rhythm_Player.Singleton.Reset_Events();
     }
 }

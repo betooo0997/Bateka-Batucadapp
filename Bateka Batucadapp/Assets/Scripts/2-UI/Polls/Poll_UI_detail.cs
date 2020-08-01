@@ -28,7 +28,7 @@ public abstract class Poll_UI_detail : Poll_UI
         GetComponentInChildren<VerticalLayoutGroup>().SetLayoutVertical();
         initialized = true;
 
-        if (Utils.Is_Sooner(poll.Date_Deadline, DateTime.Now))
+        if (poll.Is_Past_Deadline())
             Set_Interactable(false);
     }
 

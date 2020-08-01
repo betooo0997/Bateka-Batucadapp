@@ -27,7 +27,7 @@ public class Docs : Database_Handler
         foreach (string element in Utils.Split(data[5], '|'))
             doc.Imgs.Add(element);
 
-        doc.Author_Id       = int.Parse(data[6]);
+        doc.Author_Id       = uint.Parse(data[6]);
         doc.Privacy         = Utils.Parse_Privacy(data[7]);
 
         return doc;
