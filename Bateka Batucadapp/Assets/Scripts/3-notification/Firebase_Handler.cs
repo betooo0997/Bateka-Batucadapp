@@ -129,7 +129,7 @@ public class Firebase_Handler : MonoBehaviour
             message += "Key: " + entry.Key + ", Value: " + entry.Value + "\n";
 
         Debug.Log(message);
-        Notification_Scene_Loader.Singleton.Load_Specific_Scene(e.Message.Data);
+        Notification_UI_Pop.Show_Message(e.Message.Data);
     }
 
 
@@ -286,10 +286,11 @@ public class Firebase_Handler : MonoBehaviour
                             {
                                 if (Http_Client.Parse_Status(data_modify[0]) == Response_Status.Ok)
                                     Debug.Log("Registration_token has been " + operation + "ed successfully from notification_key_name " + param.Notification_Key_Name);
+#if !UNITY_EDITOR
                                 else
                                     Debug.LogError("Could not " + operation.ToString() + " the registration_token " + param.Registration_Token + " from notification_key_name " +
                                         param.Notification_Key_Name + " and notification_key " + param.Notification_Key);
-
+#endif
                                 param.Concluding_Method?.Invoke(data_modify);
                             }
                         });

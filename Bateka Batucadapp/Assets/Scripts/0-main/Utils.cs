@@ -16,17 +16,17 @@ public class Utils : MonoBehaviour
 
     public static float Canvas_Scale;
 
-    private void Awake()
+    void Awake()
     {
         Singleton = this;
     }
 
-    private void Start()
+    void Start()
     {
         Canvas_Scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
         if (updates > 0)
         {
@@ -78,6 +78,8 @@ public class Utils : MonoBehaviour
                 User.User_Info = new User.User_Information { Username = "" };
             }
         });
+
+        Login.Singleton.Reset_Input_Fields();
     }
 
     public void Load_Menu_Scene(string scene)

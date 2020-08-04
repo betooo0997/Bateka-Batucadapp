@@ -10,7 +10,7 @@ public class Votable_Stats : MonoBehaviour
     Transform pie_part_parent, pie_part_description_parent, voter_list_parent;
 
     [SerializeField]
-    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab, send_notification_button;
+    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab, send_notification_button, confirm_window;
 
     Votable votable;
 
@@ -54,7 +54,12 @@ public class Votable_Stats : MonoBehaviour
                     Data_UI.color_alternative_1(1),
                     Data_UI.color_alternative_2(1),
                     Data_UI.color_rejected(1),
-                    Data_UI.color_alternative_3(1)
+                    Data_UI.color_alternative_3(1),
+                    new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1)),
+                    new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1)),
+                    new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1)),
+                    new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1)),
+                    new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1))
                 };
                 break;
         }
@@ -126,12 +131,20 @@ public class Votable_Stats : MonoBehaviour
         }
     }
 
+    public void Show_Confirm_Window()
+    {
+        Utils.InvokeNextFrame(() => { confirm_window.SetActive(true); Utils.Update_UI = true; });
+    }
+
+    public void Hide_Confirm_Window()
+    {
+        Utils.InvokeNextFrame(() => { confirm_window.SetActive(false); Utils.Update_UI = true; });
+    }
+
     public void Send_Notifications_To_Not_Answered()
     {
         if(not_voted != null)
         {
-            Send(User.User_Info);
-
             foreach (User.User_Information user in not_voted)
                 Send(user);
 
@@ -142,10 +155,10 @@ public class Votable_Stats : MonoBehaviour
                     User_Id = user.Id,
                     Title = "",
                     Body = "¡Hola " + user.Name + "! \n" +
-                        "Aún no hemos registrado ningun voto tuyo a la encuesta \"" + votable.Title + "\". " +
+                        "Aún no hemos registrado ningun voto tuyo a la encuesta o el evento '" + votable.Title + "'. " +
                         "Éste es un recordatorio cordial por parte de tod@s de que votes en cuanto puedas. ¡Un saludo!",
                     Data_Pairs = new Dictionary<string, string>() {
-                        { "Load_type", Database_Handler.Singleton.GetType().ToString() },
+                        { "Load_type", Database_Handler.Selected_Data.GetType().ToString() },
                         { "Load_id", votable.Id.ToString() }
                     }
                 });

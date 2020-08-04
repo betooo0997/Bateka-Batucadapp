@@ -7,17 +7,39 @@ using UnityEngine.UI;
 
 public class Notification_Sender : MonoBehaviour
 {
+    public enum Message_Type
+    {
+        No_Message,
+        Copy_Notification,
+        Custom
+    }
+
+    public enum Redirect_Type
+    {
+        No_Redirect,
+        Calendar_Event,
+        Poll,
+        News_Entry
+    }
+
     [SerializeField]
     Dropdown user_dropdwon;
 
     [SerializeField]
-    InputField title;
+    InputField title, body;
 
     [SerializeField]
-    InputField body;
+    InputField title_message, body_message;
+
+    [SerializeField]
+    InputField redirect_id;
 
     [SerializeField]
     GameObject confirm_parent;
+
+    Message_Type message_type;
+
+    Redirect_Type redirect_type;
 
     List<string> options;
     Dictionary<string, uint> user_ids;
@@ -51,6 +73,30 @@ public class Notification_Sender : MonoBehaviour
         user_id = user_ids[options[value]];
     }
 
+    public void On_Message_Type_Change(int value)
+    {
+        message_type = (Message_Type)value;
+        title_message.transform.parent.gameObject.SetActive(value > 1);
+        Utils.InvokeNextFrame(() => {
+            gameObject.SetActive(false);
+            Utils.InvokeNextFrame(() => {
+                gameObject.SetActive(true);
+            });
+        });
+    }
+
+    public void On_Redirect_Type_Change(int value)
+    {
+        redirect_type = (Redirect_Type)value;
+        redirect_id.transform.parent.gameObject.SetActive(value > 0);
+        Utils.InvokeNextFrame(() => {
+            gameObject.SetActive(false);
+            Utils.InvokeNextFrame(() => {
+                gameObject.SetActive(true);
+            });
+        });
+    }
+
     public void Send_Notification()
     {
         if(User.User_Info.Role < User.User_Role.moderator)
@@ -69,11 +115,33 @@ public class Notification_Sender : MonoBehaviour
 
         if (User.User_Info.Role >= User.User_Role.moderator)
         {
+            Dictionary<string, string> data_pairs = new Dictionary<string, string>();
+
+            switch (message_type)
+            {
+                case Message_Type.Copy_Notification:
+                    data_pairs.Add("Msg_Title", title.text);
+                    data_pairs.Add("Msg_Content", body.text);
+                    break;
+
+                case Message_Type.Custom:
+                    data_pairs.Add("Msg_Title", title_message.text);
+                    data_pairs.Add("Msg_Content", body_message.text);
+                    break;
+            }
+
+            if (redirect_type != Redirect_Type.No_Redirect)
+            {
+                data_pairs.Add("Red_Type", redirect_type.ToString());
+                data_pairs.Add("Red_Id", redirect_id.text);
+            }
+
             Firebase_Handler.Send_Notification(new Firebase_Handler.FCM_Params()
             {
                 User_Id = user_id,
                 Title = title.text,
                 Body = body.text,
+                Data_Pairs = data_pairs,
                 Concluding_Method = (object[] data) => 
                 {
                     if ((string)data[2] == "0")
@@ -87,6 +155,9 @@ public class Notification_Sender : MonoBehaviour
 
             title.text = "";
             body.text = "";
+            title_message.text = "";
+            body_message.text = "";
+            redirect_id.text = "";
         }
         else
             Message.ShowMessage(not_permitted_message);

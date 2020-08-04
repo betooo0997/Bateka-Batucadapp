@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿#pragma warning disable 0649
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,32 +8,37 @@ using UnityEngine.UI;
 
 public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField]
-    RectTransform month_element = null;
+    public static List<Calendar_Event> Shown_Events;
 
     [SerializeField]
-    LayoutElement horizontal_scrollview = null;
+    RectTransform month_element;
 
-    bool update, late_update = false;
+    [SerializeField]
+    LayoutElement horizontal_scrollview;
 
-    int current_month_element;
+    Calendar_Events_UI_summarized[] shown_events_UI;
+
+    RectTransform canvas_rect;
 
     DateTime month_to_show;
 
+    Vector3 velocity;
+
     Vector2 previous_mouse_pos;
 
-    bool routeToParent = false;
+    float drag_delta;
 
-    public Action<int> OnFinish;
+    float interpol;
+
+    int current_month_element;
+
+    int current_idx;
+
+    bool update;
+
+    bool routeToParent;
 
     bool calendar;
-
-    public static List<Calendar_Event> Shown_Events;
-    Calendar_Events_UI_summarized[] shown_events_UI;
-
-    int current_idx = 0;
-
-    RectTransform canvas_rect;
 
     private void Awake()
     {
@@ -81,22 +87,34 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
             return;
 
         int change_value = -(current_month_element + 1);
-
         float target = (current_month_element) * month_element.sizeDelta.x;
-
         bool signed = target - transform.localPosition.x < 0;
 
-        if (!signed)
-            transform.localPosition += new Vector3(Time.deltaTime * 750, 0);
+        if (interpol < 1)
+            interpol += Time.deltaTime * 2;
         else
-            transform.localPosition += new Vector3(Time.deltaTime * -750, 0);
+            interpol = 1;
 
-        if (Math.Abs(transform.localPosition.x - target) < 1 || 
-            (transform.localPosition.x - target) < 0 && signed ||
-            (transform.localPosition.x - target) > 0 && !signed)
+        if (!signed)
+            velocity = new Vector3(Mathf.Lerp(velocity.x, Time.deltaTime * 750, interpol), 0);
+        else
+            velocity = new Vector3(Mathf.Lerp(velocity.x, Time.deltaTime * -750, interpol), 0);
+
+        transform.localPosition += velocity;
+
+        int prev_month_element = current_month_element;
+        current_month_element = (int)Math.Round(transform.localPosition.x / month_element.sizeDelta.x, 0);
+
+        if (prev_month_element != current_month_element)
+            interpol = 0;
+
+        if (Math.Abs(transform.localPosition.x - target) < 1 ||
+            signed && (transform.localPosition.x - target) < 0 ||
+            !signed && (transform.localPosition.x - target) > 0)
         {
             transform.localPosition = new Vector3(-month_element.sizeDelta.x, transform.localPosition.y);
             update = false;
+            interpol = 0;
 
             if (change_value != 0)
             {
@@ -131,17 +149,7 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
         }
     }
 
-    void LateUpdate()
-    {
-        if (!late_update)
-            return;
 
-        Canvas.ForceUpdateCanvases();
-        foreach (VerticalLayoutGroup vLayout in FindObjectsOfType<VerticalLayoutGroup>())
-            vLayout.SetLayoutVertical();
-        horizontal_scrollview.minHeight = transform.parent.GetComponent<RectTransform>().sizeDelta.y;
-        late_update = false;
-    }
 
     // ______________________________________
     //
@@ -189,7 +197,8 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
         if (!update && !routeToParent)
         {
             float canvas_scale = canvas_rect.localScale.x;
-            transform.localPosition += new Vector3((eventData.position - previous_mouse_pos).x / canvas_scale, 0);
+            drag_delta = (eventData.position - previous_mouse_pos).x / canvas_scale;
+            transform.localPosition += new Vector3(drag_delta, 0);
             previous_mouse_pos = eventData.position;
         }
 
@@ -203,9 +212,11 @@ public class Scrollable : MonoBehaviour, IInitializePotentialDragHandler, IBegin
             DoForParents<IEndDragHandler>((parent) => { parent.OnEndDrag(eventData); });
         else
         {
+            velocity = new Vector3(drag_delta, 0);
             current_month_element = (int)Math.Round(transform.localPosition.x / month_element.sizeDelta.x, 0);
             update = true;
         }
+
         routeToParent = false;
     }
 }

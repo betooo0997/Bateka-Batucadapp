@@ -19,6 +19,8 @@ public class Edit_Field_DateTime : Edit_Field
         Day.Initialize();
         Hour.Initialize();
         Minute.Initialize();
+
+        initialized = true;
     }
 
     public void Update_Date()
@@ -31,5 +33,7 @@ public class Edit_Field_DateTime : Edit_Field
             int.Parse((Minute.Options   [Minute.Dropdown.value])),
             0
             ));
+
+        Enable_Save_Button();
     }
 }

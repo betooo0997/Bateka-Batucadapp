@@ -19,7 +19,7 @@ public class Scroll_Updater : MonoBehaviour
 
     public static int User_Loaded = 1;
 
-    static bool download_all;
+    static bool downloaded_all;
 
     public static void Initialize()
     {
@@ -28,7 +28,7 @@ public class Scroll_Updater : MonoBehaviour
         Initialized.Add(typeof(Polls), false);
         Initialized.Add(typeof(Calendar_Events), false);
         Initialized.Add(typeof(Docs), false);
-        download_all = false;
+        downloaded_all = false;
     }
 
     private void Awake()
@@ -41,15 +41,15 @@ public class Scroll_Updater : MonoBehaviour
 
     void Update()
     {
-        if (!download_all || Database_Handler.Singleton != null && !Initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0)))
+        if (!downloaded_all || Database_Handler.Singleton != null && !Initialized[Database_Handler.Singleton.GetType()] || (!updating && scroll_view_content.localPosition.y < -50 && Input.GetMouseButtonUp(0)))
         {
-            if (!download_all)
+            if (!downloaded_all)
             {
                 Database_Handler.Load_Data_Server(Handler_Type.events);
                 Database_Handler.Load_Data_Server(Handler_Type.news);
                 Database_Handler.Load_Data_Server(Handler_Type.polls);
                 Database_Handler.Load_Data_Server(Handler_Type.docs);
-                download_all = true;
+                downloaded_all = true;
             }
             else
             {

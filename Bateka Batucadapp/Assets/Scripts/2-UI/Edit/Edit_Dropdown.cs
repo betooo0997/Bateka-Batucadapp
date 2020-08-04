@@ -63,7 +63,7 @@ public class Edit_Dropdown : MonoBehaviour
 
             case Content_Type.Hour:
                 value = (uint)data.Hour - 1;
-                for (int x = 1; x < 24; x++)
+                for (int x = 0; x < 24; x++)
                     Options.Add(x.ToString());
                 break;
 

@@ -18,4 +18,9 @@ public class Edit_Field : MonoBehaviour
         Info = info;
         title.text = Info.Name;
     }
+
+    protected void Enable_Save_Button()
+    {
+        Edit_Handler.Singleton.Save_Button.interactable = true;
+    }
 }

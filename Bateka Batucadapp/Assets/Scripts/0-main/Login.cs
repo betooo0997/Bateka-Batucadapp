@@ -13,13 +13,13 @@ public class Login : MonoBehaviour
     public Button Login_Button;
 
     [SerializeField]
-    InputField user, password = null;
+    InputField user, password;
 
     [SerializeField]
-    Image background, login_reponse = null;
+    Image background, login_reponse;
 
     [SerializeField]
-    GameObject login_loading = null;
+    GameObject login_loading;
 
     bool response, success;
 
@@ -106,6 +106,12 @@ public class Login : MonoBehaviour
         response = true;
         success = false;
         login_reponse.sprite = Helper.Singleton.Sprite_Login_Failure;
+    }
+
+    public void Reset_Input_Fields()
+    {
+        user.text = "";
+        password.text = "";
     }
 
     void Adapt_Background()

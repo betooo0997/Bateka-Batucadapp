@@ -32,10 +32,6 @@ public class Initializer : MonoBehaviour
 
     static void Load_Data_Cache()
     {
-        bool asd = PlayerPrefs.HasKey("user_database");
-        bool dsd = PlayerPrefs.HasKey("version");
-        string dqwd = PlayerPrefs.GetString("version");
-
         if (PlayerPrefs.HasKey("user_database") && PlayerPrefs.HasKey("version") && PlayerPrefs.GetString("version") == Application.version.ToString() && Database_Handler.Is_Clean(PlayerPrefs.GetString("user_database")))
         {
             Debug.Log("Loading from cache");

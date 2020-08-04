@@ -62,7 +62,7 @@ function set_event($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
-		$query = "INSERT INTO events (id, name, details, location_event, location_meeting, date_event, date_meeting, date_deadline, author_id, privacy)
+		$query = "INSERT INTO events (id, name, details, location_event, location_meeting, date_event, date_meeting, date_deadline, author_id, privacy, transportation, cash, food)
 				  VALUES ('" . 
 						$_POST['event_id'] . "', '" .
 						$_POST['event_name'] . "', '" .
@@ -73,7 +73,10 @@ function set_event($con)
 						$_POST['event_date_meeting'] . "', '" .
 						$_POST['event_date_deadline'] . "', '" .
 						$_POST['event_author_id'] . "', '" .
-						$_POST['event_privacy'] . 
+						$_POST['event_privacy'] . "', '" .
+						$_POST['event_transportation'] . "', '" .
+						$_POST['event_cash'] . "', '" .
+						$_POST['event_food'] .
 				  "')";
 	}
 	else
@@ -87,6 +90,9 @@ function set_event($con)
 				  date_meeting = '" .		$_POST['event_date_meeting'] . "', 
 				  date_deadline = '" .		$_POST['event_date_deadline'] . "', 
 				  author_id = '" .			$_POST['event_author_id'] . "', 
+				  transportation = '" .		$_POST['event_transportation'] . "', 
+				  cash = '" .				$_POST['event_cash'] . "', 
+				  food = '" .				$_POST['event_food'] . "', 
 				  privacy = '" .			$_POST['event_privacy'] . "'
 				  WHERE id = '" . $_POST['event_id'] . "'";
 	}

@@ -43,8 +43,8 @@ public class Message : MonoBehaviour
             transform.localPosition += new Vector3(0, Time.deltaTime * 175);
             if (transform.localPosition.y > 100)
             {
-                active = false;
                 SceneManager.UnloadSceneAsync("Message");
+                active = false;
             }
         }
     }
@@ -57,8 +57,6 @@ public class Message : MonoBehaviour
 
     public static void ShowMessage(string message)
     {
-        Debug.Log("Showing message: " + message);
-
         if (active)
             Initializer.Singleton.StartCoroutine(ShowMessageDelayed(message));
         else
@@ -66,6 +64,7 @@ public class Message : MonoBehaviour
             active = true;
             content = message;
             Utils.Load_Scene_ST("Message");
+            Debug.Log("Showing message: " + message);
         }
     }
 }

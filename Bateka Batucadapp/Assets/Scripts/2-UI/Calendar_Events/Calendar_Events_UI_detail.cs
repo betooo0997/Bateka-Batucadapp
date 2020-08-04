@@ -134,6 +134,8 @@ public class Calendar_Events_UI_detail : Calendar_Events_UI
             Show_Event_Details();
             Set_Interactable(true);
         }
+
+        Database_Handler.Update_Unread(Handler_Type.events);
     }
 
     protected void Set_Interactable(bool interactable)

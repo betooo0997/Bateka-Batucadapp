@@ -39,7 +39,9 @@ public class Menu : MonoBehaviour
 
     public GameObject Button_Home, Button_News, Button_Polls, Button_Events, Button_Media;
 
-    public Sprite Sprite_News_Red, Sprite_Polls_Red, Sprite_Events_Red, Sprite_Media_Red;
+    public Sprite Sprite_News_Unread, Sprite_Polls_Unread, Sprite_Events_Unread, Sprite_Media_Unread;
+
+    public Sprite Sprite_News_Unread_Sel, Sprite_Polls_Unread_Sel, Sprite_Events_Unread_Sel, Sprite_Media_Unread_Sel;
 
     [SerializeField]
     Sprite sprite_selected_home, sprite_selected_news, sprite_selected_polls, sprite_selected_events, sprite_selected_media;
@@ -106,55 +108,55 @@ public class Menu : MonoBehaviour
         Active_Item = scene;
 
         if (!Active_Item.ToString().Contains(Prev_Item.ToString()))
-            modify_Buttons(Prev_Item, change_alpha, false);
+            modify_Buttons(Prev_Item, change_sprite, false);
 
-        modify_Buttons(Active_Item, change_alpha, true);
+        modify_Buttons(Active_Item, change_sprite, true);
 
         SceneManager.LoadSceneAsync(scene.ToString(), LoadSceneMode.Additive);
     }
 
-    void modify_Buttons(Menu_item menu_item, Action<GameObject, Sprite, Sprite, bool> method, bool selected)
+    void modify_Buttons(Menu_item menu_item, Action<GameObject, Sprite, Sprite, Sprite, Sprite, bool, bool> method, bool selected)
     {
         switch (menu_item)
         {
             case Menu_item.Home:
                 Title_Handler.Singleton.Set_Title();
-                method(Button_Home, sprite_selected_home, sprite_unselected_home, selected);
+                method(Button_Home, sprite_selected_home, sprite_unselected_home, null, null, selected, false);
                 break;
 
             case Menu_item.News:
                 Title_Handler.Singleton.Set_Title("Noticias");
-                method(Button_News, sprite_selected_news, sprite_unselected_news, selected);
+                method(Button_News, sprite_selected_news, sprite_unselected_news, Sprite_News_Unread_Sel, Sprite_News_Unread, selected, Database_Handler.Unread[typeof(News)]);
                 break;
 
             case Menu_item.News_details:
                 Title_Handler.Singleton.Set_Title("Noticias", () => Load_Scene_Menu_Item(Menu_item.News));
-                method(Button_News, sprite_selected_news, sprite_unselected_news, selected);
+                method(Button_News, sprite_selected_news, sprite_unselected_news, Sprite_News_Unread_Sel, Sprite_News_Unread, selected, Database_Handler.Unread[typeof(News)]);
                 break;
 
             case Menu_item.Events:
                 Title_Handler.Singleton.Set_Title("Eventos");
-                method(Button_Events, sprite_selected_events, sprite_unselected_events, selected);
+                method(Button_Events, sprite_selected_events, sprite_unselected_events, Sprite_Events_Unread_Sel, Sprite_Events_Unread, selected, Database_Handler.Unread[typeof(Calendar_Events)]);
                 break;
 
             case Menu_item.Events_details:
                 Title_Handler.Singleton.Set_Title("Eventos", () => Load_Scene_Menu_Item(Menu_item.Events));
-                method(Button_Events, sprite_selected_events, sprite_unselected_events, selected);
+                method(Button_Events, sprite_selected_events, sprite_unselected_events, Sprite_Events_Unread_Sel, Sprite_Events_Unread, selected, Database_Handler.Unread[typeof(Calendar_Events)]);
                 break;
 
             case Menu_item.Polls:
                 Title_Handler.Singleton.Set_Title("Encuestas");
-                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
+                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, Sprite_Polls_Unread_Sel, Sprite_Polls_Unread, selected, Database_Handler.Unread[typeof(Polls)]);
                 break;
 
             case Menu_item.Poll_details_single:
                 Title_Handler.Singleton.Set_Title("Encuestas", () => Load_Scene_Menu_Item(Menu_item.Polls));
-                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, selected);
+                method(Button_Polls, sprite_selected_polls, sprite_unselected_polls, Sprite_Polls_Unread_Sel, Sprite_Polls_Unread, selected, Database_Handler.Unread[typeof(Polls)]);
                 break;
 
             case Menu_item.Media:
                 Title_Handler.Singleton.Set_Title("Otros");
-                method(Button_Media, sprite_selected_media, sprite_unselected_media, selected);
+                method(Button_Media, sprite_selected_media, sprite_unselected_media, Sprite_Media_Unread_Sel, Sprite_Media_Unread, selected, false);
                 break;
 
             case Menu_item.Users:
@@ -187,13 +189,23 @@ public class Menu : MonoBehaviour
         }
     }
 
-    void change_alpha(GameObject game_object, Sprite sprite_selected, Sprite sprite_unselected, bool selected)
+    void change_sprite(GameObject game_object, Sprite sprite_selected, Sprite sprite_unselected, Sprite sprite_selected_unread, Sprite sprite_unselected_unread, bool selected, bool unread = false)
     {
         Image image = game_object.GetComponentInChildren<Image>();
 
         if (selected)
-            image.sprite = sprite_selected;
+        {
+            if(unread)
+                image.sprite = sprite_selected_unread;
+            else
+                image.sprite = sprite_selected;
+        }
         else
-            image.sprite = sprite_unselected;
+        {
+            if (unread)
+                image.sprite = sprite_unselected_unread;
+            else
+                image.sprite = sprite_unselected;
+        }
     }
 }

@@ -102,5 +102,7 @@ public abstract class Poll_UI_detail : Poll_UI
             Show_Poll_Details();
             Set_Interactable(true);
         }
+
+        Database_Handler.Update_Unread(Handler_Type.polls);
     }
 }

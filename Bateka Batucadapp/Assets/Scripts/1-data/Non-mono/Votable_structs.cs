@@ -5,7 +5,18 @@ using System.Collections.Generic;
 public abstract class Votable : Data_struct
 {
     public Votable_Type Votable_Type;
-    public List<List<User.User_Information>> Vote_Voters;
+    List<List<User.User_Information>> vote_voters;
+    public List<List<User.User_Information>> Vote_Voters
+    {
+        get
+        {
+            for (int x = vote_voters.Count; x < Vote_Types.Count; x++)
+                vote_voters.Add(new List<User.User_Information>());
+
+            return vote_voters;
+        }
+        set { vote_voters = value;  }
+    }
     public List<string> Vote_Types;
     public DateTime Date_Deadline;
     public List<Comment> Comments;
@@ -17,8 +28,6 @@ public abstract class Votable : Data_struct
         Date_Deadline   = new DateTime();
         Comments        = new List<Comment>();
 
-        editable.Add("Votable_Type");
-        editable.Add("Vote_Types");
         editable.Add("Date_Deadline");
     }
 

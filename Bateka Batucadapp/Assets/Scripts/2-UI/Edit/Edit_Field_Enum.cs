@@ -45,6 +45,7 @@ public class Edit_Field_Enum : Edit_Field
 
             object enumerable = Enum.GetValues(Info.FieldType).GetValue(x);
             Info.SetValue(Edit_Handler.Data, enumerable);
+            Enable_Save_Button();
         }
     }
 }

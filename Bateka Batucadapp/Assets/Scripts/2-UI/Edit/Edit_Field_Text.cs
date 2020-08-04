@@ -30,6 +30,9 @@ public class Edit_Field_Text : Edit_Field
     public void On_End_Edit(string data)
     {
         if (initialized)
+        {
             Info.SetValue(Edit_Handler.Data, data);
+            Enable_Save_Button();
+        }
     }
 }

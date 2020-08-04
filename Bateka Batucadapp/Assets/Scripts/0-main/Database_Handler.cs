@@ -25,6 +25,8 @@ public abstract class Database_Handler : MonoBehaviour
     /// </summary>
     public static Data_struct Selected_Data;
 
+    public static Dictionary<Type, bool> Unread;
+
     /// <summary>
     /// All existent Data_struct instances of all Database_Handlers children.
     /// </summary>
@@ -54,6 +56,11 @@ public abstract class Database_Handler : MonoBehaviour
     public static void Initialize_Dictionaries()
     {
         data_list = new Dictionary<Type, List<Data_struct>>();
+        Unread = new Dictionary<Type, bool>();
+        Unread[typeof(Calendar_Events)] = false;
+        Unread[typeof(Polls)] = false;
+        Unread[typeof(News)] = false;
+        Unread[typeof(Docs)] = false;
     }
 
 
@@ -151,6 +158,12 @@ public abstract class Database_Handler : MonoBehaviour
     /// <param name="handler_type">The child class type of Database_Handler that is going to parse data_to_parse.</param>
     static void Parse_Data(string data_to_parse, bool save, Handler_Type handler_type)
     {
+        if (!Is_Clean(data_to_parse))
+        {
+            Message.ShowMessage("Error interno del servidor.");
+            return;
+        }
+
         Func<string, Data_struct> Parse_Data_Single = null;
         Func<List<Data_struct>> Sort_List = null;
         Type type = null;
@@ -210,7 +223,15 @@ public abstract class Database_Handler : MonoBehaviour
 
     static void Post_Parse(Handler_Type handler_type)
     {
+        Update_Unread(handler_type);
+    }
+
+    public static void Update_Unread(Handler_Type handler_type)
+    {
+        Debug.Log("Updating Unread " + handler_type.ToString());
+
         Type type = typeof(Docs);
+        bool unread = false;
         switch (handler_type)
         {
             case Handler_Type.events:
@@ -223,9 +244,10 @@ public abstract class Database_Handler : MonoBehaviour
                             return Menu.Singleton.Button_Events.GetComponentInChildren<Image>();
                         };
                         Helper.Sprite_Red = () => {
-                            return Menu.Singleton.Sprite_Events_Red;
+                            return Menu.Singleton.Sprite_Events_Unread;
                         };
                         Helper.Singleton.StartCoroutine("Update_Button");
+                        unread = true;
                         break;
                     }
                 }
@@ -241,9 +263,10 @@ public abstract class Database_Handler : MonoBehaviour
                             return Menu.Singleton.Button_News.GetComponentInChildren<Image>();
                         };
                         Helper.Sprite_Red = () => {
-                            return Menu.Singleton.Sprite_News_Red;
+                            return Menu.Singleton.Sprite_News_Unread;
                         };
                         Helper.Singleton.StartCoroutine("Update_Button");
+                        unread = true;
                         break;
                     }
                 }
@@ -259,15 +282,17 @@ public abstract class Database_Handler : MonoBehaviour
                             return Menu.Singleton.Button_Polls.GetComponentInChildren<Image>();
                         };
                         Helper.Sprite_Red = () => {
-                            return Menu.Singleton.Sprite_Polls_Red;
+                            return Menu.Singleton.Sprite_Polls_Unread;
                         };
                         Helper.Singleton.StartCoroutine("Update_Button");
+                        unread = true;
+                        break;
                     }
-                    break;
                 }
-            break;
+                break;
         }
 
+        Unread[type] = unread;
         Scroll_Updater.Initialized[type] = true;
     }
 

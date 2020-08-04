@@ -11,22 +11,10 @@ public class Calendar_Handler : MonoBehaviour
 {
     public static Calendar_Handler Singleton;
 
-    [SerializeField]
-    GameObject event_overview_prefab;
-
-    [SerializeField]
-    LayoutElement horizontal_scrollview;
-
-    [SerializeField]
-    RectTransform month_element;
-
     Calendar_Month[] months;
-
-    int current_month_element;
 
     DateTime month_to_show;
 
-    Vector2 previous_mouse_pos;
 
 
     // ______________________________________
@@ -78,25 +66,5 @@ public class Calendar_Handler : MonoBehaviour
         months[0].Initialize(month_to_show.AddMonths(-1));
         months[1].Initialize(month_to_show);
         months[2].Initialize(month_to_show.AddMonths(1));
-    }
-
-    // ______________________________________
-    //
-    // 3. SHOW OVERVIEW.
-    // ______________________________________
-    //
-
-
-    public void Show_Overview(Calendar_Day day)
-    {
-        foreach (Button button in GetComponentsInChildren<Button>())
-            if(button.name.Contains("overview"))
-                Destroy(button.gameObject);
-
-        foreach (Calendar_Event calendar_event in day.Calendar_events)
-        {
-            Calendar_Overview overview = Instantiate(event_overview_prefab, months[1].transform).GetComponent<Calendar_Overview>();
-            overview.SetValues(calendar_event);
-        }
     }
 }

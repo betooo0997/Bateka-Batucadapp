@@ -34,6 +34,7 @@ public class Edit_Field_List : Edit_Field
         List<string> vote_types = (List<string>)Info.GetValue(Edit_Handler.Data);
         vote_types[idx] = name;
         Info.SetValue(Edit_Handler.Data, vote_types);
+        Enable_Save_Button();
     }
 
     public void Add_Option(string name)
@@ -50,6 +51,7 @@ public class Edit_Field_List : Edit_Field
         {
             vote_types.Add(new_object.name);
             Info.SetValue(Edit_Handler.Data, vote_types);
+            Enable_Save_Button();
         }
 
         Utils.Update_UI = true;

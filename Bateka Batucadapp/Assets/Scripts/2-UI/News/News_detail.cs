@@ -37,6 +37,7 @@ public class News_detail : News_UI
             Http_Client.Send_Post(field_names, field_values, (string response, Handler_Type type) => { }, Handler_Type.none);
             news_entry.Seen = true;
             User.User_Info.News_Data.Add(news_entry.Id);
+            Database_Handler.Update_Unread(Handler_Type.news);
         }
     }
 
