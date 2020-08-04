@@ -87,7 +87,7 @@ public class Votable_Stats : MonoBehaviour
             pie_info.text = Utils.Translate(part.Descriptor) + ": " + votable.Vote_Voters[x].Count.ToString();
             pie_info.color = Utils.Darken_Color(colors[x], 0.25f);
 
-            if (votable.Vote_Voters[x].Count > 0 && (votable.Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin))
+            if (votable.Vote_Voters[x].Count > 0 && (votable.Privacy == Privacy.Public || User.User_Info.Role >= User.User_Role.moderator))
             {
                 Text vote_list = Instantiate(bold_text_prefab, voter_list_parent).GetComponent<Text>();
                 vote_list.color = Utils.Darken_Color(colors[x], 0.25f);
@@ -105,7 +105,7 @@ public class Votable_Stats : MonoBehaviour
             rotation -= 360 * percentage;
         }
 
-        if (not_voted.Count > 0 && User.User_Info.Role == User.User_Role.admin)
+        if (not_voted.Count > 0 && User.User_Info.Role >= User.User_Role.moderator)
         {
             send_notification_button.SetActive(true);
             Utils.Update_UI = true;
@@ -116,7 +116,7 @@ public class Votable_Stats : MonoBehaviour
         pie_info_no_vote.color = Data_UI.color_not_answered(1);
         pie_info_no_vote.transform.SetAsFirstSibling();
 
-        if(not_voted.Count > 0 && votable.Privacy == Privacy.Public || User.User_Info.Role == User.User_Role.admin)
+        if(not_voted.Count > 0 && votable.Privacy == Privacy.Public || User.User_Info.Role >= User.User_Role.moderator)
         {
             Text no_vote_list_text = Instantiate(bold_text_prefab, voter_list_parent).GetComponent<Text>();
             no_vote_list_text.color = Data_UI.color_not_answered(1);

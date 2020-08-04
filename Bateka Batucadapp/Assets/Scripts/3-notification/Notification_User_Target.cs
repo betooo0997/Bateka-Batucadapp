@@ -1,18 +1,22 @@
-﻿using System.Collections;
+﻿#pragma warning disable 0649
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static User;
 
 public class Notification_User_Target : MonoBehaviour
 {
-    public User.User_Information User;
+    public User_Information User;
 
     [SerializeField]
-    Text name;
+    Text target_name;
 
-    public void Initialize(string name)
+    public void Initialize(User_Information info)
     {
-        this.name.text = name;
+        User = info;
+        target_name.text = info.Name + " (" + info.Username + ")";
     }
 
     public void Delete_Target()

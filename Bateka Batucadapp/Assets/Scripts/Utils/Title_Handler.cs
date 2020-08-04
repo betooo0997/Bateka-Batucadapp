@@ -42,8 +42,8 @@ public class Title_Handler : MonoBehaviour
 
         other_title.SetActive(true);
         home_title.SetActive(false);
-        notification_button.SetActive(title == "Usuarios" && User.User_Info.Role == User.User_Role.admin);
-        edit_button.SetActive(User.User_Info.Role == User.User_Role.admin && (
+        notification_button.SetActive(title == "Usuarios" && User.User_Info.Role >= User.User_Role.moderator);
+        edit_button.SetActive(User.User_Info.Role >= User.User_Role.moderator && (
             Menu.Active_Item == Menu.Menu_item.Events_details ||
             Menu.Active_Item == Menu.Menu_item.Poll_details_multi ||
             Menu.Active_Item == Menu.Menu_item.Poll_details_single ||

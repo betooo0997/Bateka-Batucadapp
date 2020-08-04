@@ -14,6 +14,9 @@ public class Initializer : MonoBehaviour
 
     void Start()
     {
+        Firebase.Messaging.FirebaseMessaging.TokenReceived += Firebase_Handler.On_Token_Received;
+        Firebase.Messaging.FirebaseMessaging.MessageReceived += Firebase_Handler.On_Message_Received;
+
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => 
         {
             var dependencyStatus = task.Result;

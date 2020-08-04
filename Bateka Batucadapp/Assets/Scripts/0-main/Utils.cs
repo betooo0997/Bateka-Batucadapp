@@ -334,15 +334,15 @@ public class Utils : MonoBehaviour
         else SceneManager.LoadScene(scene_name, LoadSceneMode.Single);
     }
 
-    public static string List_To_String(List<string> list)
+    public static string List_To_String(List<string> list, string separator = "|")
     {
         string result = "";
 
         foreach (string element in list)
-            result += element + "|";
+            result += element + separator;
 
         if (list.Count >= 0)
-            result = result.Substring(0, result.Length - 1);
+            result = result.Substring(0, result.Length - separator.Length);
 
         return result;
     }

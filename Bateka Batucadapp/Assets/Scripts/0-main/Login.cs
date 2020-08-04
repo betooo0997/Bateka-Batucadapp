@@ -97,8 +97,6 @@ public class Login : MonoBehaviour
         response = true;
         success = true;
         login_reponse.sprite = Helper.Singleton.Sprite_Login_Success;
-        Firebase.Messaging.FirebaseMessaging.TokenReceived += Firebase_Handler.On_Token_Received;
-        Firebase.Messaging.FirebaseMessaging.MessageReceived += Firebase_Handler.On_Message_Received;
     }
 
     public void On_Load_Failure()

@@ -23,7 +23,7 @@ public class Notification_Sender : MonoBehaviour
     }
 
     [SerializeField]
-    Dropdown user_dropdwon;
+    Notification_User_Searcher searcher;
 
     [SerializeField]
     InputField title, body;
@@ -41,36 +41,12 @@ public class Notification_Sender : MonoBehaviour
 
     Redirect_Type redirect_type;
 
-    List<string> options;
-    Dictionary<string, uint> user_ids;
-
-    uint user_id;
-
     const string not_permitted_message = "No tienes permiso para poder enviar notificaciones. Contacta con tu administrador/a si quieres obtenerlo.";
 
     private void Start()
     {
-        options = new List<string>();
-        user_ids = new Dictionary<string, uint>();
-
-        foreach (User.User_Information user in User.Users_Info)
-        {
-            options.Add(user.Name);
-            user_ids.Add(user.Name, user.Id);
-        }
-
-        options.Add(User.User_Info.Name);
-        user_ids.Add(User.User_Info.Name, User.User_Info.Id);
-
-        user_dropdwon.AddOptions(options);
-
         if (User.User_Info.Role < User.User_Role.moderator)
             Message.ShowMessage(not_permitted_message);
-    }
-
-    public void On_User_Change(int value)
-    {
-        user_id = user_ids[options[value]];
     }
 
     public void On_Message_Type_Change(int value)
@@ -136,22 +112,46 @@ public class Notification_Sender : MonoBehaviour
                 data_pairs.Add("Red_Id", redirect_id.text);
             }
 
-            Firebase_Handler.Send_Notification(new Firebase_Handler.FCM_Params()
+            List<string> success = new List<string>();
+            List<string> no_device = new List<string>();
+            List<string> unknown = new List<string>();
+
+            foreach (User.User_Information info in searcher.Targets)
             {
-                User_Id = user_id,
-                Title = title.text,
-                Body = body.text,
-                Data_Pairs = data_pairs,
-                Concluding_Method = (object[] data) => 
+                Firebase_Handler.Send_Notification(new Firebase_Handler.FCM_Params()
                 {
-                    if ((string)data[2] == "0")
-                        Message.ShowMessage("Notificación enviada con éxito");
-                    else if ((string)data[2] == "-1" && (string)data[1] == "notification_key not found")
-                        Message.ShowMessage("Error: ningún dispositivo registrado bajo este usuario.");
-                    else
-                        Message.ShowMessage("Error: error desconocido.");
-                }
-            });
+                    User_Id = info.Id,
+                    Title = title.text,
+                    Body = body.text,
+                    Data_Pairs = data_pairs,
+                    Concluding_Method = (object[] data) =>
+                    {
+                        if ((string)data[2] == "0")
+                            success.Add(info.Username);
+                        else if ((string)data[2] == "-1" && (string)data[1] == "notification_key not found")
+                            no_device.Add(info.Username);
+                        else
+                            unknown.Add(info.Username);
+
+                        if(success.Count + no_device.Count + unknown.Count >= searcher.Targets.Count)
+                        {
+                            string message = "";
+
+                            if (success.Count > 0)
+                                message += "Éxito: " + Utils.List_To_String(success, ", ") + ". ";
+
+                            if (no_device.Count > 0)
+                                message += "Sin registrar: " + Utils.List_To_String(no_device, ", ") + ". ";
+
+                            if (unknown.Count > 0)
+                                message += "Error: " + Utils.List_To_String(unknown, ", ") + ".";
+
+                            Debug.Log(message);
+                            Message.ShowMessage(message);
+                        }
+                    }
+                });
+            }
 
             title.text = "";
             body.text = "";
