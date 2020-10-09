@@ -34,9 +34,6 @@ public class Notification_Sender : MonoBehaviour
     [SerializeField]
     InputField redirect_id;
 
-    [SerializeField]
-    GameObject confirm_parent;
-
     Message_Type message_type;
 
     Redirect_Type redirect_type;
@@ -77,18 +74,22 @@ public class Notification_Sender : MonoBehaviour
     {
         if(User.User_Info.Role < User.User_Role.moderator)
             Message.ShowMessage(not_permitted_message);
-        else if (title.text.Length <= 5)
-            Message.ShowMessage("Debes especificar un título");
-        else if (body.text.Length <= 5)
-            Message.ShowMessage("Debes especificar el contenido");
+        else if (title.text.Length <= 3)
+            Message.ShowMessage("Debes especificar un título.");
+        else if (body.text.Length <= 3)
+            Message.ShowMessage("Debes especificar un contenido.");
+        else if (searcher.Targets.Count == 0)
+            Message.ShowMessage("Debes especificar como mínimo un destinatario.");
         else
-            confirm_parent.SetActive(true);
+            Notification_UI_Pop.Show_Message(
+                "CONFIRMAR ENVÍO DE NOTIFICACIÓN",
+                "Recuerda que si un usuario recibe más de 5 notificaciones al día, puede ser que no pueda reciir más hasta el día siguiente (medidas de protección antispam de android)",
+                () => { Confirm_Send_Notification(); },
+                "ENVIAR");
     }
 
     public void Confirm_Send_Notification()
     {
-        confirm_parent.SetActive(false);
-
         if (User.User_Info.Role >= User.User_Role.moderator)
         {
             Dictionary<string, string> data_pairs = new Dictionary<string, string>();

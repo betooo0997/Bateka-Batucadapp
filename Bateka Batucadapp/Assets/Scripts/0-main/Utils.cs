@@ -341,7 +341,7 @@ public class Utils : MonoBehaviour
         foreach (string element in list)
             result += element + separator;
 
-        if (list.Count >= 0)
+        if (list.Count > 0)
             result = result.Substring(0, result.Length - separator.Length);
 
         return result;

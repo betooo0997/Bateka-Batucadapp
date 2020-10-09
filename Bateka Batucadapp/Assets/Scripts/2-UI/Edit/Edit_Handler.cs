@@ -17,14 +17,13 @@ public class Edit_Handler : MonoBehaviour
     [SerializeField]
     GameObject edit_field_text_prefab, edit_field_enum_prefab, edit_field_date_prefab, edit_field_list_prefab;
 
-    private void Awake()
+    void Awake()
     {
         Singleton = this;
     }
 
-    private void Start()
+    void Start()
     {
-        Data = Database_Handler.Selected_Data.Deep_Copy();
         Initialize();
     }
 
@@ -146,6 +145,7 @@ public class Edit_Handler : MonoBehaviour
             });
 
             field_values[0] = "set_news";
+            Debug.Log(data.Creation_time);
             field_values.AddRange(new List<string>(){
                 Utils.Get_String_SQL(data.Creation_time),
                 Utils.List_To_String(data.Imgs)

@@ -8,6 +8,7 @@ public class Doc : Data_struct
     {
         Imgs = new List<string>();
         Urls = new List<string>();
+        Creation_time = DateTime.UtcNow;
     }
 
     public DateTime Creation_time;

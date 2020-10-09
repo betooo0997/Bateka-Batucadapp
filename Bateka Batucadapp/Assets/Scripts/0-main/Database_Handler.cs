@@ -238,7 +238,7 @@ public abstract class Database_Handler : MonoBehaviour
                 type = typeof(Calendar_Events);
                 foreach (Data_struct data in Data_List_Get(type))
                 {
-                    if (((Calendar_Event)data).Status == "" && (Singleton == null || Singleton.GetType() != type))
+                    if (((Calendar_Event)data).Status == "" && (Singleton == null || Singleton.GetType() != type) && Utils.Is_Sooner(DateTime.Now, ((Calendar_Event)data).Date_Deadline))
                     {
                         Helper.Menu_Icon = () => {
                             return Menu.Singleton.Button_Events.GetComponentInChildren<Image>();
@@ -276,7 +276,7 @@ public abstract class Database_Handler : MonoBehaviour
                 type = typeof(Polls);
                 foreach (Data_struct data in Data_List_Get(type))
                 {
-                    if (((Poll)data).Status == "" && (Singleton == null || Singleton.GetType() != type))
+                    if (((Poll)data).Status == "" && (Singleton == null || Singleton.GetType() != type) && Utils.Is_Sooner(DateTime.Now, ((Poll)data).Date_Deadline))
                     {
                         Helper.Menu_Icon = () => {
                             return Menu.Singleton.Button_Polls.GetComponentInChildren<Image>();

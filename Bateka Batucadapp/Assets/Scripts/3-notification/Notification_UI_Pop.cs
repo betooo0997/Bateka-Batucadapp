@@ -10,8 +10,21 @@ public class Notification_UI_Pop : MonoBehaviour
 {
     public static Notification_UI_Pop Singleton;
 
+    static Action action;
+
+    static string action_label, close_label;
+
     [SerializeField]
     Text title_ui, content_ui;
+
+    [SerializeField]
+    Button action_button;
+
+    [SerializeField]
+    Text action_button_text;
+
+    [SerializeField]
+    Text close_button_text;
 
     static string title;
     static string content;
@@ -25,9 +38,33 @@ public class Notification_UI_Pop : MonoBehaviour
     {
         title_ui.text = title;
         content_ui.text = content;
+
+        if (action != null)
+        {
+            action_button.onClick.AddListener(() => { action(); Hide_Message(); });
+            action_button_text.text = action_label;
+        }
+
+        action_button.gameObject.SetActive(action != null);
+        close_button_text.text = close_label;
     }
 
-    public static void Show_Message(IDictionary<string, string> data)
+    public static void Show_Message(string msg_title, string msg_content, Action msg_action, string msg_action_label, string msg_close_label = "CERRAR")
+    {
+        title = msg_title.ToUpper();
+        content = msg_content;
+        action = msg_action;
+        action_label = msg_action_label;
+        close_label  = msg_close_label.ToUpper();
+        Utils.Load_Scene_ST("Notification");
+    }
+
+    public void Hide_Message()
+    {
+        SceneManager.UnloadSceneAsync("Notification");
+    }
+
+    public static void Show_Firebase_Message(IDictionary<string, string> data)
     {
         if (data.ContainsKey("Msg_Title"))
         {
@@ -57,11 +94,6 @@ public class Notification_UI_Pop : MonoBehaviour
                     break;
             }
         }
-    }
-
-    public void Hide_Message()
-    {
-        SceneManager.UnloadSceneAsync("Notification");
     }
 
     static System.Collections.IEnumerator Redirect(Data_struct data)

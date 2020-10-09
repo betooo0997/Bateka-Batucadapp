@@ -10,7 +10,7 @@ public class Votable_Stats : MonoBehaviour
     Transform pie_part_parent, pie_part_description_parent, voter_list_parent;
 
     [SerializeField]
-    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab, send_notification_button, confirm_window;
+    GameObject pie_part_prefab, bold_text_prefab, semibold_text_prefab, send_notification_button;
 
     Votable votable;
 
@@ -133,12 +133,12 @@ public class Votable_Stats : MonoBehaviour
 
     public void Show_Confirm_Window()
     {
-        Utils.InvokeNextFrame(() => { confirm_window.SetActive(true); Utils.Update_UI = true; });
-    }
-
-    public void Hide_Confirm_Window()
-    {
-        Utils.InvokeNextFrame(() => { confirm_window.SetActive(false); Utils.Update_UI = true; });
+        Notification_UI_Pop.Show_Message(
+            "CONFIRMAR ENVÍO DE NOTIFICACIÓN",
+            "Estás apunto de enviar una notificación a todos los usuarios que aún no hayan votado. \n\n" +
+            "Recuerda que si un usuario recibe más de 5 notificaciones al día, puede ser que no pueda recibir más hasta el día siguiente (medidas de protección antispam de android).",
+            () => { Send_Notifications_To_Not_Answered(); },
+            "ENVIAR");
     }
 
     public void Send_Notifications_To_Not_Answered()

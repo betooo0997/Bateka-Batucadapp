@@ -15,9 +15,13 @@ function set_news_entry($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
+		$query = "SELECT MAX(id) as max_id FROM polls";
+		$result = mysqli_query($con, $query);
+		$id = intval($result->fetch_object()->max_id) + 1;
+
 		$query = "INSERT INTO news (id, name, details, date_creation, author_id, privacy, images)
 				  VALUES ('" . 
-						$_POST['news_id'] . "', '" .
+						$id . "', '" .
 						$_POST['news_name'] . "', '" .
 						$_POST['news_details'] . "', '" .
 						$_POST['news_date_creation'] . "', '" .

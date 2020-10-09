@@ -20,6 +20,7 @@ public abstract class Data_struct
         Title = "";
         Details = "";
 
+        Id = 999999;
         editable.Add("Title");
         editable.Add("Details");
         editable.Add("Privacy");
@@ -30,10 +31,9 @@ public abstract class Data_struct
         return editable.Exists(a => a.ToLower() == info.Name.ToLower());
     }
 
-    public Data_struct Deep_Copy()
+    public Data_struct Clone_Deep()
     {
         Data_struct clone = (Data_struct)Activator.CreateInstance(GetType());
-
         FieldInfo[] infos = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
 
         foreach (FieldInfo info in infos)

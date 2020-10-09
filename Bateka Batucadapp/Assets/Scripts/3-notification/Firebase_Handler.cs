@@ -129,7 +129,7 @@ public class Firebase_Handler : MonoBehaviour
             message += "Key: " + entry.Key + ", Value: " + entry.Value + "\n";
 
         Debug.Log(message);
-        Notification_UI_Pop.Show_Message(e.Message.Data);
+        Notification_UI_Pop.Show_Firebase_Message(e.Message.Data);
     }
 
 

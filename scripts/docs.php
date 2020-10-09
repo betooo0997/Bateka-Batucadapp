@@ -16,9 +16,13 @@ function set_doc($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
+		$query = "SELECT MAX(id) as max_id FROM polls";
+		$result = mysqli_query($con, $query);
+		$id = intval($result->fetch_object()->max_id) + 1;
+
 		$query = "INSERT INTO docs (id, name, details, date_creation, author_id, privacy, imgs, urls)
 				  VALUES ('" . 
-						$_POST['doc_id'] . "', '" .
+						$id . "', '" .
 						$_POST['doc_name'] . "', '" .
 						$_POST['doc_details'] . "', '" .
 						$_POST['doc_date_creation'] . "', '" .

@@ -62,9 +62,13 @@ function set_event($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
+		$query = "SELECT MAX(id) as max_id FROM polls";
+		$result = mysqli_query($con, $query);
+		$id = intval($result->fetch_object()->max_id) + 1;
+
 		$query = "INSERT INTO events (id, name, details, location_event, location_meeting, date_event, date_meeting, date_deadline, author_id, privacy, transportation, cash, food)
 				  VALUES ('" . 
-						$_POST['event_id'] . "', '" .
+						$id . "', '" .
 						$_POST['event_name'] . "', '" .
 						$_POST['event_details'] . "', '" .
 						$_POST['event_location_event'] . "', '" .

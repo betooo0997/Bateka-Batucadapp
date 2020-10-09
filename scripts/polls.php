@@ -62,9 +62,13 @@ function set_poll($con)
 
 	if (mysqli_num_rows($result) == 0)
 	{
+		$query = "SELECT MAX(id) as max_id FROM polls";
+		$result = mysqli_query($con, $query);
+		$id = intval($result->fetch_object()->max_id) + 1;
+
 		$query = "INSERT INTO polls (id, name, details, date_creation, date_deadline, author_id, privacy, options)
 				  VALUES ('" . 
-						$_POST['poll_id'] . "', '" .
+						$id . "', '" .
 						$_POST['poll_name'] . "', '" .
 						$_POST['poll_details'] . "', '" .
 						$_POST['poll_date_creation'] . "', '" .

@@ -14,7 +14,7 @@ public class Title_Handler : MonoBehaviour
     Button back_button;
 
     [SerializeField]
-    GameObject home_title, other_title, notification_button, edit_button;
+    GameObject home_title, other_title, notification_button, edit_button, add_button;
 
     [SerializeField]
     Text Title;
@@ -48,6 +48,11 @@ public class Title_Handler : MonoBehaviour
             Menu.Active_Item == Menu.Menu_item.Poll_details_multi ||
             Menu.Active_Item == Menu.Menu_item.Poll_details_single ||
             Menu.Active_Item == Menu.Menu_item.News_details));
+
+        add_button.SetActive(User.User_Info.Role >= User.User_Role.moderator && (
+            Menu.Active_Item == Menu.Menu_item.Events ||
+            Menu.Active_Item == Menu.Menu_item.Polls ||
+            Menu.Active_Item == Menu.Menu_item.News));
 
         Title.text = title;
 
