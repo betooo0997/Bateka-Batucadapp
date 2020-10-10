@@ -35,6 +35,9 @@ function handleRequest()
 			case 'set_poll':
 				return set_poll($con);
 
+			case 'delete_poll':
+				return delete_data($con, "polls");
+
 			// Events
 			case 'get_events':
 				return get_data($con, "events");
@@ -44,6 +47,9 @@ function handleRequest()
 
 			case 'set_event':
 				return set_event($con);
+
+			case 'delete_event':
+				return delete_data($con, "events");
 
 			// News
 			case 'get_news':
@@ -55,6 +61,9 @@ function handleRequest()
 			case 'set_news_seen':
 				return set_news_entry_seen($con);
 
+			case 'delete_news':
+				return delete_data($con, "news");
+
 			// Docs
 			case 'get_docs':
 				return get_data($con, "docs");
@@ -62,12 +71,18 @@ function handleRequest()
 			case 'set_doc':
 				return set_doc($con);
 
+			case 'delete_doc':
+				return delete_data($con, "docs", $_POST['id']);
+
 			// Rhythms
 			case 'get_rhythms':
 				return get_data($con, "rhythms");
 
-			case 'set_rhythms':
+			case 'set_rhythm':
 				return set_rhythm($con, "rhythms");
+
+			case 'delete_rhythm':
+				return delete_data($con, "rhythms", $_POST['id']);
 
 			// Other
 			case 'get_version':

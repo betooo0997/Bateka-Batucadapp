@@ -15,7 +15,6 @@ public class Poll : Votable
     {
         Creation_Time = DateTime.Now;
         editable.Add("Vote_Types");
-        editable.Add("Votable_Type");
     }
 
     string Get_VoteList(List<User.User_Information> list, string nodeName)

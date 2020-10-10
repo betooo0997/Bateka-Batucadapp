@@ -349,6 +349,20 @@ public abstract class Database_Handler : MonoBehaviour
             Debug.LogError("data_list does not exist.");
     }
 
+    /// <summary>
+    /// Sets a specific element of the List of Data_struct elements of a specific child class type of Database_Handler.
+    /// </summary>
+    /// <param name="type">Child class type of Database_Handler.</param>
+    /// <param name="idx">The index in the list.</param>
+    /// <param name="element">The element that should be set to.</param>
+    public static void Data_List_Add(Type type, Data_struct element)
+    {
+        if (data_list.ContainsKey(type))
+            data_list[type].Insert(0, element);
+        else
+            Debug.LogError("data_list does not exist.");
+    }
+
 
 
     // ______________________________________

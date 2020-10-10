@@ -60,7 +60,7 @@ function set_poll($con)
 	$query = "SELECT * FROM polls WHERE id = '" . $_POST['poll_id'] . "';";
 	$result = mysqli_query($con, $query);
 
-	if (mysqli_num_rows($result) == 0)
+	if ($_POST['poll_id'] == "0" || mysqli_num_rows($result) == 0)
 	{
 		$query = "SELECT MAX(id) as max_id FROM polls";
 		$result = mysqli_query($con, $query);

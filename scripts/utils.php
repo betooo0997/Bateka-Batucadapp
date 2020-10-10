@@ -25,6 +25,17 @@ function get_data($con, $table)
 	return 'NONE';
 }
 
+function delete_data($con, $table)
+{
+	$query = "DELETE FROM {$table} WHERE id=" . $_POST['data_id'] . ";";
+	$result = mysqli_query($con, $query);
+
+	if (mysqli_query($con, $query))
+		return "NONE";
+
+	return "Error deleting entry, requested query: " . query;
+}
+
 function utils_get_xpath($xml_filepath)
 {
 	$xmlDoc = new DOMDocument();

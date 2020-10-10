@@ -20,7 +20,7 @@ public abstract class Data_struct
         Title = "";
         Details = "";
 
-        Id = 999999;
+        Id = 0;
         editable.Add("Title");
         editable.Add("Details");
         editable.Add("Privacy");

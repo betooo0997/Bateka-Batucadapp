@@ -12,7 +12,10 @@ public class Edit_Handler : MonoBehaviour
     public static Edit_Handler Singleton;
     public static Data_struct Data;
 
-    public Button Save_Button;
+    public Button Save_Button, Delete_Button;
+
+    public static bool Deletable = true;
+    public static Menu.Menu_item Prev;
 
     [SerializeField]
     GameObject edit_field_text_prefab, edit_field_enum_prefab, edit_field_date_prefab, edit_field_list_prefab;
@@ -29,6 +32,7 @@ public class Edit_Handler : MonoBehaviour
 
     public void Initialize()
     {
+        Delete_Button.gameObject.SetActive(Deletable);
         FieldInfo[] properties = Data.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
 
         foreach (FieldInfo info in properties)
@@ -60,6 +64,8 @@ public class Edit_Handler : MonoBehaviour
 
             field.Initialize(info);
         }
+
+        Delete_Button.transform.SetAsLastSibling();
     }
 
     public void Save()
@@ -157,6 +163,9 @@ public class Edit_Handler : MonoBehaviour
 
         Database_Handler.Selected_Data = Data;
 
+        if(Data.Id == 0)
+            Database_Handler.Data_List_Add(Data.Database_Handler_Type(), Data);
+
         Http_Client.Send_Post(
             field_names.ToArray(),
             field_values.ToArray(),
@@ -174,6 +183,58 @@ public class Edit_Handler : MonoBehaviour
             return;
         }
 
+        Delete_Button.gameObject.SetActive(true);
         Message.ShowMessage("Archivo actualizado con éxito.");
+    }
+
+    public void Delete()
+    {
+        string[] field_names = { "REQUEST_TYPE", "data_id"};
+        string[] field_values;
+
+        if (Data.GetType().Equals(typeof(Poll)))
+            field_values = new string[]{ "delete_poll", Data.Id.ToString() };
+
+        else if (Data.GetType().Equals(typeof(Calendar_Event)))
+            field_values = new string[] { "delete_event", Data.Id.ToString() };
+
+        else if (Data.GetType().Equals(typeof(News_Entry)))
+            field_values = new string[] { "delete_news", Data.Id.ToString() };
+
+        else
+            return;
+
+
+        Notification_UI_Pop.Show_Message(
+            "Confirmar eliminación", 
+            "Seguro que quieres eliminar este archivo?", 
+            () => 
+            {
+                Type type = Data.Database_Handler_Type();
+                List<Data_struct> data_list = Database_Handler.Data_List_Get(type);
+                data_list.Remove(data_list.Find(a => a.Id == Data.Id));
+                Database_Handler.Data_List_Set(type, data_list);
+
+                Http_Client.Send_Post(
+                    field_names,
+                    field_values,
+                    Handle_Delete_Response
+                );
+
+                Menu.Singleton.Load_Scene_Menu_Item(Prev);
+            }, 
+            "Eliminar", 
+            "Cancelar");
+    }
+
+    void Handle_Delete_Response(string response, Handler_Type type)
+    {
+        if (response.Contains("500"))
+        {
+            Message.ShowMessage("Error interno del servidor.");
+            return;
+        }
+
+        Message.ShowMessage("Archivo elminiado con éxito.");
     }
 }

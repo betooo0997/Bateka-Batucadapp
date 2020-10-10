@@ -54,8 +54,6 @@ public class Edit_Field_List : Edit_Field
             Enable_Save_Button();
         }
 
-        Debug.Log("aaasa");
-
         Utils.Update_UI = true;
     }
 }

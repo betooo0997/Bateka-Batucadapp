@@ -13,9 +13,9 @@ function set_rhythm($con)
 	$query = "SELECT * FROM rhythms WHERE id = '" . $_POST['rhythm_id'] . "';";
 	$result = mysqli_query($con, $query);
 
-	if (mysqli_num_rows($result) == 0)
+	if ($_POST['rhythm_id'] == "0" || mysqli_num_rows($result) == 0)
 	{
-		$query = "SELECT MAX(id) as max_id FROM polls";
+		$query = "SELECT MAX(id) as max_id FROM rhythms";
 		$result = mysqli_query($con, $query);
 		$id = intval($result->fetch_object()->max_id) + 1;
 

@@ -7,9 +7,13 @@ public class Edit_Button : MonoBehaviour
 {
     public void Set_Edit_Handler_Data(bool empty)
     {
-        if(empty)
+        Edit_Handler.Deletable = !empty;
+
+        if (empty)
         {
-            switch(Menu.Active_Item)
+            Edit_Handler.Prev = Menu.Active_Item;
+
+            switch (Menu.Active_Item)
             {
                 case Menu.Menu_item.Polls:
                     Edit_Handler.Data = (Data_struct)Activator.CreateInstance(typeof(Poll));
@@ -23,6 +27,7 @@ public class Edit_Button : MonoBehaviour
             }
         }
 
+        Edit_Handler.Prev = Menu.Prev_Item;
         Edit_Handler.Data = Database_Handler.Selected_Data.Clone_Deep();
     }
 }

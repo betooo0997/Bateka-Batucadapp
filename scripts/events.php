@@ -60,9 +60,9 @@ function set_event($con)
 	$query = "SELECT * FROM events WHERE id = '" . $_POST['event_id'] . "';";
 	$result = mysqli_query($con, $query);
 
-	if (mysqli_num_rows($result) == 0)
+	if ($_POST['event_id'] == "0" || mysqli_num_rows($result) == 0)
 	{
-		$query = "SELECT MAX(id) as max_id FROM polls";
+		$query = "SELECT MAX(id) as max_id FROM events";
 		$result = mysqli_query($con, $query);
 		$id = intval($result->fetch_object()->max_id) + 1;
 
