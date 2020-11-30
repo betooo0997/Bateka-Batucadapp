@@ -12,7 +12,8 @@ public class Notification_UI_Pop : MonoBehaviour
 
     static Action action;
 
-    static string action_label, close_label;
+    static string action_label;
+    static string close_label = "CERRAR";
 
     [SerializeField]
     Text title_ui, content_ui;
@@ -49,7 +50,7 @@ public class Notification_UI_Pop : MonoBehaviour
         close_button_text.text = close_label;
     }
 
-    public static void Show_Message(string msg_title, string msg_content, Action msg_action, string msg_action_label, string msg_close_label = "CERRAR")
+    public static void Show_Message(string msg_title, string msg_content, Action msg_action = null, string msg_action_label = "", string msg_close_label = "CERRAR")
     {
         title = msg_title.ToUpper();
         content = msg_content;
@@ -67,12 +68,7 @@ public class Notification_UI_Pop : MonoBehaviour
     public static void Show_Firebase_Message(IDictionary<string, string> data)
     {
         if (data.ContainsKey("Msg_Title"))
-        {
-            title = data["Msg_Title"].ToUpper();
-            content = data["Msg_Content"];
-
-            Utils.Load_Scene_ST("Notification");
-        }
+            Show_Message(data["Msg_Title"].ToUpper(), data["Msg_Content"]);
 
         if (data.ContainsKey("Red_Type"))
         {

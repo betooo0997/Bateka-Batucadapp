@@ -17,6 +17,10 @@ public class News : Database_Handler
         News_Entry news_entry = new News_Entry();
 
         string[] data = Utils.Split(news_entry_data, '#');
+
+        for (int x = 0; x < data.Length; x++)
+            data[x] = Encryption.Decrypt(data[x]);
+
         news_entry.Id               = uint.Parse(data[0]);
         news_entry.Title            = data[1];
         news_entry.Details          = data[2];

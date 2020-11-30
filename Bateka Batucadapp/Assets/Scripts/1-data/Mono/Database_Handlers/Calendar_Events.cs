@@ -31,6 +31,10 @@ public class Calendar_Events : Database_Handler
         Calendar_Event calendar_event = new Calendar_Event();
 
         string[] data = Utils.Split(event_data, '#');
+
+        for (int x = 0; x < data.Length; x++)
+            data[x] = Encryption.Decrypt(data[x]);
+
         calendar_event.Id                   = uint.Parse(data[0]);
         calendar_event.Title                = data[1];
         calendar_event.Details              = data[2];
@@ -82,13 +86,17 @@ public class Calendar_Events : Database_Handler
         for (int x = 0; x < date_Times.Length; x++)
             date_Times[x] = ((Calendar_Event)Unsorted_List[x]).Date_Event;
 
-        List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times);
+        List<Data_struct> Sorted_List = Utils.Bubble_Sort_DateTime(Unsorted_List, date_Times, true);
         return Sorted_List;
     }
 
     protected override void Spawn_UI_Elements()
     {
         base.Spawn_UI_Elements();
-        Calendar_Events_section.Spawn_Sections();
+
+        Utils.InvokeNextFrame(() =>
+        {
+            Calendar_Events_section.Spawn_Sections();
+        });
     }
 }

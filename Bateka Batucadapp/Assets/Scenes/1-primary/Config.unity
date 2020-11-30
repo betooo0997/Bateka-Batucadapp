@@ -419,7 +419,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Tabalapp v
+  m_Text: Asambleapp v
 --- !u!222 &971909972
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -127,7 +127,16 @@ function verified_user($con)
 	$hash = $object->hash;
 	$_POST['id'] = $object->id;
 
-	return md5($_POST['psswd'] . $salt) == $hash;
+	// PEPPER
+
+	if (md5($_POST['psswd'] . $salt) == $hash)
+		return true;
+
+	for ($x = 0; $x <= 19; $x++)
+		if (md5($_POST['psswd'] . $salt . $x) == $hash)
+			return true;
+
+	return false;
 }
 
 ?>

@@ -203,8 +203,9 @@ public abstract class Database_Handler : MonoBehaviour
         string data = Utils.Split(data_to_parse, '~')[1];
 
         // Separate each row to parse it individually. (E.g. "*row*%*row*")
-        foreach (string element in Utils.Split(data, "%"))
-            data_list.Add(Parse_Data_Single(element));
+        if (Encryption.Has_Valid_Key())
+            foreach (string element in Utils.Split(data, "%"))
+                data_list.Add(Parse_Data_Single(element));
 
         Data_List_Set(type, data_list);
 

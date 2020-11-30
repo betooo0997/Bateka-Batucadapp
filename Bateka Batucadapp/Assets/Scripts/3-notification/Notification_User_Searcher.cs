@@ -87,6 +87,11 @@ public class Notification_User_Searcher : MonoBehaviour
                         Add_Suggested(info);
                     }
                 }
+
+                if (User_Info.Name.ToLower().Contains(value) || User_Info.Username.ToLower().Contains(value))
+                {
+                    Add_Suggested(User_Info);
+                }
             }
 
             Utils.Update_UI = true;

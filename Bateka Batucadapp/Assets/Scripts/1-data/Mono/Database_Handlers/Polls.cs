@@ -32,6 +32,10 @@ public class Polls : Database_Handler
         };
 
         string[] data = Utils.Split(poll_data, '#');
+
+        for (int x = 0; x < data.Length; x++)
+            data[x] = Encryption.Decrypt(data[x]);
+
         newPoll.Id              = uint.Parse(data[0]);
         newPoll.Title           = data[1];
         newPoll.Details         = data[2];

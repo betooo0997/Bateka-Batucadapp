@@ -45,7 +45,7 @@ public class Edit_Dropdown : MonoBehaviour
         {
             case Content_Type.Year:
                 value = (uint)data.Year - 2015;
-                for (int x = 2015; x <= 2030; x++)
+                for (int x = 2020; x <= 2030; x++)
                     Options.Add(x.ToString());
                 break;
 
@@ -63,7 +63,7 @@ public class Edit_Dropdown : MonoBehaviour
 
             case Content_Type.Hour:
                 value = (uint)data.Hour - 1;
-                for (int x = 0; x < 24; x++)
+                for (int x = 0; x <= 23; x++)
                     Options.Add(x.ToString());
                 break;
 
@@ -78,6 +78,8 @@ public class Edit_Dropdown : MonoBehaviour
             if (Options[x].Length < 2)
                 Options[x] = "0" + Options[x];
 
+        Debug.Log(Type.ToString() + ": " + Options.Count);
+        Dropdown.ClearOptions();
         Dropdown.AddOptions(Options);
         Dropdown.value = (int)value;
         intitialized = true;

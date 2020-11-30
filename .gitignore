@@ -53,3 +53,5 @@ Corridor/Library/ShaderCache/
 Corridor/Library/metadata/
 Bateka Batucadapp/Assets/google-services.json
 ignore/
+*.webm
+*.mp4

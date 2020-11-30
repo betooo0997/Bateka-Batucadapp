@@ -107,7 +107,6 @@ public class Votable_Stats : MonoBehaviour
 
         if (not_voted.Count > 0 && User.User_Info.Role >= User.User_Role.moderator)
         {
-            send_notification_button.SetActive(true);
             Utils.Update_UI = true;
         }
 
@@ -127,7 +126,10 @@ public class Votable_Stats : MonoBehaviour
             foreach (User.User_Information user in not_voted)
                 no_vote_list_text.text += " " + user.Name + ",";
 
-            no_vote_list_text.text = no_vote_list_text.text.Substring(0, no_vote_list_text.text.Length - 1);
+            if (no_vote_list_text.text.Length != 0)
+                no_vote_list_text.text = no_vote_list_text.text.Substring(0, no_vote_list_text.text.Length - 1);
+            else
+                no_vote_list_text.text = "";
         }
     }
 

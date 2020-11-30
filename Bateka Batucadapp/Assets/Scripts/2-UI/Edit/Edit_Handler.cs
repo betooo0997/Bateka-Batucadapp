@@ -77,8 +77,8 @@ public class Edit_Handler : MonoBehaviour
         List<string> field_values = new List<string>(){
             "",
             Data.Id.ToString(),
-            Data.Title,
-            Data.Details,
+            Encryption.Encrypt(Data.Title),
+            Encryption.Encrypt(Data.Details),
             Data.Author_Id.ToString(),
             Data.Privacy.ToString()
         };
@@ -126,14 +126,14 @@ public class Edit_Handler : MonoBehaviour
 
             field_values[0] = "set_event";
             field_values.AddRange(new List<string>(){
-                data.Location_Event,
-                data.Location_Meeting,
+                Encryption.Encrypt(data.Location_Event),
+                Encryption.Encrypt(data.Location_Meeting),
                 Utils.Get_String_SQL(data.Date_Event),
                 Utils.Get_String_SQL(data.Date_Meeting),
                 Utils.Get_String_SQL(data.Date_Deadline),
-                data.Transportation,
-                data.Cash,
-                data.Food
+                Encryption.Encrypt(data.Transportation),
+                Encryption.Encrypt(data.Cash),
+                Encryption.Encrypt(data.Food)
             });
         }
 
@@ -151,10 +151,9 @@ public class Edit_Handler : MonoBehaviour
             });
 
             field_values[0] = "set_news";
-            Debug.Log(data.Creation_time);
             field_values.AddRange(new List<string>(){
                 Utils.Get_String_SQL(data.Creation_time),
-                Utils.List_To_String(data.Imgs)
+                Encryption.Encrypt(Utils.List_To_String(data.Imgs))
             });
         }
 

@@ -599,23 +599,23 @@ MonoBehaviour:
   Sprite_Events_Unread: {fileID: 21300000, guid: 5593c9ef53a1a634c998c58723111f85,
     type: 3}
   Sprite_Media_Unread: {fileID: 0}
-  Sprite_News_Unread_Sel: {fileID: 21300000, guid: 436ab4c382270114897f461351138781,
+  Sprite_News_Unread_Sel: {fileID: 21300000, guid: c0ef92db2096a4c4b94201a76255cb9e,
     type: 3}
-  Sprite_Polls_Unread_Sel: {fileID: 21300000, guid: 5e8bff3ca3b717d4b9b856f3a76e81b7,
+  Sprite_Polls_Unread_Sel: {fileID: 21300000, guid: e12c40dac7817914b97d43e4fd7d6bb9,
     type: 3}
-  Sprite_Events_Unread_Sel: {fileID: 21300000, guid: f82fddaa349d098449b6167822e98c3d,
+  Sprite_Events_Unread_Sel: {fileID: 21300000, guid: f1169e2cd3800e243a01edf5122b4207,
     type: 3}
-  Sprite_Media_Unread_Sel: {fileID: 21300000, guid: e1ca08b6047d368498f1583d303bd9cb,
+  Sprite_Media_Unread_Sel: {fileID: 21300000, guid: a9e5c9a96d940b7409f9929824423278,
     type: 3}
-  sprite_selected_home: {fileID: 21300000, guid: 0b082f1c88f8106409e20a7f3dc93508,
+  sprite_selected_home: {fileID: 21300000, guid: 0dcafbb9ffd99a343b02822175af318b,
     type: 3}
-  sprite_selected_news: {fileID: 21300000, guid: 3232bbfa80927744b984f0ea97e463a6,
+  sprite_selected_news: {fileID: 21300000, guid: 86fbfe49c2f60c34dbff51126270dea8,
     type: 3}
-  sprite_selected_polls: {fileID: 21300000, guid: 912dc63b081f89047b9174e89eeb00b8,
+  sprite_selected_polls: {fileID: 21300000, guid: 3cacd4461ab829c4a9e8c296730ae5be,
     type: 3}
-  sprite_selected_events: {fileID: 21300000, guid: de9bd5b68e640c54b803ddd82f5c526a,
+  sprite_selected_events: {fileID: 21300000, guid: ebf61ae5533220649b28dea3d3df7081,
     type: 3}
-  sprite_selected_media: {fileID: 21300000, guid: 3b6e138c3a8f08240abfe59f6b7cf7ca,
+  sprite_selected_media: {fileID: 21300000, guid: a9e5c9a96d940b7409f9929824423278,
     type: 3}
   alpha_unselected: 0.5
 --- !u!1 &428966694
@@ -2477,7 +2477,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 30}
+  m_SizeDelta: {x: 120, y: 38.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1601619047
 MonoBehaviour:
@@ -2497,7 +2497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c8667462e1310a24fb0fdff4aa5aef5e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 261ac4a872daeeb4098890f84ddcad73, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -16,6 +16,10 @@ public class Docs : Database_Handler
         Doc doc = new Doc();
 
         string[] data       = Utils.Split(doc_data, '#');
+
+        for (int x = 0; x < data.Length; x++)
+            data[x] = Encryption.Decrypt(data[x]);
+
         doc.Id              = uint.Parse(data[0]);
         doc.Title           = data[1];
         doc.Details         = data[2];

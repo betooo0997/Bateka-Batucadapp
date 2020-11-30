@@ -17,7 +17,7 @@ public class Menu : MonoBehaviour
     public enum Menu_item
     {
         None,
-        Home = 2,
+        Home = 3,
         Polls,
         Events,
         Media,

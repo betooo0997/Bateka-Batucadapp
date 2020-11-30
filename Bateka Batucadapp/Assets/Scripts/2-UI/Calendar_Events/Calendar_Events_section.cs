@@ -31,13 +31,13 @@ public class Calendar_Events_section : MonoBehaviour
             if (sections.Find(x => (x.Month == c_event.Date_Event.Month && x.Year == c_event.Date_Event.Year)).Year == 1)
             {
                 sections.Add(new DateTime(c_event.Date_Event.Year, c_event.Date_Event.Month, 1));
-                idxs.Add(a);
+                idxs.Add(a + idxs.Count);
             }
         }
 
         Transform parent = Calendar_Events.Singleton.Data_UI_Parent;
 
-        for (int x = idxs.Count - 1; x >= 0; x--)
+        for (int x = 0; x < idxs.Count; x++)
         {
             GameObject element_obj = Instantiate(((Calendar_Events)Calendar_Events.Singleton).Data_Section_UI_Prefab, parent);
             element_obj.name = typeof(Calendar_Events).ToString() + "_section";

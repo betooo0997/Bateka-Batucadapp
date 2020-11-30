@@ -13,7 +13,7 @@ public class App_Updater : MonoBehaviour
 
     void Start()
     {
-        version.text = "Tabalapp v" + Application.version.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
+        version.text = "Asambleapp v" + Application.version.ToString(new NumberFormatInfo { NumberDecimalSeparator = "." });
     }
 
     public void Update_App()

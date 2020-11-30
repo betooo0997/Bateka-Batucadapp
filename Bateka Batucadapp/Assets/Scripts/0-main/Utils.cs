@@ -21,7 +21,7 @@ public class Utils : MonoBehaviour
         Singleton = this;
     }
 
-    void Start()
+    private void Start()
     {
         Canvas_Scale = FindObjectOfType<Canvas>().GetComponent<RectTransform>().localScale.x;
     }
@@ -57,7 +57,12 @@ public class Utils : MonoBehaviour
     public void Logout()
     {
         Database_Handler.Initialize_Dictionaries();
+        string lock_pwd = PlayerPrefs.GetString("lock_pwd");
+        string db_key = PlayerPrefs.GetString("db_key");
         PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetString("lock_pwd", lock_pwd);
+        PlayerPrefs.SetString("db_key", db_key);
+
         Firebase_Handler.Modify_Registration_Token(Firebase_Handler.Operation.remove, new Firebase_Handler.FCM_Params()
         {
             Concluding_Method = (object[] data) =>
@@ -345,5 +350,18 @@ public class Utils : MonoBehaviour
             result = result.Substring(0, result.Length - separator.Length);
 
         return result;
+    }
+
+    public static void Adapt_Background(Image background)
+    {
+        float aspect_ratio_backgr = background.sprite.rect.width / background.sprite.rect.height;
+        float aspect_ratio_screen = (float)Screen.width / Screen.height;
+
+        RectTransform rect = background.GetComponent<RectTransform>();
+
+        if (aspect_ratio_backgr < aspect_ratio_screen)
+            rect.sizeDelta = new Vector2(Screen.width, Screen.width / aspect_ratio_backgr) / Canvas_Scale;
+        else
+            rect.sizeDelta = new Vector2(Screen.height * aspect_ratio_backgr, Screen.height) / Canvas_Scale;
     }
 }

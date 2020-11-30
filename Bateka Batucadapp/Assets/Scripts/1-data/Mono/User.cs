@@ -99,17 +99,21 @@ public class User : MonoBehaviour
         foreach (string user in users)
         {
             string[] data = Utils.Split(user, '#');
+
+            for (int x = 0; x < data.Length; x++)
+                data[x] = Encryption.Decrypt(data[x]);
+
             User_Information new_User = new User_Information();
-            new_User.Id = uint.Parse(data[0]);
-            new_User.Username = data[1];
-            new_User.Name = data[2];
-            new_User.Surname = data[3];
+            new_User.Id             = uint.Parse(data[0]);
+            new_User.Username       = data[1];
+            new_User.Name           = data[2];
+            new_User.Surname        = data[3];
             Enum.TryParse(data[4], out new_User.Role);
-            new_User.Tel = data[5];
-            new_User.Email = data[6];
-            new_User.Polls_Data = Vote_Data.Parse_Data(data[7]);
-            new_User.Events_Data = Vote_Data.Parse_Data(data[8]);
-            new_User.News_Data = new List<uint>();
+            new_User.Tel            = data[5];
+            new_User.Email          = data[6];
+            new_User.Polls_Data     = Vote_Data.Parse_Data(data[7]);
+            new_User.Events_Data    = Vote_Data.Parse_Data(data[8]);
+            new_User.News_Data      = new List<uint>();
 
             if (!data[9].Contains("empty"))
                 foreach (string element in Utils.Split(data[9], '|'))
